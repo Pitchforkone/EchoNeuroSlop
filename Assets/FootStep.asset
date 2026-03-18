@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4321c15d43b44484ba79c83518556cda, type: 3}
   m_Name: FootStep
   m_EditorClassIdentifier: Assembly-CSharp::EchoPreset
-  _speed: 15
-  _maxRadius: 20
-  _color: {r: 1, g: 1, b: 1, a: 1}
-  _intensity: 3
+  _speed: 40
+  _maxRadius: 5
+  _color: {r: 0.6603774, g: 0.6603774, b: 0.6603774, a: 1}
+  _intensity: 1
   _lifetimeOverride: 0
