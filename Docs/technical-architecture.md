@@ -1,223 +1,259 @@
 # Техническая архитектура
 
-## Ядро: как работает эхолокация
+## Обзор системы
+
+Три ключевых пайплайна:
+1. **Голос → Эхо**: микрофон → анализ громкости → генерация эхо-волны → визуализация
+2. **Мультиплеер**: NGO host/client, синхронизация эхо-событий и состояний
+3. **Враг**: AI на host, слышит эхо-события, охотится на игроков
+
+---
+
+## 1. Мультиплеер (Netcode for GameObjects)
+
+### Модель
+
+```
+[Host]  = Server + Client (Игрок 1)
+[Client] = Client (Игрок 2)
+```
+
+- **2 игрока**, host/client, LAN или Unity Relay
+- Host авторитетен для: врага AI, игровых событий (win/lose), спавна объектов
+- Движение игрока: **owner-authoritative** (`NetworkTransform` с `AuthorityMode = Owner`)
+- Эхо-события: клиент детектирует звук → `ServerRpc` → host валидирует → `ClientRpc` всем
+
+### Сетевые объекты
+
+| Объект | Спавн | Авторитет |
+|---|---|---|
+| Player Prefab | NGO автоматически при подключении | Owner (движение), Server (состояние) |
+| Enemy | Host при старте игры | Server (AI, позиция) |
+| Эхо-события | По RPC (не NetworkObject) | Server (валидация) |
+| Ambient Sources | Размещены в сцене | Не сетевые (одинаковы на обоих клиентах) |
+
+### NetworkManager
+
+**Файл:** `Scripts/Network/GameNetworkManager.cs`
+
+- Настройка NGO, Player Prefab, спавн-точки
+- Простое LAN-лобби: Host / Join (IP-адрес)
+- На этапе прототипа — без Unity Relay (только LAN / localhost)
+
+---
+
+## 2. Голос → Эхо
 
 ### Принцип
 
-Звук в реальности — сферическая волна, расширяющаяся от источника. Мы симулируем это визуально: любое звуковое событие создаёт `EchoSource`, от которого расходится визуальная волна, обрисовывающая окружающую геометрию.
+Каждый клиент захватывает свой микрофон через `UnityEngine.Microphone`. Аудио анализируется локально (RMS громкости). Когда громкость превышает порог → генерируется эхо-волна от позиции игрока.
+
+### Поток данных
+
+```
+[Микрофон игрока] (локально)
+       ↓
+[MicrophoneCapture] — Microphone.Start() → AudioClip → читаем samples
+       ↓
+[VoiceAnalyzer] — RMS / peak detection каждые N мс
+       ↓
+  громкость > порог?
+       ↓ да
+[PlayerEchoLocator] — SendEchoServerRpc(position, intensity)
+       ↓
+[Host: EchoManager] — валидация, добавление в массив
+       ↓
+[EchoManager] — SpawnEchoClientRpc(position, intensity, color)
+       ↓
+[Все клиенты: EchoManager] — спавн визуального эхо (Point Light / шейдер)
+```
+
+### MicrophoneCapture
+
+**Файл:** `Scripts/Player/MicrophoneCapture.cs` (MonoBehaviour, локальный)
+
+```csharp
+// Ключевая логика:
+// 1. Microphone.Start(deviceName, loop: true, lengthSec: 1, frequency: 44100)
+// 2. Каждый кадр/интервал: audioClip.GetData(samples, offset)
+// 3. RMS = sqrt(sum(samples[i]^2) / count)
+// 4. Если RMS > threshold → callback
+```
+
+- Работает **только на owner-клиенте** (не на remote player)
+- Порог громкости настраивается через ScriptableObject
+- Минимальный интервал между эхо-событиями (cooldown ~0.3с) чтобы не спамить
+
+### Голосовой чат (передача голоса между игроками)
+
+Для прототипа: **внешний войс-чат (Discord)**. Микрофон захватывается в Unity только для детекции громкости, не для передачи звука.
+
+Для продакшена: **Vivox** (Unity Gaming Services) — бесплатный, интегрирован в Unity, поддерживает proximity-based voice.
 
 ---
 
-## Варианты технической реализации
+## 3. Эхолокация — визуализация
 
-### Подход A: Динамические Point Light + стандартные URP материалы
+### Варианты технической реализации
 
-**Суть:** при звуковом событии спавним временный `Point Light` с анимацией радиуса и затуханием. Геометрия освещается стандартным URP Lit-шейдером.
+(Подходы A/B/C сохраняются, выбор не зависит от мультиплеера)
 
-**Реализация:**
-1. `EchoManager` при звуковом событии создаёт `GameObject` с `Light` (Point, цвет эхо)
-2. Каждый кадр увеличивает `Light.range` (расширение волны) и уменьшает `Light.intensity` (затухание)
-3. Через N секунд свет удаляется
+### Подход A: Динамические Point Light ★ (текущий для прототипа)
 
-**Плюсы:**
-- ✅ **Максимально простая реализация** — только C#, никаких шейдеров
-- ✅ Стандартные URP материалы (Lit), не нужны кастомные шейдеры
-- ✅ Автоматические тени от геометрии (реалистичная обрисовка)
-- ✅ Быстрый старт — можно проверить концепцию за часы
+При эхо-событии спавним временный Point Light с анимацией range и затуханием intensity.
 
-**Минусы:**
-- ❌ Нет эффекта «расширяющегося кольца» — свет заливает сферу, а не кольцо
-- ❌ Много Point Light'ов = просадка FPS (forward+: лимит light per object)
-- ❌ Визуально больше похоже на «вспышку фонарика», чем на эхолокацию
-- ❌ Сложно показать edge detection / контурную визуализацию
+**Плюсы:** ✅ Простейшая реализация, ✅ стандартные URP Lit материалы, ✅ автоматические тени
+**Минусы:** ❌ Нет кольца, ❌ много Light = просадка, ❌ визуально «фонарик»
+**Сложность:** ⭐
 
-**Оценка сложности:** ⭐ (минимальная)
+### Подход B: Light + Emission пульс (гибрид)
 
----
+Point Light + Emission-анимация через MaterialPropertyBlock. Объекты «загораются» при прохождении фронта.
 
-### Подход B: Динамические Light + Emission пульс (гибрид)
+**Плюсы:** ✅ Эффект бегущей волны per-object, ✅ без кастомных шейдеров
+**Минусы:** ❌ Per-object а не per-pixel, ❌ CPU bound на много объектов
+**Сложность:** ⭐⭐
 
-**Суть:** комбинируем Point Light для базового освещения с **Emission-анимацией материалов**. Объекты «загораются» при прохождении волны, а свет подсвечивает остальное.
+### Подход C: Screen-space пост-процессинг (URP Renderer Feature)
 
-**Реализация:**
-1. Point Light для базовой подсветки (как подход A)
-2. На объектах — материал с `_EmissionColor`, который `EchoManager` анимирует через `MaterialPropertyBlock`
-3. Emission включается когда расстояние от объекта до эхо-источника ≈ текущему радиусу волны
-4. Это создаёт эффект «кольца» — объекты загораются и гаснут по мере прохождения фронта
+Полноэкранный шейдер: depth/normals → world position → ring + edge detection.
 
-**Плюсы:**
-- ✅ Лучше визуально: есть эффект бегущей волны (объекты загораются и гаснут)
-- ✅ Шейдеры не нужны — стандартный URP Lit с Emission
-- ✅ `MaterialPropertyBlock` — GPU-efficient, не создаёт копий материалов
-- ✅ Средняя сложность — C# + настройка материалов
+**Плюсы:** ✅ Лучший визуал, ✅ per-pixel кольцо, ✅ screen-space производительность
+**Минусы:** ❌ HLSL шейдер + Renderer Feature
+**Сложность:** ⭐⭐⭐
 
-**Минусы:**
-- ❌ Emission per-object, а не per-pixel — волна «прыгает» по объектам, а не плавно скользит
-- ❌ Нужна дистанция от центра каждого рендерера до эхо-источника (CPU-bound на много объектов)
-- ❌ Нет edge detection — поверхности заливаются целиком, а не контурами
-- ❌ Point Light всё ещё создаёт «заливающий» свет
+### Сравнение
 
-**Оценка сложности:** ⭐⭐ (низкая)
-
----
-
-### Подход C: Screen-space пост-процессинг (URP Renderer Feature) ★
-
-**Суть:** полноэкранный шейдер, который читает depth/normals buffer, восстанавливает мировую позицию каждого пикселя и рисует расширяющееся кольцо с edge detection.
-
-**Реализация:**
-1. `EchoRendererFeature` — кастомный URP Renderer Feature
-2. Читает `_CameraDepthTexture` + `_CameraNormalsTexture`
-3. Для каждого пикселя: восстановить world pos → для каждого эхо-источника рассчитать расстояние → нарисовать кольцо (smoothstep) → применить Sobel edge detection
-4. Результат: чёрный экран + контуры геометрии в зоне волны
-
-**Плюсы:**
-- ✅ **Лучший визуальный результат** — плавное кольцо, edge detection, контуры
-- ✅ Производительность не зависит от кол-ва объектов в сцене (screen-space)
-- ✅ Все объекты автоматически «видны» — не нужно ничего настраивать per-object
-- ✅ Полный контроль: толщина кольца, цвет, стиль отрисовки
-
-**Минусы:**
-- ❌ Нужно писать HLSL шейдер + URP Renderer Feature (сложнее)
-- ❌ Требует понимания depth reconstruction, screen-space техник
-- ❌ Отладка шейдера сложнее, чем C#-логики
-
-**Оценка сложности:** ⭐⭐⭐ (средняя)
-
----
-
-## Сравнительная таблица
-
-| Критерий | A: Point Light | B: Light + Emission | C: Post-Process ★ |
+| Критерий | A: Point Light ★ | B: Emission | C: Post-Process |
 |---|---|---|---|
-| Сложность реализации | ⭐ | ⭐⭐ | ⭐⭐⭐ |
-| Визуальное качество | Низкое | Среднее | Высокое |
-| Эффект «кольца/волны» | ❌ Нет | ⚠️ Per-object | ✅ Per-pixel |
-| Edge detection / контуры | ❌ Нет | ❌ Нет | ✅ Есть |
-| Производительность | ⚠️ Много Light | ⚠️ CPU per-object | ✅ Screen-space |
-| Требует кастомных шейдеров | Нет | Нет | Да |
-| Требует настройки материалов | Нет | Да (Emission) | Нет |
-| Годится для финальной версии | Нет | Частично | Да |
+| Сложность | ⭐ | ⭐⭐ | ⭐⭐⭐ |
+| Визуал | Низкий | Средний | Высокий |
+| Эффект кольца | ❌ | ⚠️ Per-object | ✅ Per-pixel |
+| Годится для финала | Нет | Частично | Да |
+
+### Выбранный подход
+
+> **Подход A (Point Light)** для прототипа. Переход на C после подтверждения геймплея.
 
 ---
 
-## Выбранный подход
+## 4. Враг
 
-> **Рекомендация: начать с подхода A (Point Light) для мгновенной проверки концепции, затем перейти на подход C (Post-Process) для финального эффекта.**
+### EnemyAI
 
-Подход A позволяет за минимальное время проверить, работает ли core gameplay loop: тёмный мир + звук = видимость. Если геймплей ощущается правильно — инвестируем в подход C для красивого визуала.
+**Файл:** `Scripts/Enemy/EnemyAI.cs` (NetworkBehaviour, server-authoritative)
 
-Подход B — промежуточный вариант, если подход C окажется слишком сложным для прототипа.
+- Выполняется **только на host** (`if (!IsServer) return;`)
+- **NavMeshAgent** для навигации
+- Синхронизация позиции: `NetworkTransform`
+- Сам создаёт эхо при движении (шаги врага = красное эхо → игроки «видят» врага)
+
+### Поведение
+
+```
+Состояния:
+  [Patrol] → ходит по заданным точкам
+       ↓ слышит звук (эхо-событие в радиусе)
+  [Investigate] → идёт к источнику звука
+       ↓ видит/достигает игрока
+  [Chase] → преследует, создаёт много шума (красное эхо)
+       ↓ потерял игрока
+  [Search] → осматривает район
+       ↓ таймаут
+  [Patrol]
+```
+
+### Как враг «слышит»
+
+`EchoManager` на host при каждом эхо-событии нотифицирует `EnemyAI`:
+- Вычисляет расстояние от врага до источника звука
+- Если расстояние < `hearingRange` → `EnemyAI.OnSoundHeard(position, intensity)`
+- Более громкие звуки слышны дальше
 
 ---
 
-## Компоненты системы (общие для всех подходов)
+## 5. Компоненты системы
 
-### 1. EchoManager (MonoBehaviour Singleton)
+### EchoManager (NetworkBehaviour)
 
 **Файл:** `Scripts/Core/EchoManager.cs`
 
-Центральный менеджер эхо-системы. Работает одинаково вне зависимости от подхода к визуализации.
-
 ```csharp
-// Данные одного эхо-источника
-public struct EchoSourceData
+public struct EchoSourceData : INetworkSerializable
 {
-    public Vector3 Position;      // Мировая позиция
-    public float StartTime;       // Время создания
-    public float Speed;           // Скорость распространения (м/с)
-    public float MaxRadius;       // Максимальный радиус
-    public float Intensity;       // Начальная яркость
-    public Color Color;           // Цвет отклика
+    public Vector3 Position;
+    public float StartTime;
+    public float Speed;
+    public float MaxRadius;
+    public float Intensity;
+    public Color Color;
 }
 ```
 
 **Обязанности:**
 - Хранит массив активных эхо-источников (max 16)
-- Удаляет истёкшие источники
-- **Подход A/B:** управляет спавном/удалением Light'ов
-- **Подход C:** передаёт данные в шейдер через `Shader.SetGlobalXxx()`
+- Принимает `SpawnEchoServerRpc()` → валидирует → `SpawnEchoClientRpc()`
+- На каждом клиенте: обновляет радиусы, удаляет истёкшие, управляет визуализацией
+- На host: нотифицирует EnemyAI о звуках
 
-### 2. EchoSource (MonoBehaviour)
+### EchoSource (MonoBehaviour, локальный)
 
 **Файл:** `Scripts/Echo/EchoSource.cs`
 
-Компонент-источник звука:
-- При срабатывании регистрирует себя в `EchoManager`
-- Параметры: скорость волны, радиус, цвет, интенсивность
-- Может быть одноразовым (шаг) или циклическим (капающая вода)
+Компонент для ambient-источников (капающая вода, вентиляция):
+- Не сетевой — одинаков на обоих клиентах
+- Регистрирует себя в EchoManager по таймеру
+- Настраиваемые параметры через EchoPreset
 
-### 3. PlayerEchoLocator (MonoBehaviour)
+### PlayerController (NetworkBehaviour)
+
+**Файл:** `Scripts/Player/PlayerController.cs`
+
+Сетевой FPS-контроллер:
+- `NetworkTransform` (AuthorityMode = Owner) для owner-authoritative движения
+- CharacterController + камера (обзор)
+- Генерирует эхо от шагов (ServerRpc)
+- Только owner обрабатывает ввод и микрофон
+
+### PlayerEchoLocator (NetworkBehaviour)
 
 **Файл:** `Scripts/Player/PlayerEchoLocator.cs`
 
-Управляет эхолокацией от игрока:
-- **Пассивное эхо** — шаги при ходьбе (малый радиус, слабое)
-- **Активное эхо** — клик/крик (большой радиус, яркое, кулдаун)
-- Связывает Input Actions с генерацией эхо-событий
+- Активное эхо (ЛКМ): `SendEchoServerRpc(position, activePreset)`
+- Пассивное эхо (шаги): автоматически при ходьбе
+- Голосовое эхо: получает callback от MicrophoneCapture → `SendEchoServerRpc(position, voiceIntensity)`
 
-### 4. FPSController (MonoBehaviour)
+### MicrophoneCapture (MonoBehaviour, локальный)
 
-**Файл:** `Scripts/Player/FPSController.cs`
+**Файл:** `Scripts/Player/MicrophoneCapture.cs`
 
-Простой контроллер от первого лица:
-- CharacterController-based движение
-- Обзор мышью
-- Ходьба / бег / приседание
-- Генерирует события шагов для пассивного эхо
-
-### 5. EchoRendererFeature (только подход C)
-
-**Файл:** `Scripts/Core/EchoRendererFeature.cs`
-
-Кастомный URP Renderer Feature для полноэкранного пост-процесс прохода.
+- Работает только на owner-клиенте
+- `Microphone.Start()` → `AudioClip.GetData()` → RMS → callback
+- Cooldown между эхо-событиями
 
 ---
 
-## Шейдерная архитектура (только подход C)
-
-### EchoPostProcess.shader
-
-```hlsl
-// Uniform-массив эхо-источников
-float4 _EchoPositions[16];     // xyz = позиция
-float4 _EchoParams[16];        // x = текущий радиус, y = толщина кольца, z = интенсивность
-float4 _EchoColors[16];        // rgba
-int    _EchoCount;              // Кол-во активных источников
-
-// Для каждого пикселя:
-// 1. Восстановить world position из depth
-// 2. Для каждого источника:
-//    - dist = distance(worldPos, echoPos)
-//    - ring = smoothstep(radius - thickness, radius, dist)
-//          * smoothstep(radius + thickness, radius, dist)
-//    - Применить edge detection (Sobel по depth/normals)
-//    - Накопить цвет: result += ring * edgeFactor * echoColor * intensity
-```
-
----
-
-## Поток данных
+## 6. Поток данных (полный)
 
 ```
-[Input Action: Click/Step]
+[Микрофон / Клик / Шаги]   (на owner-клиенте)
          ↓
-[PlayerEchoLocator] — создаёт EchoSourceData
+[PlayerEchoLocator] → SendEchoServerRpc(pos, intensity, color)
          ↓
-[EchoManager] — добавляет в массив, обновляет радиусы каждый кадр
+[Host: EchoManager] 
+  ├─→ Валидация (лимит 16, cooldown)
+  ├─→ EnemyAI.OnSoundHeard(pos, intensity)  ← враг «слышит»
+  └─→ SpawnEchoClientRpc(pos, intensity, color)
          ↓
-    ┌─────────────────────────────────────────┐
-    │ Подход A: Spawn/Animate Point Light     │
-    │ Подход B: Light + MaterialPropertyBlock │
-    │ Подход C: Shader.SetGlobal → GPU Pass   │
-    └─────────────────────────────────────────┘
+[Все клиенты: EchoManager]
+  └─→ Создать визуальное эхо (Point Light / шейдер)
          ↓
 [Экран] — чёрный фон + визуализация геометрии в зоне эхо-волн
 ```
 
-## Аудио-интеграция
+## 7. Аудио
 
-На этапе прототипа:
-- `AudioSource.Play()` синхронизирован с генерацией `EchoSource`
-- Один helper-метод: «воспроизвести звук + создать эхо-волну»
-- Отдельные звуки для: активного пинга, шагов, взаимодействий
+- `AudioSource.Play()` синхронизирован с эхо-событиями
+- Звуки воспроизводятся **локально на каждом клиенте** (не по сети)
+- Каждый клиент получает ClientRpc с позицией → создаёт AudioSource.PlayClipAtPoint
+- 3D sound settings: spatial blend = 1, rolloff = logarithmic

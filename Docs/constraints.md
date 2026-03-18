@@ -7,21 +7,33 @@
 - Environment Lighting → Ambient Color = `(0, 0, 0, 1)` (абсолютный чёрный)
 - Skybox = чёрный (или отключен)
 - Временные Point Light создаются **только** эхо-системой и автоматически удаляются
-- При переходе на Подход C (Post-Process) — все Point Light заменяются шейдерной визуализацией
 
 ### 2. Визуализация = звук
-- Каждая визуальная «вспышка» мира обязана быть привязана к звуковому событию
+- Каждая визуальная «вспышка» мира привязана к звуковому событию
 - Нет звука → нет визуализации → полная темнота
-- Звуковые события: шаги игрока, активная эхолокация (клик), падения объектов, враги, окружение
+- Источники звука: голос игрока (микрофон), шаги, активный пинг, враг, окружение
 
-### 3. Рендер-пайплайн
+### 3. Мультиплеер
+- **Netcode for GameObjects (NGO)** — единственный сетевой фреймворк
+- Host/Client модель, **2 игрока**
+- Сетевые объекты наследуют `NetworkBehaviour`
+- Игровая логика (AI врага, win/lose) — **server-authoritative** (выполняется на host)
+- Движение игрока — **owner-authoritative** (`NetworkTransform` с `AuthorityMode = Owner`)
+- Эхо-события — через `ServerRpc` / `ClientRpc`
+
+### 4. Рендер-пайплайн
 - Только **URP** (не Built-in, не HDRP)
 - Кастомные шейдеры (если нужны) — **HLSL** через URP Shader Library
-- Пост-процессинг (если нужен) — через **URP Renderer Feature** (не Post-Processing Stack v2)
+- Пост-процессинг (если нужен) — через **URP Renderer Feature**
 
-### 4. Input System
+### 5. Input System
 - Только **New Input System** (PlayerInput / InputAction)
 - Legacy `Input.GetKey()` / `Input.GetAxis()` — запрещены
+
+### 6. Микрофон
+- Захват через `UnityEngine.Microphone` (на owner-клиенте)
+- Только анализ громкости (RMS), не запись и не передача аудио по сети
+- Голосовой чат — отдельная система (Vivox / внешний)
 
 ## Мягкие констрейнты (рекомендации для прототипа)
 
@@ -31,21 +43,26 @@
 - Целевой FPS: **60+** на mid-range PC
 
 ### Архитектура
-- MonoBehaviour + ScriptableObject (без ECS, DOTS, Jobs для прототипа)
-- Управление эхо-источниками — централизованное через `EchoManager`
-- Компонентный подход: каждая функция = отдельный MonoBehaviour
+- NetworkBehaviour + ScriptableObject для сетевых систем
+- MonoBehaviour + ScriptableObject для локальных (ambient sources, microphone)
+- Управление эхо-источниками — через `EchoManager` (NetworkBehaviour)
+- Компонентный подход: каждая функция = отдельный компонент
 
 ### Код
 - C# стиль: `[SerializeField] private`, PascalCase public, _camelCase private
 - Один класс = один файл
-- Папки Scripts/ повторяют логические модули: Core, Player, Echo, Audio
+- RPC: `[ServerRpc]` → суффикс `ServerRpc`, `[ClientRpc]` → суффикс `ClientRpc`
+- Папки Scripts/: Core, Player, Echo, Enemy, Network, Audio
 
 ## Ограничения прототипа (что НЕ делаем)
 
-- ❌ Сетевой мультиплеер
+- ❌ Поддержка >2 игроков
+- ❌ Dedicated server (только host/client)
+- ❌ Unity Relay / Lobby Service (только LAN)
+- ❌ Передача голоса по сети (используем внешний чат)
 - ❌ Процедурная генерация уровней
-- ❌ Сложный AI противников (только базовый патруль)
+- ❌ Сложный AI (только patrol → investigate → chase)
 - ❌ Система сохранений
-- ❌ UI-меню (только HUD-минимум)
+- ❌ UI-меню (только HUD-минимум + экран подключения)
 - ❌ Поддержка платформ кроме Windows
 - ❌ VR/AR
