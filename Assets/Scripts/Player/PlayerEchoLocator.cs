@@ -1,59 +1,74 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Player echo locator: active echo on LMB (Attack action), passive echo from footsteps.
-/// Requires FPSController on the same GameObject for footstep events.
+/// Networked player echo locator. Only the owner fires echoes.
+/// Active echo: LMB (Attack action) with cooldown.
+/// Passive echo: footstep events from PlayerController.
+/// All echoes go through EchoManager (ServerRpc → ClientRpc → all clients see them).
 /// </summary>
-public class PlayerEchoLocator : MonoBehaviour
+public class PlayerEchoLocator : NetworkBehaviour
 {
     [Header("Presets")]
     [SerializeField] private EchoPreset _activePingPreset;
     [SerializeField] private EchoPreset _footstepPreset;
+    [SerializeField] private EchoPreset _sprintFootstepPreset;
 
     [Header("Active Echo")]
     [SerializeField] private float _activeCooldown = 2f;
 
-    [Header("Input")]
-    [SerializeField] private InputActionReference _echoAction; // Attack / LMB
+    [Header("Passive Echo")]
+    [SerializeField] private float _footstepCooldown = 0.3f;
 
-    private FPSController _fpsController;
+    [Header("Input")]
+    [SerializeField] private InputActionAsset _inputActions;
+
+    private PlayerController _playerController;
+    private InputAction _echoAction;
     private float _lastActiveTime = -999f;
+    private float _lastFootstepTime = -999f;
 
     public float CooldownRemaining => Mathf.Max(0f, _activeCooldown - (Time.time - _lastActiveTime));
     public float CooldownNormalized => Mathf.Clamp01(CooldownRemaining / _activeCooldown);
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
-        _fpsController = GetComponent<FPSController>();
-    }
+        _playerController = GetComponent<PlayerController>();
 
-    private void OnEnable()
-    {
-        if (_echoAction != null && _echoAction.action != null)
+        if (!IsOwner) return;
+
+        if (_inputActions != null)
         {
-            _echoAction.action.Enable();
-            _echoAction.action.performed += OnEchoPerformed;
+            _echoAction = _inputActions.FindActionMap("Player")?.FindAction("Attack");
+            if (_echoAction != null)
+            {
+                _echoAction.Enable();
+                _echoAction.performed += OnEchoPerformed;
+            }
         }
 
-        if (_fpsController != null)
-            _fpsController.OnFootstep += OnFootstep;
+        if (_playerController != null)
+            _playerController.OnFootstep += OnFootstep;
     }
 
-    private void OnDisable()
+    public override void OnNetworkDespawn()
     {
-        if (_echoAction != null && _echoAction.action != null)
+        if (!IsOwner) return;
+
+        if (_echoAction != null)
         {
-            _echoAction.action.performed -= OnEchoPerformed;
-            _echoAction.action.Disable();
+            _echoAction.performed -= OnEchoPerformed;
+            _echoAction.Disable();
         }
 
-        if (_fpsController != null)
-            _fpsController.OnFootstep -= OnFootstep;
+        if (_playerController != null)
+            _playerController.OnFootstep -= OnFootstep;
     }
 
     private void OnEchoPerformed(InputAction.CallbackContext ctx)
     {
+        if (!IsOwner) return;
         if (Time.time - _lastActiveTime < _activeCooldown) return;
         if (_activePingPreset == null || EchoManager.Instance == null) return;
 
@@ -63,11 +78,17 @@ public class PlayerEchoLocator : MonoBehaviour
 
     private void OnFootstep(Vector3 position, bool isSprinting)
     {
-        if (_footstepPreset == null || EchoManager.Instance == null) return;
+        if (!IsOwner) return;
+        if (EchoManager.Instance == null) return;
+        if (Time.time - _lastFootstepTime < _footstepCooldown) return;
 
         // Crouching = silent, no passive echo
-        if (_fpsController != null && _fpsController.IsCrouching) return;
+        if (_playerController != null && _playerController.IsCrouching) return;
 
-        EchoManager.Instance.SpawnEcho(position, _footstepPreset);
+        var preset = isSprinting && _sprintFootstepPreset != null ? _sprintFootstepPreset : _footstepPreset;
+        if (preset == null) return;
+
+        _lastFootstepTime = Time.time;
+        EchoManager.Instance.SpawnEcho(position, preset);
     }
 }

@@ -1,10 +1,37 @@
+using System;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
-/// Central manager for the echo system (Approach A: Point Light).
-/// Maintains up to 16 active echo pulses, spawns/animates/destroys Point Lights.
+/// Network-serializable echo event data, sent via ClientRpc to all clients.
 /// </summary>
-public class EchoManager : MonoBehaviour
+public struct EchoSourceData : INetworkSerializable
+{
+    public Vector3 Position;
+    public float Speed;
+    public float MaxRadius;
+    public float Intensity;
+    public Color Color;
+    public float Lifetime;
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref Position);
+        serializer.SerializeValue(ref Speed);
+        serializer.SerializeValue(ref MaxRadius);
+        serializer.SerializeValue(ref Intensity);
+        serializer.SerializeValue(ref Color);
+        serializer.SerializeValue(ref Lifetime);
+    }
+}
+
+/// <summary>
+/// Central manager for the echo system (Approach A: Point Light).
+/// NetworkBehaviour singleton — lives on a scene object with NetworkObject.
+/// Clients request echo via ServerRpc, host validates and broadcasts via ClientRpc.
+/// Each client locally creates and animates Point Lights.
+/// </summary>
+public class EchoManager : NetworkBehaviour
 {
     public static EchoManager Instance { get; private set; }
 
@@ -15,6 +42,22 @@ public class EchoManager : MonoBehaviour
 
     private readonly EchoInstance[] _instances = new EchoInstance[MaxEchoSources];
     private int _activeCount;
+
+    // Shader data arrays (reused each frame to avoid GC)
+    private static readonly int EchoCountId = Shader.PropertyToID("_EchoCount");
+    private static readonly int EchoPositionsId = Shader.PropertyToID("_EchoPositions");
+    private static readonly int EchoRadiiId = Shader.PropertyToID("_EchoRadii");
+    private static readonly int EchoColorsId = Shader.PropertyToID("_EchoColors");
+
+    private readonly Vector4[] _shaderPositions = new Vector4[MaxEchoSources];
+    private readonly float[] _shaderRadii = new float[MaxEchoSources];
+    private readonly Vector4[] _shaderColors = new Vector4[MaxEchoSources];
+
+    /// <summary>
+    /// Fired on host when an echo event is spawned. EnemyAI will subscribe to this.
+    /// Args: position, intensity.
+    /// </summary>
+    public event Action<Vector3, float> OnEchoSpawnedOnServer;
 
     private struct EchoInstance
     {
@@ -39,25 +82,99 @@ public class EchoManager : MonoBehaviour
         Instance = this;
     }
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
+        base.OnDestroy();
     }
 
     /// <summary>
-    /// Spawn a new echo pulse at the given world position using preset parameters.
+    /// Called by PlayerEchoLocator on the owning client to request an echo.
+    /// Host validates and broadcasts to all clients.
+    /// </summary>
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnEchoServerRpc(EchoSourceData data)
+    {
+        // Validate on host: enforce limits
+        if (_activeCount >= MaxEchoSources)
+        {
+            // Will evict oldest on each client via FindFreeSlot
+        }
+
+        // Notify server-side listeners (enemy AI)
+        OnEchoSpawnedOnServer?.Invoke(data.Position, data.Intensity);
+
+        // Broadcast to all clients (including host)
+        SpawnEchoClientRpc(data);
+    }
+
+    /// <summary>
+    /// Received on all clients — creates the local Point Light echo visualization.
+    /// </summary>
+    [ClientRpc]
+    private void SpawnEchoClientRpc(EchoSourceData data)
+    {
+        SpawnEchoLocal(data.Position, data.Speed, data.MaxRadius, data.Intensity, data.Color, data.Lifetime);
+    }
+
+    /// <summary>
+    /// Spawn echo using preset parameters. Sends ServerRpc if networked, falls back to local if not spawned.
     /// </summary>
     public void SpawnEcho(Vector3 position, EchoPreset preset)
     {
         if (preset == null) return;
-        SpawnEcho(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime);
+
+        var data = new EchoSourceData
+        {
+            Position = position,
+            Speed = preset.Speed,
+            MaxRadius = preset.MaxRadius,
+            Intensity = preset.Intensity,
+            Color = preset.Color,
+            Lifetime = preset.Lifetime
+        };
+
+        if (IsSpawned)
+        {
+            SpawnEchoServerRpc(data);
+        }
+        else
+        {
+            // Fallback for non-networked usage (e.g. local ambient sources before connection)
+            SpawnEchoLocal(data.Position, data.Speed, data.MaxRadius, data.Intensity, data.Color, data.Lifetime);
+        }
     }
 
     /// <summary>
-    /// Spawn a new echo pulse with explicit parameters.
+    /// Spawn echo with explicit parameters via network.
     /// </summary>
     public void SpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
+    {
+        var data = new EchoSourceData
+        {
+            Position = position,
+            Speed = speed,
+            MaxRadius = maxRadius,
+            Intensity = intensity,
+            Color = color,
+            Lifetime = lifetime
+        };
+
+        if (IsSpawned)
+        {
+            SpawnEchoServerRpc(data);
+        }
+        else
+        {
+            SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
+        }
+    }
+
+    /// <summary>
+    /// Creates the Point Light locally on this client. Called from ClientRpc or directly.
+    /// </summary>
+    private void SpawnEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
     {
         int slot = FindFreeSlot();
         if (slot < 0) return;
@@ -119,11 +236,51 @@ public class EchoManager : MonoBehaviour
                 inst.PointLight.intensity = inst.Intensity * fade;
             }
         }
+
+        UploadShaderData(time);
+    }
+
+    /// <summary>
+    /// Push active echo pulse data to global shader properties for edge detection.
+    /// </summary>
+    private void UploadShaderData(float time)
+    {
+        int count = 0;
+
+        for (int i = 0; i < MaxEchoSources && count < MaxEchoSources; i++)
+        {
+            ref var inst = ref _instances[i];
+            if (!inst.Active) continue;
+
+            float elapsed = time - inst.StartTime;
+            float currentRadius = Mathf.Min(inst.Speed * elapsed, inst.MaxRadius);
+            float t = elapsed / inst.Lifetime;
+            float fade = 1f - t;
+            fade *= fade;
+
+            _shaderPositions[count] = new Vector4(inst.Position.x, inst.Position.y, inst.Position.z, 0f);
+            _shaderRadii[count] = currentRadius;
+            _shaderColors[count] = new Vector4(inst.Color.r, inst.Color.g, inst.Color.b, fade * inst.Intensity);
+
+            count++;
+        }
+
+        // Zero out unused slots
+        for (int i = count; i < MaxEchoSources; i++)
+        {
+            _shaderPositions[i] = Vector4.zero;
+            _shaderRadii[i] = 0f;
+            _shaderColors[i] = Vector4.zero;
+        }
+
+        Shader.SetGlobalInt(EchoCountId, count);
+        Shader.SetGlobalVectorArray(EchoPositionsId, _shaderPositions);
+        Shader.SetGlobalFloatArray(EchoRadiiId, _shaderRadii);
+        Shader.SetGlobalVectorArray(EchoColorsId, _shaderColors);
     }
 
     private int FindFreeSlot()
     {
-        // Find an empty slot
         for (int i = 0; i < MaxEchoSources; i++)
         {
             if (!_instances[i].Active)

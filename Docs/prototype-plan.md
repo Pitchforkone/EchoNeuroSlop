@@ -42,31 +42,47 @@
 
 ---
 
-## Фаза 2: Эхолокация — ядро (сетевая)
+## Фаза 2: Эхолокация — ядро (сетевая) + контурная визуализация
 
-**Цель:** эхо-пульс виден обоим игрокам. Клик — волна от одного, видят оба.
+**Цель:** эхо-пульс виден обоим игрокам. Клик — волна от одного, видят оба. В зоне эхо-пульса подсвечиваются **контуры и рёбра** геометрии (edge detection), а не только заливка светом.
+
+**Визуальный подход:** Point Light (мягкая подсветка) + fullscreen Edge Detection через URP Renderer Feature. Контуры рисуются только в зоне активных эхо-пульсов.
 
 ### 💻 Код (Copilot)
 
-- [ ] **2.1** `EchoManager.cs` (NetworkBehaviour, синглтон на сцене):
+- [x] **2.1** `EchoManager.cs` (NetworkBehaviour, синглтон на сцене):
   - Массив эхо-источников (max 16), обновление, очистка
   - `SpawnEchoServerRpc(pos, intensity, color)` → `SpawnEchoClientRpc()`
-  - Визуализация: Подход A (Point Light), спавн/анимация/удаление
-- [ ] **2.2** `EchoPreset.cs` (ScriptableObject) — конфигурация параметров эхо
-- [ ] **2.3** `PlayerEchoLocator.cs` (NetworkBehaviour):
+  - Визуализация: Point Light спавн/анимация/удаление
+- [x] **2.2** `EchoPreset.cs` (ScriptableObject) — конфигурация параметров эхо
+- [x] **2.3** `PlayerEchoLocator.cs` (NetworkBehaviour):
   - Активное эхо (ЛКМ) → `ServerRpc` → видят оба игрока
   - Пассивное эхо (шаги) → `ServerRpc` (слабое, малый радиус)
   - Cooldown между эхо-событиями
+- [x] **2.4** `EchoEdgeDetection.shader` — HLSL fullscreen шейдер:
+  - Читает `_CameraDepthTexture` + `_CameraNormalsTexture` → Sobel/Roberts edge detection
+  - Принимает массив эхо-источников (позиции, радиусы, цвета, fade) через global shader properties
+  - Контуры рисуются только в зоне активных пульсов, за пределами — чёрный
+  - Цвет контуров берётся из эхо-пресета, интенсивность затухает вместе с пульсом
+- [x] **2.5** `EchoEdgeFeature.cs` + `EchoEdgePass` — URP ScriptableRendererFeature:
+  - Рендерит fullscreen quad с `EchoEdgeDetection.shader`
+  - Инжектится после рендеринга (BeforeRenderingPostProcessing)
+  - Запрашивает DepthNormals текстуру
+- [x] **2.6** Обновлен `EchoManager.cs` — передача данных активных эхо-пульсов в шейдер:
+  - `Shader.SetGlobalVectorArray` / `Shader.SetGlobalFloatArray` каждый кадр
+  - Каждый пульс: position, currentRadius, color, fade
 
 ### 🎛️ Инспектор (разработчик)
 
-- [ ] **2.4** Добавить `EchoManager` (+ NetworkObject) на сцену
-- [ ] **2.5** Добавить `PlayerEchoLocator` на Player Prefab
-- [ ] **2.6** Создать EchoPreset ассеты: «ActivePing» (20м, яркий), «Footstep» (5м, слабый)
-- [ ] **2.7** Назначить EchoPreset ассеты в PlayerEchoLocator
+- [ ] **2.7** Добавить `EchoManager` (+ NetworkObject) на сцену
+- [ ] **2.8** Добавить `PlayerEchoLocator` на Player Prefab
+- [ ] **2.9** Создать EchoPreset ассеты: «ActivePing» (20м, яркий), «Footstep» (5м, слабый)
+- [ ] **2.10** Назначить EchoPreset ассеты в PlayerEchoLocator
+- [ ] **2.11** Добавить `EchoEdgeFeature` в PC_Renderer
+- [ ] **2.12** PC_Renderer: Depth Texture = On, DepthNormals = On (если не включено)
 
 ### Результат фазы
-Игрок 1 кликает → оба видят расходящийся свет. Шаги дают слабую подсветку. Кооп-эхолокация работает.
+Игрок 1 кликает → оба видят расходящийся свет + яркие контуры геометрии в зоне пульса. Рёбра предметов обрисовываются, давая понимание формы окружения. Шаги дают слабую контурную подсветку.
 
 ---
 
@@ -156,20 +172,19 @@
 
 ---
 
-## Фаза 2.5 (опционально): Апгрейд визуала
+## Фаза 2.5 (опционально): Апгрейд визуала — расходящееся кольцо
 
-**Цель:** переход с Point Light на screen-space пост-процессинг.
+**Цель:** добавить видимый фронт расходящейся волны (ring) к существующим контурам.
 
 ### 💻 Код (Copilot)
 
-- [ ] **2.5.1** `EchoPostProcess.shader` — HLSL: depth → world pos → ring + edge detection
-- [ ] **2.5.2** `EchoRendererFeature.cs` + `EchoRenderPass` — URP Renderer Feature
-- [ ] **2.5.3** Обновить `EchoManager` → передача данных в шейдер вместо Point Light
+- [ ] **2.5.1** Обновить `EchoEdgeDetection.shader` — добавить визуализацию кольца (ring) фронта волны
+- [ ] **2.5.2** Опционально: убрать Point Light, полностью перейти на screen-space визуализацию
 
 ### 🎛️ Инспектор (разработчик)
 
-- [ ] **2.5.4** Добавить EchoRendererFeature в PC_Renderer
-- [ ] **2.5.5** Depth Texture + Normals Texture = On в URP Renderer
+- [ ] **2.5.3** Настроить параметры кольца (ширина, яркость) через Material/Feature
+- [ ] **2.5.4** Решить: оставить Point Light для мягкой заливки или только контуры+кольцо
 
 ---
 

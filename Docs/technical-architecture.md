@@ -133,7 +133,28 @@ Point Light + Emission-анимация через MaterialPropertyBlock. Объ
 
 ### Выбранный подход
 
-> **Подход A (Point Light)** для прототипа. Переход на C после подтверждения геймплея.
+> **Подход A+C (Point Light + Edge Detection)** — гибрид для прототипа.
+> Point Light даёт мягкую подсветку поверхностей, fullscreen Edge Detection шейдер рисует яркие контуры геометрии в зоне эхо-пульсов.
+
+**Компоненты визуализации:**
+
+1. **Point Light** (из EchoManager) — мягкая fill-подсветка, автоматические тени URP
+2. **EchoEdgeDetection.shader** — fullscreen HLSL: depth + normals → Sobel edge detection → контуры
+3. **EchoEdgeFeature** — URP ScriptableRendererFeature, инжектирует shader pass
+4. **EchoManager** — передаёт массив активных пульсов (pos, radius, color, fade) в шейдер через `Shader.SetGlobal*`
+
+**Данные в шейдер (global properties каждый кадр):**
+```
+_EchoCount          — int, количество активных пульсов
+_EchoPositions[16]  — Vector4[], xyz = world pos
+_EchoRadii[16]      — float[], текущий радиус пульса
+_EchoColors[16]     — Vector4[], rgb = цвет, a = fade (intensity)
+```
+
+**Edge Detection алгоритм:**
+- Sobel по depth и normals текстурам → находит перепады
+- Для каждого пикселя: реконструируем world position из depth → проверяем попадание в радиус каждого эхо-пульса → модулируем яркость контура
+- За пределами всех пульсов — контуры не рисуются (чёрный экран)
 
 ---
 
