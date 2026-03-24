@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoPreset
   _speed: 5
   _maxRadius: 5
-  _color: {r: 0.28773582, g: 0.6923734, b: 1, a: 1}
-  _intensity: 1.5
+  _color: {r: 0.6273585, g: 0.8402964, b: 1, a: 1}
+  _intensity: 3
   _lifetimeOverride: 0

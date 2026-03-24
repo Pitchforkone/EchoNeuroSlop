@@ -70,7 +70,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoEdgeFeature
   m_Active: 1
   _shader: {fileID: 4800000, guid: cd99298ea3d507041bcbc3610563016e, type: 3}
-  _edgeThickness: 1
+  _edgeThickness: 5
   _depthThreshold: 0.02
   _normalThreshold: 0.01
   _edgeIntensity: 0.1
