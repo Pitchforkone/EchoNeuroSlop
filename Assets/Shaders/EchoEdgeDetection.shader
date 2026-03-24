@@ -29,7 +29,7 @@ Shader "Echo/EdgeDetection"
             SAMPLER(sampler_BlitTexture);
 
             // Echo data arrays (set from C# via Shader.SetGlobal*)
-            #define MAX_ECHOES 16
+            #define MAX_ECHOES 24
             int _EchoCount;
             float4 _EchoPositions[MAX_ECHOES]; // xyz = world position
             float  _EchoRadii[MAX_ECHOES];     // current radius

@@ -36,12 +36,16 @@ public class EchoManager : NetworkBehaviour
     public static EchoManager Instance { get; private set; }
 
     private const int MaxEchoSources = 16;
+    private const int MaxAmbientSources = 8;
+    private const int MaxTotalSources = MaxEchoSources + MaxAmbientSources;
 
     [Header("Debug")]
     [SerializeField] private bool _showGizmos;
 
     private readonly EchoInstance[] _instances = new EchoInstance[MaxEchoSources];
+    private readonly EchoInstance[] _ambientInstances = new EchoInstance[MaxAmbientSources];
     private int _activeCount;
+    private int _ambientActiveCount;
 
     // Shader data arrays (reused each frame to avoid GC)
     private static readonly int EchoCountId = Shader.PropertyToID("_EchoCount");
@@ -49,9 +53,9 @@ public class EchoManager : NetworkBehaviour
     private static readonly int EchoRadiiId = Shader.PropertyToID("_EchoRadii");
     private static readonly int EchoColorsId = Shader.PropertyToID("_EchoColors");
 
-    private readonly Vector4[] _shaderPositions = new Vector4[MaxEchoSources];
-    private readonly float[] _shaderRadii = new float[MaxEchoSources];
-    private readonly Vector4[] _shaderColors = new Vector4[MaxEchoSources];
+    private readonly Vector4[] _shaderPositions = new Vector4[MaxTotalSources];
+    private readonly float[] _shaderRadii = new float[MaxTotalSources];
+    private readonly Vector4[] _shaderColors = new Vector4[MaxTotalSources];
 
     /// <summary>
     /// Fired on host when an echo event is spawned. EnemyAI will subscribe to this.
@@ -172,6 +176,46 @@ public class EchoManager : NetworkBehaviour
     }
 
     /// <summary>
+    /// Spawn a local-only ambient echo. Does NOT go through network — each client fires independently.
+    /// Used by EchoSource for environmental sounds (dripping water, vents, etc.).
+    /// </summary>
+    public void SpawnAmbientEcho(Vector3 position, EchoPreset preset)
+    {
+        if (preset == null) return;
+        SpawnAmbientEchoLocal(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime);
+    }
+
+    private void SpawnAmbientEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
+    {
+        int slot = FindFreeAmbientSlot();
+        if (slot < 0) return;
+
+        var go = new GameObject("AmbientEchoLight");
+        go.transform.position = position;
+
+        var light = go.AddComponent<Light>();
+        light.type = LightType.Point;
+        light.color = color;
+        light.intensity = intensity;
+        light.range = 0.1f;
+        light.shadows = LightShadows.None;
+
+        _ambientInstances[slot] = new EchoInstance
+        {
+            Active = true,
+            Position = position,
+            StartTime = Time.time,
+            Speed = speed,
+            MaxRadius = maxRadius,
+            Intensity = intensity,
+            Color = color,
+            Lifetime = lifetime,
+            PointLight = light
+        };
+        _ambientActiveCount++;
+    }
+
+    /// <summary>
     /// Creates the Point Light locally on this client. Called from ClientRpc or directly.
     /// </summary>
     private void SpawnEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
@@ -208,9 +252,17 @@ public class EchoManager : NetworkBehaviour
     {
         float time = Time.time;
 
-        for (int i = 0; i < MaxEchoSources; i++)
+        UpdatePool(_instances, MaxEchoSources, ref _activeCount, time);
+        UpdatePool(_ambientInstances, MaxAmbientSources, ref _ambientActiveCount, time);
+
+        UploadShaderData(time);
+    }
+
+    private static void UpdatePool(EchoInstance[] pool, int size, ref int activeCount, float time)
+    {
+        for (int i = 0; i < size; i++)
         {
-            ref var inst = ref _instances[i];
+            ref var inst = ref pool[i];
             if (!inst.Active) continue;
 
             float elapsed = time - inst.StartTime;
@@ -218,17 +270,15 @@ public class EchoManager : NetworkBehaviour
             if (elapsed >= inst.Lifetime)
             {
                 DestroyInstance(ref inst);
-                _activeCount--;
+                activeCount--;
                 continue;
             }
 
             float t = elapsed / inst.Lifetime;
-            float currentRadius = inst.Speed * elapsed;
-            currentRadius = Mathf.Min(currentRadius, inst.MaxRadius);
+            float currentRadius = Mathf.Min(inst.Speed * elapsed, inst.MaxRadius);
 
-            // Intensity fades out over lifetime
             float fade = 1f - t;
-            fade *= fade; // quadratic falloff for nicer visual
+            fade *= fade;
 
             if (inst.PointLight != null)
             {
@@ -236,8 +286,6 @@ public class EchoManager : NetworkBehaviour
                 inst.PointLight.intensity = inst.Intensity * fade;
             }
         }
-
-        UploadShaderData(time);
     }
 
     /// <summary>
@@ -247,9 +295,31 @@ public class EchoManager : NetworkBehaviour
     {
         int count = 0;
 
-        for (int i = 0; i < MaxEchoSources && count < MaxEchoSources; i++)
+        // Networked echoes
+        count = CollectShaderData(_instances, MaxEchoSources, time, count);
+        // Ambient echoes
+        count = CollectShaderData(_ambientInstances, MaxAmbientSources, time, count);
+
+        // Zero out unused slots
+        for (int i = count; i < MaxTotalSources; i++)
         {
-            ref var inst = ref _instances[i];
+            _shaderPositions[i] = Vector4.zero;
+            _shaderRadii[i] = 0f;
+            _shaderColors[i] = Vector4.zero;
+        }
+
+        Shader.SetGlobalInt(EchoCountId, count);
+        Shader.SetGlobalVectorArray(EchoPositionsId, _shaderPositions);
+        Shader.SetGlobalFloatArray(EchoRadiiId, _shaderRadii);
+        Shader.SetGlobalVectorArray(EchoColorsId, _shaderColors);
+    }
+
+    private int CollectShaderData(EchoInstance[] pool, int size, float time, int startIndex)
+    {
+        int count = startIndex;
+        for (int i = 0; i < size && count < MaxTotalSources; i++)
+        {
+            ref var inst = ref pool[i];
             if (!inst.Active) continue;
 
             float elapsed = time - inst.StartTime;
@@ -264,19 +334,7 @@ public class EchoManager : NetworkBehaviour
 
             count++;
         }
-
-        // Zero out unused slots
-        for (int i = count; i < MaxEchoSources; i++)
-        {
-            _shaderPositions[i] = Vector4.zero;
-            _shaderRadii[i] = 0f;
-            _shaderColors[i] = Vector4.zero;
-        }
-
-        Shader.SetGlobalInt(EchoCountId, count);
-        Shader.SetGlobalVectorArray(EchoPositionsId, _shaderPositions);
-        Shader.SetGlobalFloatArray(EchoRadiiId, _shaderRadii);
-        Shader.SetGlobalVectorArray(EchoColorsId, _shaderColors);
+        return count;
     }
 
     private int FindFreeSlot()
@@ -304,6 +362,30 @@ public class EchoManager : NetworkBehaviour
         return oldestIndex;
     }
 
+    private int FindFreeAmbientSlot()
+    {
+        for (int i = 0; i < MaxAmbientSources; i++)
+        {
+            if (!_ambientInstances[i].Active)
+                return i;
+        }
+
+        float oldestTime = float.MaxValue;
+        int oldestIndex = 0;
+        for (int i = 0; i < MaxAmbientSources; i++)
+        {
+            if (_ambientInstances[i].StartTime < oldestTime)
+            {
+                oldestTime = _ambientInstances[i].StartTime;
+                oldestIndex = i;
+            }
+        }
+
+        DestroyInstance(ref _ambientInstances[oldestIndex]);
+        _ambientActiveCount--;
+        return oldestIndex;
+    }
+
     private static void DestroyInstance(ref EchoInstance inst)
     {
         if (inst.PointLight != null)
@@ -316,9 +398,15 @@ public class EchoManager : NetworkBehaviour
     {
         if (!_showGizmos || !Application.isPlaying) return;
 
-        for (int i = 0; i < MaxEchoSources; i++)
+        DrawPoolGizmos(_instances, MaxEchoSources);
+        DrawPoolGizmos(_ambientInstances, MaxAmbientSources);
+    }
+
+    private static void DrawPoolGizmos(EchoInstance[] pool, int size)
+    {
+        for (int i = 0; i < size; i++)
         {
-            ref var inst = ref _instances[i];
+            ref var inst = ref pool[i];
             if (!inst.Active) continue;
 
             float elapsed = Time.time - inst.StartTime;
