@@ -1,37 +1,12 @@
 using System;
-using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
-/// Network-serializable echo event data, sent via ClientRpc to all clients.
-/// </summary>
-public struct EchoSourceData : INetworkSerializable
-{
-    public Vector3 Position;
-    public float Speed;
-    public float MaxRadius;
-    public float Intensity;
-    public Color Color;
-    public float Lifetime;
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref Position);
-        serializer.SerializeValue(ref Speed);
-        serializer.SerializeValue(ref MaxRadius);
-        serializer.SerializeValue(ref Intensity);
-        serializer.SerializeValue(ref Color);
-        serializer.SerializeValue(ref Lifetime);
-    }
-}
-
-/// <summary>
 /// Central manager for the echo system (Approach A: Point Light).
-/// NetworkBehaviour singleton — lives on a scene object with NetworkObject.
-/// Clients request echo via ServerRpc, host validates and broadcasts via ClientRpc.
-/// Each client locally creates and animates Point Lights.
+/// MonoBehaviour singleton — lives on a scene object.
+/// Each echo creates and animates Point Lights locally.
 /// </summary>
-public class EchoManager : NetworkBehaviour
+public class EchoManager : MonoBehaviour
 {
     public static EchoManager Instance { get; private set; }
 
@@ -58,10 +33,10 @@ public class EchoManager : NetworkBehaviour
     private readonly Vector4[] _shaderColors = new Vector4[MaxTotalSources];
 
     /// <summary>
-    /// Fired on host when an echo event is spawned. EnemyAI will subscribe to this.
+    /// Fired when an echo event is spawned. EnemyAI can subscribe to this.
     /// Args: position, intensity.
     /// </summary>
-    public event Action<Vector3, float> OnEchoSpawnedOnServer;
+    public event Action<Vector3, float> OnEchoSpawned;
 
     private struct EchoInstance
     {
@@ -86,97 +61,31 @@ public class EchoManager : NetworkBehaviour
         Instance = this;
     }
 
-    public override void OnDestroy()
+    private void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
-        base.OnDestroy();
     }
 
     /// <summary>
-    /// Called by PlayerEchoLocator on the owning client to request an echo.
-    /// Host validates and broadcasts to all clients.
-    /// </summary>
-    [ServerRpc(RequireOwnership = false)]
-    public void SpawnEchoServerRpc(EchoSourceData data)
-    {
-        // Validate on host: enforce limits
-        if (_activeCount >= MaxEchoSources)
-        {
-            // Will evict oldest on each client via FindFreeSlot
-        }
-
-        // Notify server-side listeners (enemy AI)
-        OnEchoSpawnedOnServer?.Invoke(data.Position, data.Intensity);
-
-        // Broadcast to all clients (including host)
-        SpawnEchoClientRpc(data);
-    }
-
-    /// <summary>
-    /// Received on all clients — creates the local Point Light echo visualization.
-    /// </summary>
-    [ClientRpc]
-    private void SpawnEchoClientRpc(EchoSourceData data)
-    {
-        SpawnEchoLocal(data.Position, data.Speed, data.MaxRadius, data.Intensity, data.Color, data.Lifetime);
-    }
-
-    /// <summary>
-    /// Spawn echo using preset parameters. Sends ServerRpc if networked, falls back to local if not spawned.
+    /// Spawn echo using preset parameters.
     /// </summary>
     public void SpawnEcho(Vector3 position, EchoPreset preset)
     {
         if (preset == null) return;
-
-        var data = new EchoSourceData
-        {
-            Position = position,
-            Speed = preset.Speed,
-            MaxRadius = preset.MaxRadius,
-            Intensity = preset.Intensity,
-            Color = preset.Color,
-            Lifetime = preset.Lifetime
-        };
-
-        if (IsSpawned)
-        {
-            SpawnEchoServerRpc(data);
-        }
-        else
-        {
-            // Fallback for non-networked usage (e.g. local ambient sources before connection)
-            SpawnEchoLocal(data.Position, data.Speed, data.MaxRadius, data.Intensity, data.Color, data.Lifetime);
-        }
+        SpawnEchoLocal(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime);
     }
 
     /// <summary>
-    /// Spawn echo with explicit parameters via network.
+    /// Spawn echo with explicit parameters.
     /// </summary>
     public void SpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
     {
-        var data = new EchoSourceData
-        {
-            Position = position,
-            Speed = speed,
-            MaxRadius = maxRadius,
-            Intensity = intensity,
-            Color = color,
-            Lifetime = lifetime
-        };
-
-        if (IsSpawned)
-        {
-            SpawnEchoServerRpc(data);
-        }
-        else
-        {
-            SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
-        }
+        SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
     }
 
     /// <summary>
-    /// Spawn a local-only ambient echo. Does NOT go through network — each client fires independently.
+    /// Spawn a local-only ambient echo.
     /// Used by EchoSource for environmental sounds (dripping water, vents, etc.).
     /// </summary>
     public void SpawnAmbientEcho(Vector3 position, EchoPreset preset)
@@ -216,12 +125,15 @@ public class EchoManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// Creates the Point Light locally on this client. Called from ClientRpc or directly.
+    /// Creates the Point Light locally.
     /// </summary>
     private void SpawnEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
     {
         int slot = FindFreeSlot();
         if (slot < 0) return;
+
+        // Notify listeners (enemy AI)
+        OnEchoSpawned?.Invoke(position, intensity);
 
         var go = new GameObject("EchoLight");
         go.transform.position = position;

@@ -1,15 +1,12 @@
-using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Networked first-person controller. Owner-authoritative movement via NetworkTransform (Owner mode).
-/// Only the owner processes input and moves; remote players see synced transform.
+/// First-person controller for single-player.
+/// CharacterController movement, mouse look, walk/sprint/crouch.
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(NetworkTransform))]
-public class PlayerController : NetworkBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float _walkSpeed = 4f;
@@ -49,7 +46,7 @@ public class PlayerController : NetworkBehaviour
     private InputAction _crouchAction;
 
     /// <summary>
-    /// Fired every footstep on the owner client. Args: position, isSprinting.
+    /// Fired every footstep. Args: position, isSprinting.
     /// </summary>
     public event System.Action<Vector3, bool> OnFootstep;
 
@@ -61,43 +58,11 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
-
-        // Ensure owner-authoritative transform sync
-        var nt = GetComponent<NetworkTransform>();
-        if (nt != null)
-            nt.AuthorityMode = NetworkTransform.AuthorityModes.Owner;
-
-        // Disable CharacterController until OnNetworkSpawn so NGO can place us at the correct spawn position
-        _controller.enabled = false;
+        _targetHeight = _standHeight;
     }
 
-    public override void OnNetworkSpawn()
+    private void Start()
     {
-        _targetHeight = _standHeight;
-
-        // Server consumes the spawn point and sends it to the owning client via RPC
-        if (IsServer && GameNetworkManager.ConsumeSpawnPoint(OwnerClientId, out var spawnPos, out var spawnRot))
-        {
-            // Teleport server-side instance immediately (works for host player who is both server+owner)
-            _controller.enabled = false;
-            transform.SetPositionAndRotation(spawnPos, spawnRot);
-            _controller.enabled = true;
-            Debug.Log($"[Player] Server set spawn: {spawnPos} for client {OwnerClientId}");
-
-            // For remote clients, send RPC so the owner (authority) applies position on their side
-            if (!IsOwner)
-            {
-                TeleportOwnerClientRpc(spawnPos, spawnRot.eulerAngles.y,
-                    new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } } });
-            }
-        }
-
-        // Re-enable CharacterController
-        if (!_controller.enabled)
-            _controller.enabled = true;
-
-        Debug.Log($"[Player] OnNetworkSpawn: IsOwner={IsOwner}, position={transform.position}");
-
         if (_inputActions != null)
         {
             var map = _inputActions.FindActionMap("Player");
@@ -107,57 +72,38 @@ public class PlayerController : NetworkBehaviour
             _crouchAction = map?.FindAction("Crouch");
         }
 
-        if (IsOwner)
-        {
-            _moveAction?.Enable();
-            _lookAction?.Enable();
-            _sprintAction?.Enable();
-            _crouchAction?.Enable();
+        _moveAction?.Enable();
+        _lookAction?.Enable();
+        _sprintAction?.Enable();
+        _crouchAction?.Enable();
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
-            // Enable only the owner's camera
-            _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
-            if (_camera != null)
-                _camera.enabled = true;
+        // Enable camera
+        _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
+        if (_camera != null)
+            _camera.enabled = true;
 
-            // Enable AudioListener only on owner
-            var listener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
-            if (listener != null)
-                listener.enabled = true;
-        }
-        else
-        {
-            // Disable camera and audio listener for remote players
-            _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
-            if (_camera != null)
-                _camera.enabled = false;
-
-            var listener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
-            if (listener != null)
-                listener.enabled = false;
-        }
+        // Enable AudioListener
+        var listener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
+        if (listener != null)
+            listener.enabled = true;
     }
 
-    public override void OnNetworkDespawn()
+    private void OnDestroy()
     {
-        if (IsOwner)
-        {
-            _moveAction?.Disable();
-            _lookAction?.Disable();
-            _sprintAction?.Disable();
-            _crouchAction?.Disable();
+        _moveAction?.Disable();
+        _lookAction?.Disable();
+        _sprintAction?.Disable();
+        _crouchAction?.Disable();
 
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void Update()
     {
-        if (!IsOwner || !IsSpawned) return;
-
         UpdateGroundCheck();
         UpdateLook();
         UpdateMovement();
@@ -243,14 +189,4 @@ public class PlayerController : NetworkBehaviour
             OnFootstep?.Invoke(transform.position, _isSprinting);
         }
     }
-
-    [ClientRpc]
-    private void TeleportOwnerClientRpc(Vector3 position, float yaw, ClientRpcParams rpcParams = default)
-    {
-        _controller.enabled = false;
-        transform.SetPositionAndRotation(position, Quaternion.Euler(0f, yaw, 0f));
-        _controller.enabled = true;
-        Debug.Log($"[Player] Owner teleported to {position}");
-    }
-
 }

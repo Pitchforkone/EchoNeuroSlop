@@ -1,14 +1,12 @@
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Networked player echo locator. Only the owner fires echoes.
+/// Player echo locator for single-player.
 /// Active echo: LMB (Attack action) with cooldown.
 /// Passive echo: footstep events from PlayerController.
-/// All echoes go through EchoManager (ServerRpc → ClientRpc → all clients see them).
 /// </summary>
-public class PlayerEchoLocator : NetworkBehaviour
+public class PlayerEchoLocator : MonoBehaviour
 {
     [Header("Presets")]
     [SerializeField] private EchoPreset _activePingPreset;
@@ -25,6 +23,7 @@ public class PlayerEchoLocator : NetworkBehaviour
     [SerializeField] private InputActionAsset _inputActions;
 
     private PlayerController _playerController;
+    private FPSController _fpsController;
     private InputAction _echoAction;
     private float _lastActiveTime = -999f;
     private float _lastFootstepTime = -999f;
@@ -32,12 +31,14 @@ public class PlayerEchoLocator : NetworkBehaviour
     public float CooldownRemaining => Mathf.Max(0f, _activeCooldown - (Time.time - _lastActiveTime));
     public float CooldownNormalized => Mathf.Clamp01(CooldownRemaining / _activeCooldown);
 
-    public override void OnNetworkSpawn()
+    private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
+        _fpsController = GetComponent<FPSController>();
+    }
 
-        if (!IsOwner) return;
-
+    private void OnEnable()
+    {
         if (_inputActions != null)
         {
             _echoAction = _inputActions.FindActionMap("Player")?.FindAction("Attack");
@@ -50,12 +51,13 @@ public class PlayerEchoLocator : NetworkBehaviour
 
         if (_playerController != null)
             _playerController.OnFootstep += OnFootstep;
+
+        if (_fpsController != null)
+            _fpsController.OnFootstep += OnFootstep;
     }
 
-    public override void OnNetworkDespawn()
+    private void OnDisable()
     {
-        if (!IsOwner) return;
-
         if (_echoAction != null)
         {
             _echoAction.performed -= OnEchoPerformed;
@@ -64,11 +66,13 @@ public class PlayerEchoLocator : NetworkBehaviour
 
         if (_playerController != null)
             _playerController.OnFootstep -= OnFootstep;
+
+        if (_fpsController != null)
+            _fpsController.OnFootstep -= OnFootstep;
     }
 
     private void OnEchoPerformed(InputAction.CallbackContext ctx)
     {
-        if (!IsOwner) return;
         if (Time.time - _lastActiveTime < _activeCooldown) return;
         if (_activePingPreset == null || EchoManager.Instance == null) return;
 
@@ -78,12 +82,13 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private void OnFootstep(Vector3 position, bool isSprinting)
     {
-        if (!IsOwner) return;
         if (EchoManager.Instance == null) return;
         if (Time.time - _lastFootstepTime < _footstepCooldown) return;
 
         // Crouching = silent, no passive echo
-        if (_playerController != null && _playerController.IsCrouching) return;
+        bool isCrouching = (_playerController != null && _playerController.IsCrouching) ||
+                          (_fpsController != null && _fpsController.IsCrouching);
+        if (isCrouching) return;
 
         var preset = isSprinting && _sprintFootstepPreset != null ? _sprintFootstepPreset : _footstepPreset;
         if (preset == null) return;
