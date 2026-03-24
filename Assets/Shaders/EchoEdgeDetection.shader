@@ -61,20 +61,11 @@ Shader "Echo/EdgeDetection"
                 return output;
             }
 
-            // Reconstruct world position from depth
+            // Reconstruct world position from depth using URP built-in
             float3 ReconstructWorldPos(float2 uv)
             {
                 float depth = SampleSceneDepth(uv);
-                #if UNITY_REVERSED_Z
-                    depth = 1.0 - depth;
-                #endif
-                // NDC: x,y from UV, z from depth
-                float4 ndc = float4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
-                #if UNITY_UV_STARTS_AT_TOP
-                    ndc.y = -ndc.y;
-                #endif
-                float4 worldPos = mul(UNITY_MATRIX_I_VP, ndc);
-                return worldPos.xyz / worldPos.w;
+                return ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
             }
 
             // Sample depth at offset (in texels)
