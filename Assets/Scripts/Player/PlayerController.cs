@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Mirror;
 
 /// <summary>
-/// First-person controller for single-player.
+/// First-person controller for multiplayer with Mirror.
 /// CharacterController movement, mouse look, walk/sprint/crouch.
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float _walkSpeed = 4f;
@@ -39,6 +40,8 @@ public class PlayerController : MonoBehaviour
     private bool _isSprinting;
     private bool _isCrouching;
     private Camera _camera;
+    private AudioListener _audioListener;
+    private bool _isSetup;
 
     private InputAction _moveAction;
     private InputAction _lookAction;
@@ -61,8 +64,32 @@ public class PlayerController : MonoBehaviour
         _targetHeight = _standHeight;
     }
 
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        SetupLocalPlayer();
+    }
+
     private void Start()
     {
+        // Для мультиплеера - ждём OnStartLocalPlayer
+        // Для синглплеера (если нет NetworkClient) - сразу настраиваем
+        if (!NetworkClient.active)
+        {
+            SetupLocalPlayer();
+        }
+        else if (!isLocalPlayer)
+        {
+            // Для удалённых игроков отключаем камеру и аудио
+            DisableRemotePlayerComponents();
+        }
+    }
+
+    private void SetupLocalPlayer()
+    {
+        if (_isSetup) return;
+        _isSetup = true;
+
         if (_inputActions != null)
         {
             var map = _inputActions.FindActionMap("Player");
@@ -77,6 +104,7 @@ public class PlayerController : MonoBehaviour
         _sprintAction?.Enable();
         _crouchAction?.Enable();
 
+        // Lock cursor for gameplay
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -86,9 +114,21 @@ public class PlayerController : MonoBehaviour
             _camera.enabled = true;
 
         // Enable AudioListener
-        var listener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
-        if (listener != null)
-            listener.enabled = true;
+        _audioListener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
+        if (_audioListener != null)
+            _audioListener.enabled = true;
+    }
+
+    private void DisableRemotePlayerComponents()
+    {
+        // Отключаем камеру и аудио для удалённых игроков
+        _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
+        if (_camera != null)
+            _camera.enabled = false;
+
+        _audioListener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
+        if (_audioListener != null)
+            _audioListener.enabled = false;
     }
 
     private void OnDestroy()
@@ -98,12 +138,19 @@ public class PlayerController : MonoBehaviour
         _sprintAction?.Disable();
         _crouchAction?.Disable();
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (_isSetup)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     private void Update()
     {
+        // Только локальный игрок управляет своим персонажем
+        if (!_isSetup) return;
+        if (NetworkClient.active && !isLocalPlayer) return;
+
         UpdateGroundCheck();
         UpdateLook();
         UpdateMovement();

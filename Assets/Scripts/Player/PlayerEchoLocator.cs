@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Mirror;
 
 /// <summary>
-/// Player echo locator for single-player.
+/// Player echo locator for multiplayer with Mirror.
 /// Active echo: LMB (Attack action) with cooldown.
 /// Passive echo: footstep events from PlayerController.
 /// </summary>
-public class PlayerEchoLocator : MonoBehaviour
+public class PlayerEchoLocator : NetworkBehaviour
 {
     [Header("Presets")]
     [SerializeField] private EchoPreset _activePingPreset;
@@ -37,7 +38,28 @@ public class PlayerEchoLocator : MonoBehaviour
         _fpsController = GetComponent<FPSController>();
     }
 
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        SetupInput();
+    }
+
     private void OnEnable()
+    {
+        // Для синглплеера
+        if (!NetworkClient.active)
+        {
+            SetupInput();
+        }
+
+        if (_playerController != null)
+            _playerController.OnFootstep += OnFootstep;
+
+        if (_fpsController != null)
+            _fpsController.OnFootstep += OnFootstep;
+    }
+
+    private void SetupInput()
     {
         if (_inputActions != null)
         {
@@ -48,12 +70,6 @@ public class PlayerEchoLocator : MonoBehaviour
                 _echoAction.performed += OnEchoPerformed;
             }
         }
-
-        if (_playerController != null)
-            _playerController.OnFootstep += OnFootstep;
-
-        if (_fpsController != null)
-            _fpsController.OnFootstep += OnFootstep;
     }
 
     private void OnDisable()
@@ -73,6 +89,9 @@ public class PlayerEchoLocator : MonoBehaviour
 
     private void OnEchoPerformed(InputAction.CallbackContext ctx)
     {
+        // Только локальный игрок может активировать эхо
+        if (NetworkClient.active && !isLocalPlayer) return;
+
         if (Time.time - _lastActiveTime < _activeCooldown) return;
         if (_activePingPreset == null || EchoManager.Instance == null) return;
 
@@ -82,6 +101,9 @@ public class PlayerEchoLocator : MonoBehaviour
 
     private void OnFootstep(Vector3 position, bool isSprinting)
     {
+        // Только локальный игрок генерирует эхо от шагов
+        if (NetworkClient.active && !isLocalPlayer) return;
+
         if (EchoManager.Instance == null) return;
         if (Time.time - _lastFootstepTime < _footstepCooldown) return;
 

@@ -1,10 +1,12 @@
 using System;
 using UnityEngine;
+using Mirror;
 
 /// <summary>
-/// Central manager for the echo system (Approach A: Point Light).
+/// Central manager for the echo system (Approach A: Point Light) with Mirror networking support.
 /// MonoBehaviour singleton — lives on a scene object.
 /// Each echo creates and animates Point Lights locally.
+/// Networked echoes are synchronized across all clients.
 /// </summary>
 public class EchoManager : MonoBehaviour
 {
@@ -61,6 +63,18 @@ public class EchoManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnEnable()
+    {
+        // Subscribe to network echo events
+        EchoNetworkHelper.OnNetworkEchoSpawn += OnNetworkEchoReceived;
+    }
+
+    private void OnDisable()
+    {
+        // Unsubscribe from network echo events
+        EchoNetworkHelper.OnNetworkEchoSpawn -= OnNetworkEchoReceived;
+    }
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -68,20 +82,47 @@ public class EchoManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Spawn echo using preset parameters.
+    /// Called when echo is received from network.
+    /// </summary>
+    private void OnNetworkEchoReceived(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
+    {
+        SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
+    }
+
+    /// <summary>
+    /// Spawn echo using preset parameters. Networked version.
     /// </summary>
     public void SpawnEcho(Vector3 position, EchoPreset preset)
     {
         if (preset == null) return;
-        SpawnEchoLocal(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime);
+        SpawnEcho(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime);
     }
 
     /// <summary>
-    /// Spawn echo with explicit parameters.
+    /// Spawn echo with explicit parameters. Networked version.
     /// </summary>
     public void SpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
     {
-        SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
+        // Если мы в сети
+        if (NetworkClient.active)
+        {
+            // Находим EchoNetworkHelper для отправки команд
+            var helper = EchoNetworkHelper.Instance;
+            if (helper != null)
+            {
+                helper.RequestSpawnEcho(position, speed, maxRadius, intensity, color, lifetime);
+            }
+            else
+            {
+                // Если helper не найден, спавним локально
+                SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
+            }
+        }
+        else
+        {
+            // Синглплеер - просто спавним локально
+            SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
+        }
     }
 
     /// <summary>

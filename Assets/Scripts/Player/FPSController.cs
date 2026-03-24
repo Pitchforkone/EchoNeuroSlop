@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Mirror;
 
 /// <summary>
 /// First-person controller: CharacterController movement, mouse look, walk/sprint/crouch.
+/// Supports Mirror networking for multiplayer.
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
-public class FPSController : MonoBehaviour
+public class FPSController : NetworkBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float _walkSpeed = 4f;
@@ -41,6 +43,8 @@ public class FPSController : MonoBehaviour
     private float _stepTimer;
     private bool _isSprinting;
     private bool _isCrouching;
+    private Camera _camera;
+    private AudioListener _audioListener;
 
     /// <summary>
     /// Fired every footstep. Args: position, isSprinting.
@@ -59,7 +63,22 @@ public class FPSController : MonoBehaviour
         _targetHeight = _standHeight;
     }
 
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        SetupLocalPlayer();
+    }
+
     private void OnEnable()
+    {
+        // Для синглплеера или локального игрока
+        if (!NetworkClient.active)
+        {
+            SetupLocalPlayer();
+        }
+    }
+
+    private void SetupLocalPlayer()
     {
         EnableAction(_moveAction);
         EnableAction(_lookAction);
@@ -67,6 +86,36 @@ public class FPSController : MonoBehaviour
         EnableAction(_crouchAction);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        // Enable camera for local player
+        _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
+        if (_camera != null)
+            _camera.enabled = true;
+
+        // Enable AudioListener for local player
+        _audioListener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
+        if (_audioListener != null)
+            _audioListener.enabled = true;
+    }
+
+    private void Start()
+    {
+        // Для удалённых игроков отключаем камеру и аудио
+        if (NetworkClient.active && !isLocalPlayer)
+        {
+            DisableRemotePlayerComponents();
+        }
+    }
+
+    private void DisableRemotePlayerComponents()
+    {
+        _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
+        if (_camera != null)
+            _camera.enabled = false;
+
+        _audioListener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
+        if (_audioListener != null)
+            _audioListener.enabled = false;
     }
 
     private void OnDisable()
@@ -75,12 +124,19 @@ public class FPSController : MonoBehaviour
         DisableAction(_lookAction);
         DisableAction(_sprintAction);
         DisableAction(_crouchAction);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+
+        if (isLocalPlayer || !NetworkClient.active)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     private void Update()
     {
+        // Только локальный игрок управляет своим персонажем
+        if (NetworkClient.active && !isLocalPlayer) return;
+
         UpdateGroundCheck();
         UpdateLook();
         UpdateMovement();
