@@ -139,7 +139,6 @@ public class SteamNetworkUI : MonoBehaviour
 
     private void OnHostClicked()
     {
-        Debug.Log("[SteamNetworkUI] >>> OnHostClicked <<<");
         
         if (steamLobby == null)
         {

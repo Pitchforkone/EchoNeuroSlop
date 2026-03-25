@@ -53,8 +53,6 @@ public class SteamLobby : MonoBehaviour
             Debug.LogError("[SteamLobby] Cannot create lobby - Steam not initialized!");
             return;
         }
-
-        Debug.Log("[SteamLobby] Creating lobby...");
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, networkManager.maxConnections);
     }
 
@@ -111,7 +109,6 @@ public class SteamLobby : MonoBehaviour
             SteamUser.GetSteamID().ToString()
         );
 
-        Debug.Log("[SteamLobby] Host started, waiting for players...");
     }
 
     private void OnJoinRequest(GameLobbyJoinRequested_t callback)

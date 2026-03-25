@@ -72,7 +72,6 @@ public class CustomNetworkManager : NetworkManager
         // Регистрируем игрока для этого соединения
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        Debug.Log($"[CustomNetworkManager] Spawned character {prefabToSpawn.name} for connection {conn.connectionId} at {position}");
     }
 
     private Vector3 GetSpawnPos()
