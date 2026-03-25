@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: -8153825331983513599}
   - component: {fileID: 3974740444867973585}
   - component: {fileID: 5431117715027518329}
+  - component: {fileID: -4466514309222158251}
+  - component: {fileID: 6665567610513970435}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Untagged
@@ -165,6 +167,51 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &-4466514309222158251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1138cca0a4cfcc46932a8877e41a403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceKeywordDetector
+  _keywords:
+  - echo
+  - hello
+  - help
+  - stop
+  - run
+  - hide
+  - light
+  - dark
+  - danger
+  - open
+  - close
+  - attack
+  - left
+  - right
+  - forward
+  - back
+  _modelFolder: vosk-model
+  _showAllRecognizedText: 1
+--- !u!114 &6665567610513970435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 916a6726732e44dc864131d4bfda02f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SharedMicrophone
+  _sampleRate: 16000
+  _bufferLengthSec: 1
 --- !u!1 &2812847854523134801
 GameObject:
   m_ObjectHideFlags: 0

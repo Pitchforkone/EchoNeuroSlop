@@ -6,6 +6,7 @@ using Mirror;
 /// Player echo locator for multiplayer with Mirror.
 /// Active echo: LMB (Attack action) with cooldown or loud sound into microphone.
 /// Passive echo: footstep events from PlayerController.
+/// Использует SharedMicrophone для доступа к микрофону (общий с VoiceKeywordDetector).
 /// </summary>
 public class PlayerEchoLocator : NetworkBehaviour
 {
@@ -27,9 +28,6 @@ public class PlayerEchoLocator : NetworkBehaviour
     private FPSController _fpsController;
     private InputAction _echoAction;
 
-    private AudioClip _microphoneClip;
-    private string _microphoneName;
-    private bool _microphoneInitialized;
     private float _lastVolume;
     private float _lastEchoTime;
 
@@ -43,15 +41,14 @@ public class PlayerEchoLocator : NetworkBehaviour
     {
         base.OnStartLocalPlayer();
         SetupInput();
-        SetupMicrophone();
     }
+
     private void OnEnable()
     {
         // Для синглплеера
         if (!NetworkClient.active)
         {
             SetupInput();
-            SetupMicrophone();
         }
 
         if (_playerController != null)
@@ -74,24 +71,10 @@ public class PlayerEchoLocator : NetworkBehaviour
         }
     }
 
-    private void SetupMicrophone()
-    {
-        if (_microphoneInitialized) return;
-
-        if (Microphone.devices.Length == 0)
-        {
-            Debug.LogWarning("No microphone detected.");
-            return;
-        }
-
-        _microphoneName = Microphone.devices[0];
-        _microphoneClip = Microphone.Start(_microphoneName, true, 1, 44100);
-        _microphoneInitialized = true;
-    }
-
     private void Update()
     {
-        if (!_microphoneInitialized) return;
+        var mic = SharedMicrophone.Instance;
+        if (mic == null || !mic.IsRecording || mic.Clip == null) return;
         // Только локальный игрок проверяет микрофон
         if (NetworkClient.active && !isLocalPlayer) return;
 
@@ -120,13 +103,14 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private float GetMicrophoneVolume()
     {
-        if (_microphoneClip == null) return 0f;
+        var mic = SharedMicrophone.Instance;
+        if (mic == null || mic.Clip == null) return 0f;
 
-        int micPosition = Microphone.GetPosition(_microphoneName) - _sampleWindow;
+        int micPosition = mic.GetPosition() - _sampleWindow;
         if (micPosition < 0) return 0f;
 
         float[] samples = new float[_sampleWindow];
-        _microphoneClip.GetData(samples, micPosition);
+        mic.Clip.GetData(samples, micPosition);
 
         float sum = 0f;
         for (int i = 0; i < _sampleWindow; i++)
@@ -143,12 +127,6 @@ public class PlayerEchoLocator : NetworkBehaviour
         {
             _echoAction.performed -= OnEchoPerformed;
             _echoAction.Disable();
-        }
-
-        if (_microphoneInitialized && !string.IsNullOrEmpty(_microphoneName))
-        {
-            Microphone.End(_microphoneName);
-            _microphoneInitialized = false;
         }
 
         if (_playerController != null)
