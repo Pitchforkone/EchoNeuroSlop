@@ -92,7 +92,6 @@ public class PlayerEchoLocator : NetworkBehaviour
     private void Update()
     {
         if (!_microphoneInitialized) return;
-        Debug.Log(GetMicrophoneVolume());
         // Только локальный игрок проверяет микрофон
         if (NetworkClient.active && !isLocalPlayer) return;
 

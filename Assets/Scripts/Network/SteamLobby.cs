@@ -97,16 +97,9 @@ public class SteamLobby : MonoBehaviour
         }
 
         CurrentLobbyID = new CSteamID(callback.m_ulSteamIDLobby);
-        Debug.Log($"[SteamLobby] ========================================");
-        Debug.Log($"[SteamLobby] Lobby created successfully!");
-        Debug.Log($"[SteamLobby] Lobby ID: {CurrentLobbyID}");
-        Debug.Log($"[SteamLobby] Host Steam ID: {SteamUser.GetSteamID()}");
-        Debug.Log($"[SteamLobby] ========================================");
-        Debug.Log($"[SteamLobby] Friends can join via Steam overlay or friend list!");
 
         // Copy lobby ID to clipboard for easy sharing
         GUIUtility.systemCopyBuffer = CurrentLobbyID.ToString();
-        Debug.Log($"[SteamLobby] Lobby ID copied to clipboard!");
 
         // Start hosting
         networkManager.StartHost();
@@ -123,20 +116,16 @@ public class SteamLobby : MonoBehaviour
 
     private void OnJoinRequest(GameLobbyJoinRequested_t callback)
     {
-        Debug.Log($"[SteamLobby] Received join request for lobby: {callback.m_steamIDLobby}");
-        Debug.Log($"[SteamLobby] From friend: {callback.m_steamIDFriend}");
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
         CurrentLobbyID = new CSteamID(callback.m_ulSteamIDLobby);
-        Debug.Log($"[SteamLobby] Entered lobby: {CurrentLobbyID}");
 
         // If we're the host, we already started hosting
         if (NetworkServer.active)
         {
-            Debug.Log("[SteamLobby] We are the host");
             return;
         }
 

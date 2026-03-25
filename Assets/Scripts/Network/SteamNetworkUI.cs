@@ -58,11 +58,9 @@ public class SteamNetworkUI : MonoBehaviour
         var inputSystemModule = eventSystem.GetComponent<InputSystemUIInputModule>();
         if (inputSystemModule == null)
         {
-            Debug.Log("[SteamNetworkUI] Adding InputSystemUIInputModule...");
             eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
         }
 
-        Debug.Log("[SteamNetworkUI] EventSystem configured with InputSystemUIInputModule");
     }
 
     private void Start()
@@ -72,10 +70,6 @@ public class SteamNetworkUI : MonoBehaviour
         if (steamLobby == null)
         {
             Debug.LogError("[SteamNetworkUI] SteamLobby NOT FOUND! Make sure SteamLobby component exists in the scene.");
-        }
-        else
-        {
-            Debug.Log("[SteamNetworkUI] SteamLobby found successfully");
         }
 
         // Setup buttons
@@ -93,7 +87,6 @@ public class SteamNetworkUI : MonoBehaviour
         if (button != null)
         {
             button.onClick.AddListener(action);
-            Debug.Log($"[SteamNetworkUI] {name} button configured");
         }
         else
         {
