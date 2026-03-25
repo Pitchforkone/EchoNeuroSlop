@@ -75,6 +75,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70a6b2c22375add44b87a0ba875a363e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _walkSpeed: 4
   _sprintSpeed: 7
   _crouchSpeed: 2
@@ -100,12 +103,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 286a1c0cece524a4287947f61c3c4f2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerEchoLocator
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _activePingPreset: {fileID: 11400000, guid: 9e47417c4e33b5248a2bab7e3d4292dc, type: 2}
   _footstepPreset: {fileID: 11400000, guid: 604512930396c72489e2ce111ce601f7, type: 2}
   _sprintFootstepPreset: {fileID: 0}
-  _activeCooldown: 2
-  _footstepCooldown: 0.3
   _inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _volumeThreshold: 0.01
+  _sampleWindow: 128
+  _minVolumeChangeStep: 0.02
+  _echoIntervalWhenLoud: 0.2
 --- !u!114 &3974740444867973585
 MonoBehaviour:
   m_ObjectHideFlags: 0
