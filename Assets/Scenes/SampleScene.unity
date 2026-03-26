@@ -1921,67 +1921,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6bdeb5be7214dbf49a78d77da2258e67, type: 3}
---- !u!1 &1675436208 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2103809935799399133, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-  m_PrefabInstance: {fileID: 8909585914101507199}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1675436214 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2890463202816548439, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-  m_PrefabInstance: {fileID: 8909585914101507199}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1675436215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1675436208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkTransformReliable
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 1675436214}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChangeCorrectionMultiplier: 2
-  useFixedUpdate: 0
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
---- !u!114 &1675436216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1675436208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
-  sceneId: 2686126682
-  _assetId: 2720005375
-  serverOnly: 0
-  visibility: 0
-  hasSpawned: 0
 --- !u!1 &1748381362
 GameObject:
   m_ObjectHideFlags: 0
@@ -2596,17 +2535,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: EBAKA
       objectReference: {fileID: 0}
-    - target: {fileID: 2890463202816548439, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2890463202816548439, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2890463202816548439, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.5
+    - target: {fileID: 2339543124457575790, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
+      propertyPath: _detectableEchoType
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2890463202816548439, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2648,28 +2579,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4290895512296981910, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-      propertyPath: m_Height
-      value: 0.71
-      objectReference: {fileID: 0}
-    - target: {fileID: 4290895512296981910, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-      propertyPath: m_Radius
-      value: 0.49
-      objectReference: {fileID: 0}
-    - target: {fileID: 4290895512296981910, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-      propertyPath: m_ObstacleAvoidanceType
-      value: 4
+    - target: {fileID: 8186968570788937348, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
+      propertyPath: sceneId
+      value: 2686126682
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2103809935799399133, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1675436216}
-    - targetCorrespondingSourceObject: {fileID: 2103809935799399133, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1675436215}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f6cdddda45ee904fb1c5ed7879929e3, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

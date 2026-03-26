@@ -7,6 +7,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewEchoPreset", menuName = "Echo/EchoPreset")]
 public class EchoPreset : ScriptableObject
 {
+    [Header("Type")]
+    [Tooltip("The type of this echo")]
+    [SerializeField] private EchoType _echoType = EchoType.NonTrigger;
+
     [Header("Wave")]
     [Tooltip("Propagation speed in m/s")]
     [SerializeField] private float _speed = 15f;
@@ -24,6 +28,7 @@ public class EchoPreset : ScriptableObject
     [Tooltip("Total lifetime in seconds (auto-calculated from speed & radius if 0)")]
     [SerializeField] private float _lifetimeOverride;
 
+    public EchoType EchoType => _echoType;
     public float Speed => _speed;
     public float MaxRadius => _maxRadius;
     public Color Color => _color;

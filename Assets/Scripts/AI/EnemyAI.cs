@@ -6,6 +6,7 @@ using Mirror;
 /// <summary>
 /// Патруль по точкам с синхронизацией по сети.
 /// Враг ходит к ближайшей точке (кроме предыдущей), останавливается, затем продолжает.
+/// Поддерживает преследование целей, обнаруженных детекторами.
 /// Логика AI выполняется только на сервере, позиция синхронизируется через NetworkTransform.
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
@@ -16,7 +17,8 @@ public class EnemyAI : NetworkBehaviour
     {
         Idle,
         Walking,
-        Waiting
+        Waiting,
+        Chasing
     }
 
     [Header("Patrol Settings")]
@@ -26,8 +28,18 @@ public class EnemyAI : NetworkBehaviour
     [Tooltip("Время ожидания по умолчанию, если у точки не указано")]
     [SerializeField] private float _defaultWaitTime = 2f;
 
-    [Tooltip("Скорость передвижения")]
-    [SerializeField] private float _moveSpeed = 3.5f;
+    [Tooltip("Скорость передвижения при патрулировании")]
+    [SerializeField] private float _patrolSpeed = 3.5f;
+
+    [Header("Chase Settings")]
+    [Tooltip("Скорость передвижения при преследовании")]
+    [SerializeField] private float _chaseSpeed = 5f;
+
+    [Tooltip("Дистанция, на которой враг считает, что достиг цели преследования")]
+    [SerializeField] private float _chaseReachDistance = 1.5f;
+
+    [Tooltip("Интервал обновления пути к движущейся цели")]
+    [SerializeField] private float _pathUpdateInterval = 0.2f;
 
     [Header("Debug")]
     [SerializeField] private bool _showDebugInfo = true;
@@ -41,14 +53,32 @@ public class EnemyAI : NetworkBehaviour
     private PatrolPoint _previousTarget;
     private float _waitTimer;
 
+    // Преследование
+    private Vector3 _chaseTargetPosition;
+    private Transform _chaseTargetTransform;
+    private float _chaseDuration;
+    private float _chaseTimer;
+    private int _currentChasePriority;
+    private float _pathUpdateTimer;
+
     // Синхронизируем индекс текущей цели для клиентов (опционально, для отладки)
     [SyncVar]
     private int _currentTargetIndex = -1;
 
+    /// <summary>
+    /// Текущая скорость врага (для внешнего доступа).
+    /// </summary>
+    public float CurrentSpeed => _agent != null ? _agent.speed : 0f;
+
+    /// <summary>
+    /// Враг сейчас преследует цель.
+    /// </summary>
+    public bool IsChasing => _currentState == EnemyState.Chasing;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
-        _agent.speed = _moveSpeed;
+        _agent.speed = _patrolSpeed;
     }
 
     public override void OnStartServer()
@@ -91,6 +121,10 @@ public class EnemyAI : NetworkBehaviour
                 UpdateWaiting();
                 break;
 
+            case EnemyState.Chasing:
+                UpdateChasing();
+                break;
+
             case EnemyState.Idle:
                 // Ничего не делаем
                 break;
@@ -124,6 +158,46 @@ public class EnemyAI : NetworkBehaviour
         {
             // Время ожидания истекло - идём к следующей точке
             SelectNextPatrolPoint();
+        }
+    }
+
+    private void UpdateChasing()
+    {
+        _chaseTimer -= Time.deltaTime;
+
+        // Время преследования истекло
+        if (_chaseTimer <= 0f)
+        {
+            EndChase();
+            return;
+        }
+
+        // Обновляем путь к движущейся цели
+        if (_chaseTargetTransform != null)
+        {
+            _pathUpdateTimer -= Time.deltaTime;
+            if (_pathUpdateTimer <= 0f)
+            {
+                _pathUpdateTimer = _pathUpdateInterval;
+                _chaseTargetPosition = _chaseTargetTransform.position;
+                _agent.SetDestination(_chaseTargetPosition);
+            }
+        }
+
+        // Проверяем, достигли ли цели
+        float distanceToTarget = Vector3.Distance(transform.position, _chaseTargetPosition);
+        if (distanceToTarget <= _chaseReachDistance)
+        {
+            if (_showDebugInfo)
+            {
+                Debug.Log($"[EnemyAI] {gameObject.name} reached chase target");
+            }
+
+            // Если преследуем Transform - продолжаем, иначе заканчиваем
+            if (_chaseTargetTransform == null)
+            {
+                EndChase();
+            }
         }
     }
 
@@ -164,7 +238,7 @@ public class EnemyAI : NetworkBehaviour
         _currentTarget = nextPoint;
         _currentTargetIndex = _patrolPoints.IndexOf(nextPoint);
 
-        MoveToTarget(_currentTarget);
+        MoveToPatrolPoint(_currentTarget);
     }
 
     /// <summary>
@@ -204,10 +278,11 @@ public class EnemyAI : NetworkBehaviour
     }
 
     [Server]
-    private void MoveToTarget(PatrolPoint target)
+    private void MoveToPatrolPoint(PatrolPoint target)
     {
         if (target == null) return;
 
+        _agent.speed = _patrolSpeed;
         _agent.isStopped = false;
         _agent.SetDestination(target.transform.position);
         _currentState = EnemyState.Walking;
@@ -215,6 +290,112 @@ public class EnemyAI : NetworkBehaviour
         if (_showDebugInfo)
         {
             Debug.Log($"[EnemyAI] {gameObject.name} moving to {target.name}");
+        }
+    }
+
+    /// <summary>
+    /// Устанавливает цель преследования (статичная позиция).
+    /// Вызывается детекторами.
+    /// </summary>
+    [Server]
+    public void SetPursuitTarget(Vector3 position, float duration, int priority)
+    {
+        // Игнорируем, если текущее преследование имеет более высокий приоритет
+        if (_currentState == EnemyState.Chasing && priority < _currentChasePriority)
+        {
+            return;
+        }
+
+        StartChase(position, null, duration, priority);
+    }
+
+    /// <summary>
+    /// Устанавливает цель преследования (движущийся Transform).
+    /// Вызывается детекторами.
+    /// </summary>
+    [Server]
+    public void SetPursuitTransform(Transform target, float duration, int priority)
+    {
+        if (target == null) return;
+
+        // Игнорируем, если текущее преследование имеет более высокий приоритет
+        if (_currentState == EnemyState.Chasing && priority < _currentChasePriority)
+        {
+            return;
+        }
+
+        StartChase(target.position, target, duration, priority);
+    }
+
+    /// <summary>
+    /// Обновляет таймер преследования (для постоянного контакта).
+    /// </summary>
+    [Server]
+    public void RefreshPursuitTarget(Transform target, float duration, int priority)
+    {
+        // Только если уже преследуем эту цель или приоритет выше
+        if (_currentState == EnemyState.Chasing)
+        {
+            if (_chaseTargetTransform == target || priority >= _currentChasePriority)
+            {
+                _chaseTimer = duration;
+                _currentChasePriority = priority;
+                
+                if (target != null)
+                {
+                    _chaseTargetTransform = target;
+                    _chaseTargetPosition = target.position;
+                }
+            }
+        }
+    }
+
+    [Server]
+    private void StartChase(Vector3 position, Transform target, float duration, int priority)
+    {
+        _currentState = EnemyState.Chasing;
+        _chaseTargetPosition = position;
+        _chaseTargetTransform = target;
+        _chaseDuration = duration;
+        _chaseTimer = duration;
+        _currentChasePriority = priority;
+        _pathUpdateTimer = 0f;
+
+        _agent.speed = _chaseSpeed;
+        _agent.isStopped = false;
+        _agent.SetDestination(position);
+
+        if (_showDebugInfo)
+        {
+            string targetName = target != null ? target.name : "position";
+            Debug.Log($"[EnemyAI] {gameObject.name} started chasing {targetName} for {duration}s (priority: {priority})");
+        }
+    }
+
+    [Server]
+    private void EndChase()
+    {
+        _chaseTargetTransform = null;
+        _currentChasePriority = 0;
+
+        if (_showDebugInfo)
+        {
+            Debug.Log($"[EnemyAI] {gameObject.name} ended chase, resuming patrol");
+        }
+
+        // Возвращаемся к патрулированию
+        SelectNextPatrolPoint();
+    }
+
+    /// <summary>
+    /// Принудительно останавливает преследование.
+    /// </summary>
+    [Server]
+    public void CancelChase()
+    {
+        if (_currentState == EnemyState.Chasing)
+        {
+            EndChase();
         }
     }
 
@@ -283,7 +464,7 @@ public class EnemyAI : NetworkBehaviour
     {
         if (_patrolPoints == null || _patrolPoints.Count == 0) return;
 
-        // Рисуем линии от врага к точкам
+        // Рисуем линии от врага к точкам патрулирования
         Gizmos.color = Color.green;
         foreach (var point in _patrolPoints)
         {
@@ -293,12 +474,21 @@ public class EnemyAI : NetworkBehaviour
             }
         }
 
-        // Рисуем текущую цель
-        if (_currentTarget != null)
+        // Рисуем текущую цель патруля
+        if (_currentTarget != null && _currentState != EnemyState.Chasing)
         {
-            Gizmos.color = Color.red;
+            Gizmos.color = Color.yellow;
             Gizmos.DrawLine(transform.position, _currentTarget.transform.position);
             Gizmos.DrawWireSphere(_currentTarget.transform.position, 0.3f);
+        }
+
+        // Рисуем цель преследования
+        if (_currentState == EnemyState.Chasing)
+        {
+            Gizmos.color = Color.red;
+            Vector3 targetPos = _chaseTargetTransform != null ? _chaseTargetTransform.position : _chaseTargetPosition;
+            Gizmos.DrawLine(transform.position, targetPos);
+            Gizmos.DrawWireSphere(targetPos, _chaseReachDistance);
         }
     }
 }
