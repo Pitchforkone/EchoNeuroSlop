@@ -24,12 +24,16 @@ public class PlayerEchoLocator : NetworkBehaviour
     [SerializeField] private float _minVolumeChangeStep = 0.005f;
     [SerializeField] private float _echoIntervalWhenLoud = 0.5f;
 
+    [Header("Active Echo Cooldown")]
+    [SerializeField] private float _activeEchoCooldown = 0.5f;
+
     private PlayerController _playerController;
     private FPSController _fpsController;
     private InputAction _echoAction;
 
     private float _lastVolume;
     private float _lastEchoTime;
+    private float _lastActiveEchoTime;
 
     private void Awake()
     {
@@ -73,10 +77,17 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private void Update()
     {
+        // Только локальный игрок может использовать ввод
+        if (NetworkClient.active && !isLocalPlayer) return;
+
+        // Проверка нажатия левой кнопки мыши напрямую
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            TriggerActiveEchoWithCooldown();
+        }
+
         var mic = SharedMicrophone.Instance;
         if (mic == null || !mic.IsRecording || mic.Clip == null) return;
-        // Только локальный игрок проверяет микрофон
-        if (NetworkClient.active && !isLocalPlayer) return;
 
         float volume = GetMicrophoneVolume();
         float volumeChange = Mathf.Abs(volume - _lastVolume);
@@ -138,7 +149,16 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private void OnEchoPerformed(InputAction.CallbackContext ctx)
     {
+        TriggerActiveEchoWithCooldown();
+    }
+
+    private void TriggerActiveEchoWithCooldown()
+    {
+        // Проверка кулдауна
+        if (Time.time - _lastActiveEchoTime < _activeEchoCooldown) return;
+
         TriggerActiveEcho();
+        _lastActiveEchoTime = Time.time;
     }
 
     private void TriggerActiveEcho()
