@@ -53,6 +53,10 @@ public class VoiceRecognizer : NetworkBehaviour
     private readonly object _audioLock = new object();
     private volatile bool _threadRunning;
 
+    // Отслеживание уже отправленных слов для предотвращения дублирования
+    private readonly HashSet<string> _sentWordsInCurrentPhrase = new HashSet<string>();
+    private string _lastPartialText = "";
+
     private bool _initializationStarted;
     private SharedMicrophone _microphone;
 
@@ -256,6 +260,7 @@ public class VoiceRecognizer : NetworkBehaviour
 
             if (_recognizer.AcceptWaveform(pcmBytes, pcmBytes.Length))
             {
+                // Финальный результат - отправляем слушателям
                 string result = _recognizer.Result();
                 string text = ParseVoskText(result);
                 if (!string.IsNullOrEmpty(text))
@@ -265,19 +270,14 @@ public class VoiceRecognizer : NetworkBehaviour
                         _resultQueue.Enqueue(text);
                     }
                 }
-            }
-            else
-            {
-                string partial = _recognizer.PartialResult();
-                string text = ParseVoskPartial(partial);
-                if (!string.IsNullOrEmpty(text))
+                // Сбрасываем отслеживание для новой фразы
+                _lastPartialText = "";
+                lock (_lock)
                 {
-                    lock (_lock)
-                    {
-                        _resultQueue.Enqueue(text);
-                    }
+                    _sentWordsInCurrentPhrase.Clear();
                 }
             }
+            // Убрали обработку PartialResult - теперь не отправляем частичные результаты
         }
     }
 
@@ -333,11 +333,19 @@ public class VoiceRecognizer : NetworkBehaviour
 
         foreach (var word in words)
         {
-            string trimmed = word.Trim();
+            string trimmed = word.Trim().ToLowerInvariant();
             if (string.IsNullOrEmpty(trimmed)) continue;
 
+            // Проверяем, не было ли это слово уже отправлено в текущей фразе
+            if (_sentWordsInCurrentPhrase.Contains(trimmed))
+                continue;
+
+            _sentWordsInCurrentPhrase.Add(trimmed);
             NotifyListeners(trimmed);
         }
+
+        // После обработки финального результата очищаем набор
+        _sentWordsInCurrentPhrase.Clear();
     }
 
     private void NotifyListeners(string word)
