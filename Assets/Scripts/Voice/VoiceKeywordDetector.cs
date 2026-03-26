@@ -68,6 +68,17 @@ public class VoiceRecognizer : NetworkBehaviour
             _listeners.Remove(listener);
     }
 
+    /// <summary>
+    /// Отправляет указанное слово всем зарегистрированным слушателям.
+    /// Полезно для тестирования или симуляции голосовых команд.
+    /// </summary>
+    /// <param name="word">Слово для отправки слушателям.</param>
+    public void SimulateWord(string word)
+    {
+        if (string.IsNullOrWhiteSpace(word)) return;
+        NotifyListeners(word.Trim());
+    }
+
     private void Awake()
     {
         // В синглплеере инициализация происходит в Start

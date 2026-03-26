@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 5431117715027518329}
   - component: {fileID: -4466514309222158251}
   - component: {fileID: 6665567610513970435}
+  - component: {fileID: -5183927483751508333}
+  - component: {fileID: 6473902731479702494}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Untagged
@@ -116,6 +118,7 @@ MonoBehaviour:
   _sampleWindow: 128
   _minVolumeChangeStep: 0.02
   _echoIntervalWhenLoud: 0.2
+  _activeEchoCooldown: 0.5
 --- !u!114 &3974740444867973585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,25 +182,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1138cca0a4cfcc46932a8877e41a403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VoiceKeywordDetector
-  _keywords:
-  - echo
-  - hello
-  - help
-  - stop
-  - run
-  - hide
-  - light
-  - dark
-  - danger
-  - open
-  - close
-  - attack
-  - left
-  - right
-  - forward
-  - back
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _modelFolder: vosk-model
-  _showAllRecognizedText: 1
+  _maxWaitTime: 5
+  _checkInterval: 0.1
 --- !u!114 &6665567610513970435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,8 +200,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 916a6726732e44dc864131d4bfda02f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SharedMicrophone
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _sampleRate: 16000
   _bufferLengthSec: 1
+--- !u!114 &-5183927483751508333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2d3c267ae394a9488d2c11a4eebf2a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceWordSender
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _bindings:
+  - inputType: 0
+    key: 26
+    mouseButton: 0
+    word: Light
+  - inputType: 0
+    key: 29
+    mouseButton: 0
+    word: Open
+  - inputType: 1
+    key: 21
+    mouseButton: 1
+    word: Grenade
+  _onWordSent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &6473902731479702494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 032a93ea0a8f0a74793de85d2caef036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceGrenadeThrow
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _throwWord: grenade
+  _throwForce: 5
+  _throwAngle: 30
+  _spawnOffset: {x: 0, y: 1.5, z: 0.5}
+  _grenadePrefab: {fileID: 0}
+  _grenadeSize: 0.15
+  _grenadeLifetime: 10
+  _echoPreset: {fileID: 11400000, guid: 9e47417c4e33b5248a2bab7e3d4292dc, type: 2}
+  _blinkInterval: 1
+  _cooldown: 0
 --- !u!1 &2812847854523134801
 GameObject:
   m_ObjectHideFlags: 0
