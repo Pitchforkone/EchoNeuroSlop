@@ -1,13 +1,25 @@
 using UnityEngine;
+using Mirror;
 
 /// <summary>
-/// Единый менеджер микрофона. Запускает запись один раз,
-/// остальные скрипты читают данные через этот синглтон.
-/// Повесить на GameObject на сцене (или будет создан автоматически).
+/// Компонент микрофона для игрока в мультиплеере.
+/// Запускает запись только для локального игрока.
+/// Другие скрипты могут получить доступ через статическое свойство LocalInstance.
+/// Повесить на префаб игрока.
 /// </summary>
-public class SharedMicrophone : MonoBehaviour
+public class SharedMicrophone : NetworkBehaviour
 {
-    public static SharedMicrophone Instance { get; private set; }
+    /// <summary>
+    /// Ссылка на микрофон локального игрока.
+    /// Доступна только на клиенте для локального игрока.
+    /// </summary>
+    public static SharedMicrophone LocalInstance { get; private set; }
+
+    /// <summary>
+    /// Устаревшее свойство для обратной совместимости.
+    /// Используйте LocalInstance.
+    /// </summary>
+    public static SharedMicrophone Instance => LocalInstance;
 
     [Tooltip("Частота дискретизации микрофона")]
     [SerializeField] private int _sampleRate = 16000;
@@ -22,22 +34,46 @@ public class SharedMicrophone : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        // В мультиплеере инициализация происходит в OnStartLocalPlayer
+        // В синглплеере - здесь
+        if (!NetworkClient.active)
         {
-            Destroy(gameObject);
-            return;
+            InitializeAsLocal();
         }
-        Instance = this;
-        //DontDestroyOnLoad(gameObject);
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        InitializeAsLocal();
+    }
+
+    private void InitializeAsLocal()
+    {
+        // Если уже есть локальный микрофон, уничтожаем старый
+        if (LocalInstance != null && LocalInstance != this)
+        {
+            LocalInstance.StopRecording();
+        }
+
+        LocalInstance = this;
+        StartRecording();
     }
 
     private void Start()
     {
-        StartRecording();
+        // Для синглплеера запускаем запись в Start если ещё не запущена
+        if (!NetworkClient.active && !IsRecording)
+        {
+            StartRecording();
+        }
     }
 
     public void StartRecording()
     {
+        // Запись только для локального игрока
+        if (NetworkClient.active && !isLocalPlayer) return;
+
         if (IsRecording) return;
 
         if (Microphone.devices.Length == 0)
@@ -61,6 +97,7 @@ public class SharedMicrophone : MonoBehaviour
 
         Clip = null;
         IsRecording = false;
+        Debug.Log("[SharedMicrophone] Запись остановлена");
     }
 
     /// <summary>
@@ -72,10 +109,32 @@ public class SharedMicrophone : MonoBehaviour
         return Microphone.GetPosition(DeviceName);
     }
 
+    public override void OnStopLocalPlayer()
+    {
+        base.OnStopLocalPlayer();
+        CleanupLocal();
+    }
+
+    private void OnDisable()
+    {
+        // Для синглплеера
+        if (!NetworkClient.active)
+        {
+            CleanupLocal();
+        }
+    }
+
     private void OnDestroy()
     {
+        CleanupLocal();
+    }
+
+    private void CleanupLocal()
+    {
         StopRecording();
-        if (Instance == this)
-            Instance = null;
+        if (LocalInstance == this)
+        {
+            LocalInstance = null;
+        }
     }
 }

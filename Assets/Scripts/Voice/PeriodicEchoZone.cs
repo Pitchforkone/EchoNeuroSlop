@@ -1,17 +1,7 @@
 using System;
 using UnityEngine;
+using Mirror;
 
-/// <summary>
-/// Зона периодического эхо. Реализует IVoiceWordListener.
-/// При входе игрока в триггер подписывается на VoiceRecognizer.
-/// Голосовая команда "light" — запускает периодическое эхо каждые N секунд.
-/// Голосовая команда "dark" — останавливает периодическое эхо.
-///
-/// Использование:
-///   1. Повесить на GameObject с Collider (isTrigger = true).
-///   2. Назначить EchoPreset в инспекторе.
-///   3. На сцене должен быть VoiceRecognizer и EchoManager.
-/// </summary>
 [RequireComponent(typeof(Collider))]
 public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
 {
@@ -49,10 +39,15 @@ public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
     private void OnTriggerEnter(Collider other)
     {
         if (_playerInside) return;
-        if (!other.TryGetComponent<VoiceRecognizer>(out var _voiceRecognizer)) return;
 
-        if (_voiceRecognizer == null) return;
+        // Проверяем что это локальный игрок
+        var networkIdentity = other.GetComponent<NetworkIdentity>();
+        if (networkIdentity != null && !networkIdentity.isLocalPlayer) return;
 
+        if (!other.TryGetComponent<VoiceRecognizer>(out var voiceRecognizer)) return;
+        if (voiceRecognizer == null) return;
+
+        _voiceRecognizer = voiceRecognizer;
         _voiceRecognizer.AddListener(this);
         _playerInside = true;
     }
@@ -60,9 +55,14 @@ public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
     private void OnTriggerExit(Collider other)
     {
         if (!_playerInside) return;
-        if (!other.TryGetComponent<VoiceRecognizer>(out var _voiceRecognizer)) return;
 
-        if (_voiceRecognizer != null)
+        // Проверяем что это локальный игрок
+        var networkIdentity = other.GetComponent<NetworkIdentity>();
+        if (networkIdentity != null && !networkIdentity.isLocalPlayer) return;
+
+        if (!other.TryGetComponent<VoiceRecognizer>(out var voiceRecognizer)) return;
+
+        if (_voiceRecognizer != null && _voiceRecognizer == voiceRecognizer)
         {
             _voiceRecognizer.RemoveListener(this);
             _voiceRecognizer = null;

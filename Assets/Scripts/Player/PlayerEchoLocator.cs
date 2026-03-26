@@ -6,7 +6,7 @@ using Mirror;
 /// Player echo locator for multiplayer with Mirror.
 /// Active echo: LMB (Attack action) with cooldown or loud sound into microphone.
 /// Passive echo: footstep events from PlayerController.
-/// Использует SharedMicrophone для доступа к микрофону (общий с VoiceKeywordDetector).
+/// Использует SharedMicrophone для доступа к микрофону (на том же игроке или LocalInstance).
 /// </summary>
 public class PlayerEchoLocator : NetworkBehaviour
 {
@@ -30,6 +30,7 @@ public class PlayerEchoLocator : NetworkBehaviour
     private PlayerController _playerController;
     private FPSController _fpsController;
     private InputAction _echoAction;
+    private SharedMicrophone _microphone;
 
     private float _lastVolume;
     private float _lastEchoTime;
@@ -39,6 +40,7 @@ public class PlayerEchoLocator : NetworkBehaviour
     {
         _playerController = GetComponent<PlayerController>();
         _fpsController = GetComponent<FPSController>();
+        _microphone = GetComponent<SharedMicrophone>();
     }
 
     public override void OnStartLocalPlayer()
@@ -75,6 +77,19 @@ public class PlayerEchoLocator : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Получает активный микрофон (локальный компонент или LocalInstance).
+    /// </summary>
+    private SharedMicrophone GetMicrophone()
+    {
+        // Сначала проверяем локальный компонент на этом игроке
+        if (_microphone != null && _microphone.IsRecording)
+            return _microphone;
+
+        // Иначе используем глобальный LocalInstance
+        return SharedMicrophone.LocalInstance;
+    }
+
     private void Update()
     {
         // Только локальный игрок может использовать ввод
@@ -86,10 +101,10 @@ public class PlayerEchoLocator : NetworkBehaviour
             TriggerActiveEchoWithCooldown();
         }
 
-        var mic = SharedMicrophone.Instance;
+        var mic = GetMicrophone();
         if (mic == null || !mic.IsRecording || mic.Clip == null) return;
 
-        float volume = GetMicrophoneVolume();
+        float volume = GetMicrophoneVolume(mic);
         float volumeChange = Mathf.Abs(volume - _lastVolume);
 
         // Срабатывает при изменении громкости больше минимального шага и выше порога
@@ -112,9 +127,8 @@ public class PlayerEchoLocator : NetworkBehaviour
         }
     }
 
-    private float GetMicrophoneVolume()
+    private float GetMicrophoneVolume(SharedMicrophone mic)
     {
-        var mic = SharedMicrophone.Instance;
         if (mic == null || mic.Clip == null) return 0f;
 
         int micPosition = mic.GetPosition() - _sampleWindow;

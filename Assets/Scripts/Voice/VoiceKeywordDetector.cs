@@ -1,26 +1,41 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using UnityEngine;
+using Mirror;
 using Vosk;
 
 /// <summary>
-/// Распознаёт речь через микрофон с помощью Vosk (офлайн) и передаёт
-/// каждое распознанное слово зарегистрированным слушателям (IVoiceWordListener).
-/// Использует SharedMicrophone для доступа к микрофону (общий с PlayerEchoLocator).
+/// Компонент распознавания речи через библиотеку Vosk (offline) и передачи
+/// каждого распознанного слова зарегистрированным слушателям (IVoiceWordListener).
+/// Использует SharedMicrophone для доступа к микрофону.
+/// Работает только для локального игрока в мультиплеере.
 ///
 /// Использование:
-///   1. Повесить на любой GameObject на сцене.
-///   2. Убедиться, что на сцене есть SharedMicrophone.
-///   3. Положить модель Vosk в StreamingAssets/vosk-model.
-///   4. Зарегистрировать слушателей через AddListener / RemoveListener.
+///   1. Повесьте на префаб игрока или на сцену.
+///   2. Убедитесь, что у игрока есть компонент SharedMicrophone.
+///   3. Положите модель Vosk в StreamingAssets/vosk-model.
+///   4. Зарегистрируйте слушателей через AddListener / RemoveListener.
 /// </summary>
-public class VoiceRecognizer : MonoBehaviour
+public class VoiceRecognizer : NetworkBehaviour
 {
+    /// <summary>
+    /// Ссылка на VoiceRecognizer локального игрока для доступа из других скриптов.
+    /// </summary>
+    public static VoiceRecognizer LocalInstance { get; private set; }
+
     [Header("Настройки Vosk")]
     [Tooltip("Имя папки модели внутри StreamingAssets")]
     [SerializeField] private string _modelFolder = "vosk-model";
+
+    [Header("Инициализация")]
+    [Tooltip("Максимальное время ожидания SharedMicrophone (секунды)")]
+    [SerializeField] private float _maxWaitTime = 5f;
+
+    [Tooltip("Интервал проверки SharedMicrophone (секунды)")]
+    [SerializeField] private float _checkInterval = 0.1f;
 
     private Model _model;
     private VoskRecognizer _recognizer;
@@ -29,7 +44,7 @@ public class VoiceRecognizer : MonoBehaviour
 
     private readonly List<IVoiceWordListener> _listeners = new List<IVoiceWordListener>();
 
-    // Потокобезопасная очередь результатов из фонового потока
+    // Потокобезопасная очередь результатов из рабочего потока
     private readonly Queue<string> _resultQueue = new Queue<string>();
     private readonly object _lock = new object();
 
@@ -37,6 +52,9 @@ public class VoiceRecognizer : MonoBehaviour
     private readonly Queue<float[]> _audioQueue = new Queue<float[]>();
     private readonly object _audioLock = new object();
     private volatile bool _threadRunning;
+
+    private bool _initializationStarted;
+    private SharedMicrophone _microphone;
 
     public void AddListener(IVoiceWordListener listener)
     {
@@ -50,8 +68,74 @@ public class VoiceRecognizer : MonoBehaviour
             _listeners.Remove(listener);
     }
 
+    private void Awake()
+    {
+        // В синглплеере инициализация происходит в Start
+        // В мультиплеере - в OnStartLocalPlayer
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        InitializeAsLocal();
+    }
+
     private void Start()
     {
+        // Для синглплеера
+        if (!NetworkClient.active)
+        {
+            InitializeAsLocal();
+        }
+    }
+
+    private void InitializeAsLocal()
+    {
+        if (LocalInstance != null && LocalInstance != this)
+        {
+            LocalInstance.StopAll();
+        }
+
+        LocalInstance = this;
+
+        // Пытаемся найти микрофон на этом же объекте
+        _microphone = GetComponent<SharedMicrophone>();
+
+        StartCoroutine(InitializeWithRetry());
+    }
+
+    private IEnumerator InitializeWithRetry()
+    {
+        if (_initializationStarted) yield break;
+        _initializationStarted = true;
+
+        float waitedTime = 0f;
+
+        // Ждём пока микрофон будет готов (либо локальный компонент, либо глобальный Instance)
+        while (true)
+        {
+            // Проверяем локальный компонент
+            if (_microphone != null && _microphone.IsRecording)
+                break;
+
+            // Проверяем глобальный Instance (для обратной совместимости)
+            if (SharedMicrophone.LocalInstance != null && SharedMicrophone.LocalInstance.IsRecording)
+            {
+                _microphone = SharedMicrophone.LocalInstance;
+                break;
+            }
+
+            waitedTime += _checkInterval;
+
+            if (waitedTime >= _maxWaitTime)
+            {
+                Debug.LogError("[VoiceRecognizer] SharedMicrophone не найден или не записывает после ожидания. Добавьте SharedMicrophone на игрока.");
+                yield break;
+            }
+
+            yield return new WaitForSeconds(_checkInterval);
+        }
+
         InitializeVosk();
     }
 
@@ -67,13 +151,13 @@ public class VoiceRecognizer : MonoBehaviour
             return;
         }
 
-        if (SharedMicrophone.Instance == null || !SharedMicrophone.Instance.IsRecording)
+        if (_microphone == null || !_microphone.IsRecording)
         {
-            Debug.LogError("[VoiceRecognizer] SharedMicrophone не найден или не записывает. Добавьте SharedMicrophone на сцену.");
+            Debug.LogError("[VoiceRecognizer] SharedMicrophone не найден или не записывает.");
             return;
         }
 
-        int sampleRate = SharedMicrophone.Instance.SampleRate;
+        int sampleRate = _microphone.SampleRate;
 
         try
         {
@@ -87,23 +171,27 @@ public class VoiceRecognizer : MonoBehaviour
             return;
         }
 
-        _lastSamplePos = SharedMicrophone.Instance.GetPosition();
+        _lastSamplePos = _microphone.GetPosition();
         _isRunning = true;
 
         _threadRunning = true;
         _processThread = new Thread(ProcessAudioThread);
         _processThread.IsBackground = true;
         _processThread.Start();
+
+        Debug.Log("[VoiceRecognizer] Успешно инициализирован");
     }
 
     private void Update()
     {
+        // Только для локального игрока
+        if (NetworkClient.active && !isLocalPlayer) return;
+
         if (!_isRunning || _recognizer == null) return;
 
-        var mic = SharedMicrophone.Instance;
-        if (mic == null || !mic.IsRecording || mic.Clip == null) return;
+        if (_microphone == null || !_microphone.IsRecording || _microphone.Clip == null) return;
 
-        int currentPos = mic.GetPosition();
+        int currentPos = _microphone.GetPosition();
         if (currentPos == _lastSamplePos) return;
 
         int sampleCount;
@@ -113,11 +201,11 @@ public class VoiceRecognizer : MonoBehaviour
         }
         else
         {
-            sampleCount = (mic.Clip.samples - _lastSamplePos) + currentPos;
+            sampleCount = (_microphone.Clip.samples - _lastSamplePos) + currentPos;
         }
 
         float[] samples = new float[sampleCount];
-        mic.Clip.GetData(samples, _lastSamplePos);
+        _microphone.Clip.GetData(samples, _lastSamplePos);
         _lastSamplePos = currentPos;
 
         lock (_audioLock)
@@ -256,14 +344,33 @@ public class VoiceRecognizer : MonoBehaviour
         }
     }
 
+    public override void OnStopLocalPlayer()
+    {
+        base.OnStopLocalPlayer();
+        CleanupLocal();
+    }
+
     private void OnDisable()
     {
-        StopAll();
+        // Для синглплеера
+        if (!NetworkClient.active)
+        {
+            StopAll();
+        }
     }
 
     private void OnDestroy()
     {
+        CleanupLocal();
+    }
+
+    private void CleanupLocal()
+    {
         StopAll();
+        if (LocalInstance == this)
+        {
+            LocalInstance = null;
+        }
     }
 
     private void StopAll()
