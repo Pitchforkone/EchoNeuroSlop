@@ -1,13 +1,16 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
+using Mirror;
 
 /// <summary>
-/// Базовый ИИ врага с патрулированием по точкам.
+/// Патруль по точкам с синхронизацией по сети.
 /// Враг ходит к ближайшей точке (кроме предыдущей), останавливается, затем продолжает.
+/// Логика AI выполняется только на сервере, позиция синхронизируется через NetworkTransform.
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
-public class EnemyAI : MonoBehaviour
+[RequireComponent(typeof(NetworkIdentity))]
+public class EnemyAI : NetworkBehaviour
 {
     private enum EnemyState
     {
@@ -20,7 +23,7 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("Список точек патрулирования")]
     [SerializeField] private List<PatrolPoint> _patrolPoints = new List<PatrolPoint>();
 
-    [Tooltip("Время ожидания по умолчанию, если у точки не задано")]
+    [Tooltip("Время ожидания по умолчанию, если у точки не указано")]
     [SerializeField] private float _defaultWaitTime = 2f;
 
     [Tooltip("Скорость передвижения")]
@@ -30,10 +33,17 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private bool _showDebugInfo = true;
 
     private NavMeshAgent _agent;
+    
+    [SyncVar]
     private EnemyState _currentState = EnemyState.Idle;
+    
     private PatrolPoint _currentTarget;
     private PatrolPoint _previousTarget;
     private float _waitTimer;
+
+    // Синхронизируем индекс текущей цели для клиентов (опционально, для отладки)
+    [SyncVar]
+    private int _currentTargetIndex = -1;
 
     private void Awake()
     {
@@ -41,8 +51,10 @@ public class EnemyAI : MonoBehaviour
         _agent.speed = _moveSpeed;
     }
 
-    private void Start()
+    public override void OnStartServer()
     {
+        base.OnStartServer();
+        
         if (_patrolPoints.Count == 0)
         {
             Debug.LogWarning($"[EnemyAI] No patrol points assigned to {gameObject.name}!", this);
@@ -53,8 +65,22 @@ public class EnemyAI : MonoBehaviour
         SelectNextPatrolPoint();
     }
 
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        
+        // На клиентах отключаем NavMeshAgent, т.к. позиция синхронизируется через NetworkTransform
+        if (!isServer)
+        {
+            _agent.enabled = false;
+        }
+    }
+
     private void Update()
     {
+        // Логика AI выполняется только на сервере
+        if (!isServer) return;
+
         switch (_currentState)
         {
             case EnemyState.Walking:
@@ -101,6 +127,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    [Server]
     private void StartWaiting()
     {
         _currentState = EnemyState.Waiting;
@@ -115,6 +142,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    [Server]
     private void SelectNextPatrolPoint()
     {
         if (_patrolPoints.Count == 0)
@@ -134,6 +162,7 @@ public class EnemyAI : MonoBehaviour
 
         _previousTarget = _currentTarget;
         _currentTarget = nextPoint;
+        _currentTargetIndex = _patrolPoints.IndexOf(nextPoint);
 
         MoveToTarget(_currentTarget);
     }
@@ -150,7 +179,7 @@ public class EnemyAI : MonoBehaviour
         {
             if (point == null) continue;
 
-            // Пропускаем предыдущую точку (если точек больше одной)
+            // Пропускаем предыдущую точку (чтобы враг ходил дальше)
             if (point == _previousTarget && _patrolPoints.Count > 1) continue;
 
             // Пропускаем текущую точку
@@ -165,7 +194,7 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        // Если не нашли (осталась только предыдущая точка), возвращаем её
+        // Если не нашли (например, только предыдущая точка), возвращаем её
         if (nearest == null && _previousTarget != null)
         {
             nearest = _previousTarget;
@@ -174,6 +203,7 @@ public class EnemyAI : MonoBehaviour
         return nearest;
     }
 
+    [Server]
     private void MoveToTarget(PatrolPoint target)
     {
         if (target == null) return;
@@ -191,6 +221,7 @@ public class EnemyAI : MonoBehaviour
     /// <summary>
     /// Добавляет точку патрулирования в список.
     /// </summary>
+    [Server]
     public void AddPatrolPoint(PatrolPoint point)
     {
         if (point != null && !_patrolPoints.Contains(point))
@@ -202,6 +233,7 @@ public class EnemyAI : MonoBehaviour
     /// <summary>
     /// Удаляет точку патрулирования из списка.
     /// </summary>
+    [Server]
     public void RemovePatrolPoint(PatrolPoint point)
     {
         _patrolPoints.Remove(point);
@@ -210,6 +242,7 @@ public class EnemyAI : MonoBehaviour
     /// <summary>
     /// Останавливает патрулирование.
     /// </summary>
+    [Server]
     public void StopPatrol()
     {
         _currentState = EnemyState.Idle;
@@ -219,12 +252,31 @@ public class EnemyAI : MonoBehaviour
     /// <summary>
     /// Возобновляет патрулирование.
     /// </summary>
+    [Server]
     public void ResumePatrol()
     {
         if (_currentState == EnemyState.Idle)
         {
             SelectNextPatrolPoint();
         }
+    }
+
+    /// <summary>
+    /// Команда от клиента для остановки патруля (если нужно).
+    /// </summary>
+    [Command(requiresAuthority = false)]
+    public void CmdStopPatrol()
+    {
+        StopPatrol();
+    }
+
+    /// <summary>
+    /// Команда от клиента для возобновления патруля (если нужно).
+    /// </summary>
+    [Command(requiresAuthority = false)]
+    public void CmdResumePatrol()
+    {
+        ResumePatrol();
     }
 
     private void OnDrawGizmosSelected()
