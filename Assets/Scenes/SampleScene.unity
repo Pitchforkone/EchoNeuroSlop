@@ -1539,6 +1539,14 @@ PrefabInstance:
       propertyPath: sceneId
       value: 2869521641
       objectReference: {fileID: 0}
+    - target: {fileID: 6205265207104919555, guid: 752fc30b2f0c3ec428177d734da26a66, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6205265207104919555, guid: 752fc30b2f0c3ec428177d734da26a66, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -351022541804052484, guid: e287062bb75398d45981e96c22c63195, type: 3}
     - target: {fileID: 7757748090664274489, guid: 752fc30b2f0c3ec428177d734da26a66, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10
