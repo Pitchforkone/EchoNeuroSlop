@@ -149,6 +149,10 @@ public class EchoManager : MonoBehaviour
         light.range = 0.1f;
         light.shadows = LightShadows.None;
 
+        // Add expanding sphere collider
+        var echoCollider = go.AddComponent<EchoCollider>();
+        echoCollider.Initialize(speed, maxRadius, lifetime);
+
         _ambientInstances[slot] = new EchoInstance
         {
             Active = true,
@@ -184,6 +188,10 @@ public class EchoManager : MonoBehaviour
         light.intensity = intensity;
         light.range = 0.1f;
         light.shadows = LightShadows.None;
+
+        // Add expanding sphere collider
+        var echoCollider = go.AddComponent<EchoCollider>();
+        echoCollider.Initialize(speed, maxRadius, lifetime);
 
         _instances[slot] = new EchoInstance
         {
