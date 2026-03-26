@@ -150,6 +150,7 @@ public class SteamNetworkUI : MonoBehaviour
             }
         }
 
+        DestroyAllLights();
         steamLobby.HostLobby();
     }
 
@@ -183,6 +184,7 @@ public class SteamNetworkUI : MonoBehaviour
 #if !DISABLESTEAMWORKS
         if (steamLobby != null && lobbyIdInput != null && !string.IsNullOrEmpty(lobbyIdInput.text))
         {
+            DestroyAllLights();
             steamLobby.JoinLobbyById(lobbyIdInput.text.Trim());
         }
         else
@@ -190,6 +192,24 @@ public class SteamNetworkUI : MonoBehaviour
             Debug.LogWarning("[SteamNetworkUI] Enter Lobby ID to join!");
         }
 #endif
+    }
+
+    /// <summary>
+    /// Finds all LightDestroy objects in the scene and destroys them.
+    /// Called when hosting or joining a game.
+    /// </summary>
+    private void DestroyAllLights()
+    {
+        LightDestroy[] lights = FindObjectsOfType<LightDestroy>();
+        Debug.Log($"[SteamNetworkUI] Found {lights.Length} LightDestroy objects to destroy");
+        
+        foreach (LightDestroy light in lights)
+        {
+            if (light != null)
+            {
+                light.DestroyLight();
+            }
+        }
     }
 
     public void CopyLobbyId()

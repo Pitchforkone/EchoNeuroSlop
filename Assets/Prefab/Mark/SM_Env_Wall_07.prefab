@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2165087767508867877}
   - component: {fileID: 4174582401717514223}
   - component: {fileID: 7016293037368646404}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SM_Env_Door_Large_Wood_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 977701660324079631}
   - component: {fileID: 3059502374910287045}
   - component: {fileID: 1031729118862612838}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SM_Env_Door_Large_Wood_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
