@@ -110,8 +110,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _activePingPreset: {fileID: 11400000, guid: 9e47417c4e33b5248a2bab7e3d4292dc, type: 2}
-  _footstepPreset: {fileID: 11400000, guid: 604512930396c72489e2ce111ce601f7, type: 2}
+  _activePingPreset: {fileID: 11400000, guid: 12e0be7247debd846aaf326a244db954, type: 2}
+  _footstepPreset: {fileID: 11400000, guid: 683c2018a67346744952b916909b3ea6, type: 2}
   _sprintFootstepPreset: {fileID: 0}
   _inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _volumeThreshold: 0.01
@@ -258,7 +258,7 @@ MonoBehaviour:
   _grenadePrefab: {fileID: 0}
   _grenadeSize: 0.15
   _grenadeLifetime: 10
-  _echoPreset: {fileID: 11400000, guid: 9e47417c4e33b5248a2bab7e3d4292dc, type: 2}
+  _echoPreset: {fileID: 11400000, guid: 12e0be7247debd846aaf326a244db954, type: 2}
   _blinkInterval: 1
   _cooldown: 0
 --- !u!1 &2812847854523134801
