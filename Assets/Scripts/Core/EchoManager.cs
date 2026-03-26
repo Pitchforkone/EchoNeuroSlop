@@ -24,7 +24,6 @@ public class EchoManager : MonoBehaviour
     private int _activeCount;
     private int _ambientActiveCount;
 
-    // Shader data arrays (reused each frame to avoid GC)
     private static readonly int EchoCountId = Shader.PropertyToID("_EchoCount");
     private static readonly int EchoPositionsId = Shader.PropertyToID("_EchoPositions");
     private static readonly int EchoRadiiId = Shader.PropertyToID("_EchoRadii");
@@ -150,6 +149,10 @@ public class EchoManager : MonoBehaviour
         light.range = 0.1f;
         light.shadows = LightShadows.None;
 
+        // Add expanding sphere collider
+        var echoCollider = go.AddComponent<EchoCollider>();
+        echoCollider.Initialize(speed, maxRadius, lifetime);
+
         _ambientInstances[slot] = new EchoInstance
         {
             Active = true,
@@ -185,6 +188,10 @@ public class EchoManager : MonoBehaviour
         light.intensity = intensity;
         light.range = 0.1f;
         light.shadows = LightShadows.None;
+
+        // Add expanding sphere collider
+        var echoCollider = go.AddComponent<EchoCollider>();
+        echoCollider.Initialize(speed, maxRadius, lifetime);
 
         _instances[slot] = new EchoInstance
         {
