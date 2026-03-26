@@ -24,7 +24,6 @@ public class EchoManager : MonoBehaviour
     private int _activeCount;
     private int _ambientActiveCount;
 
-    // Shader data arrays (reused each frame to avoid GC)
     private static readonly int EchoCountId = Shader.PropertyToID("_EchoCount");
     private static readonly int EchoPositionsId = Shader.PropertyToID("_EchoPositions");
     private static readonly int EchoRadiiId = Shader.PropertyToID("_EchoRadii");
