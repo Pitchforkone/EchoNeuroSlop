@@ -1,8 +1,7 @@
 using System;
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
 public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
 {
     [Header("Эхо")]
@@ -13,16 +12,63 @@ public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
     [SerializeField] private float _echoInterval = 3f;
 
     [Header("Команды")]
-    [Tooltip("Слово для включения периодического эхо")]
+    [Tooltip("Слово для включения периодического эха")]
     [SerializeField] private string _activateWord = "light";
 
-    [Tooltip("Слово для выключения периодического эхо")]
+    [Tooltip("Слово для выключения периодического эха")]
     [SerializeField] private string _deactivateWord = "dark";
+
+    [Header("Voice Zone")]
+    [Tooltip("Зона активации голосовых команд")]
+    [SerializeField] private VoiceActivateZoneMB _voiceActivateZone;
 
     private VoiceRecognizer _voiceRecognizer;
     private bool _isActive;
     private float _timer;
     private bool _playerInside;
+
+    private void Start()
+    {
+        // Подписываемся на события VoiceActivateZone если она назначена
+        if (_voiceActivateZone != null)
+        {
+            // Устанавливаем keyword для отображения (показываем оба слова)
+            _voiceActivateZone.SetKeyword($"{_activateWord} / {_deactivateWord}");
+
+            _voiceActivateZone.activate += OnVoiceZoneActivate;
+            _voiceActivateZone.deactivate += OnVoiceZoneDeactivate;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (_voiceActivateZone != null)
+        {
+            _voiceActivateZone.activate -= OnVoiceZoneActivate;
+            _voiceActivateZone.deactivate -= OnVoiceZoneDeactivate;
+        }
+    }
+
+    private void OnVoiceZoneActivate(VoiceRecognizer voice)
+    {
+        if (_playerInside) return;
+
+        _voiceRecognizer = voice;
+        _voiceRecognizer.AddListener(this);
+        _playerInside = true;
+    }
+
+    private void OnVoiceZoneDeactivate(VoiceRecognizer voice)
+    {
+        if (!_playerInside) return;
+
+        if (_voiceRecognizer != null && _voiceRecognizer == voice)
+        {
+            _voiceRecognizer.RemoveListener(this);
+            _voiceRecognizer = null;
+        }
+        _playerInside = false;
+    }
 
     private void Update()
     {
@@ -38,6 +84,9 @@ public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
 
     private void OnTriggerEnter(Collider other)
     {
+        // Если используется VoiceActivateZone, пропускаем собственную логику триггера
+        if (_voiceActivateZone != null) return;
+
         if (_playerInside) return;
 
         // Проверяем что это локальный игрок
@@ -54,6 +103,9 @@ public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
 
     private void OnTriggerExit(Collider other)
     {
+        // Если используется VoiceActivateZone, пропускаем собственную логику триггера
+        if (_voiceActivateZone != null) return;
+
         if (!_playerInside) return;
 
         // Проверяем что это локальный игрок
@@ -86,11 +138,6 @@ public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
     }
 
     private void OnDisable()
-    {
-        Unsubscribe();
-    }
-
-    private void OnDestroy()
     {
         Unsubscribe();
     }

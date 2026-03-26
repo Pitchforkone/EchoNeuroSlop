@@ -233,6 +233,10 @@ MonoBehaviour:
     key: 21
     mouseButton: 1
     word: Grenade
+  - inputType: 0
+    key: 32
+    mouseButton: 1
+    word: Light
   _onWordSent:
     m_PersistentCalls:
       m_Calls: []

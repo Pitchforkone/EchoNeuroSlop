@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using Mirror;
+using TMPro;
+
 
 #if !DISABLESTEAMWORKS
 using Steamworks;
@@ -11,6 +13,7 @@ using Steamworks;
 /// <summary>
 /// UI controller for Steam network operations.
 /// Handles Host, Leave, Invite, Join and Copy Lobby ID buttons.
+/// Also displays voice hints when player enters voice activation zones.
 /// </summary>
 public class SteamNetworkUI : MonoBehaviour
 {
@@ -23,6 +26,12 @@ public class SteamNetworkUI : MonoBehaviour
     
     [Header("Input Fields")]
     public InputField lobbyIdInput;
+    
+    [Header("Voice Hint UI")]
+    [Tooltip("Panel containing the voice hint (will be shown/hidden)")]
+    public GameObject voiceHintPanel;
+    [Tooltip("Text field to display the voice hint (e.g. 'Speak: Open')")]
+    public TextMeshProUGUI voiceHintText;
 
     private SteamLobby steamLobby;
 
@@ -78,6 +87,9 @@ public class SteamNetworkUI : MonoBehaviour
         SetupButton(inviteButton, "Invite", OnInviteClicked);
         SetupButton(joinButton, "Join", OnJoinClicked);
         SetupButton(copyLobbyIdButton, "CopyLobbyId", CopyLobbyId);
+
+        // Hide voice hint by default
+        HideVoiceHint();
 
         UpdateUI();
     }
@@ -209,6 +221,38 @@ public class SteamNetworkUI : MonoBehaviour
             {
                 light.DestroyLight();
             }
+        }
+    }
+
+    /// <summary>
+    /// Shows the voice hint UI with the specified keyword.
+    /// Called when player enters a VoiceActivateZone.
+    /// </summary>
+    /// <param name="keyword">The keyword to display.</param>
+    public void ShowVoiceHint(string keyword)
+    {
+        if (voiceHintPanel != null)
+        {
+            voiceHintPanel.SetActive(true);
+        }
+        
+        if (voiceHintText != null)
+        {
+            voiceHintText.text = $"Speak: \"{keyword}\"";
+        }
+        
+        Debug.Log($"[SteamNetworkUI] Voice hint shown: {keyword}");
+    }
+    
+    /// <summary>
+    /// Hides the voice hint UI.
+    /// Called when player exits a VoiceActivateZone.
+    /// </summary>
+    public void HideVoiceHint()
+    {
+        if (voiceHintPanel != null)
+        {
+            voiceHintPanel.SetActive(false);
         }
     }
 
