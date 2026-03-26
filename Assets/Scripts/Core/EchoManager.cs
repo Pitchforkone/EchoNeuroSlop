@@ -50,6 +50,7 @@ public class EchoManager : MonoBehaviour
         public Color Color;
         public float Lifetime;
         public Light PointLight;
+        public EchoPreset Preset;
     }
 
     private void Awake()
@@ -85,7 +86,7 @@ public class EchoManager : MonoBehaviour
     /// </summary>
     private void OnNetworkEchoReceived(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
     {
-        SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
+        SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime, null);
     }
 
     /// <summary>
@@ -94,13 +95,13 @@ public class EchoManager : MonoBehaviour
     public void SpawnEcho(Vector3 position, EchoPreset preset)
     {
         if (preset == null) return;
-        SpawnEcho(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime);
+        SpawnEcho(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime, preset);
     }
 
     /// <summary>
     /// Spawn echo with explicit parameters. Networked version.
     /// </summary>
-    public void SpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
+    public void SpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoPreset preset = null)
     {
         // Если мы в сети
         if (NetworkClient.active)
@@ -114,27 +115,17 @@ public class EchoManager : MonoBehaviour
             else
             {
                 // Если helper не найден, спавним локально
-                SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
+                SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime, preset);
             }
         }
         else
         {
             // Синглплеер - просто спавним локально
-            SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime);
+            SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime, preset);
         }
     }
 
-    /// <summary>
-    /// Spawn a local-only ambient echo.
-    /// Used by EchoSource for environmental sounds (dripping water, vents, etc.).
-    /// </summary>
-    public void SpawnAmbientEcho(Vector3 position, EchoPreset preset)
-    {
-        if (preset == null) return;
-        SpawnAmbientEchoLocal(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime);
-    }
-
-    private void SpawnAmbientEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
+    private void SpawnAmbientEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoPreset preset = null)
     {
         int slot = FindFreeAmbientSlot();
         if (slot < 0) return;
@@ -149,9 +140,9 @@ public class EchoManager : MonoBehaviour
         light.range = 0.1f;
         light.shadows = LightShadows.None;
 
-        // Add expanding sphere collider
+        // Add small static trigger collider
         var echoCollider = go.AddComponent<EchoCollider>();
-        echoCollider.Initialize(speed, maxRadius, lifetime);
+        echoCollider.Initialize(preset);
 
         _ambientInstances[slot] = new EchoInstance
         {
@@ -163,15 +154,26 @@ public class EchoManager : MonoBehaviour
             Intensity = intensity,
             Color = color,
             Lifetime = lifetime,
-            PointLight = light
+            PointLight = light,
+            Preset = preset
         };
         _ambientActiveCount++;
     }
 
     /// <summary>
+    /// Spawn a local-only ambient echo.
+    /// Used by EchoSource for environmental sounds (dripping water, vents, etc.).
+    /// </summary>
+    public void SpawnAmbientEcho(Vector3 position, EchoPreset preset)
+    {
+        if (preset == null) return;
+        SpawnAmbientEchoLocal(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime, preset);
+    }
+
+    /// <summary>
     /// Creates the Point Light locally.
     /// </summary>
-    private void SpawnEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime)
+    private void SpawnEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoPreset preset = null)
     {
         int slot = FindFreeSlot();
         if (slot < 0) return;
@@ -189,9 +191,9 @@ public class EchoManager : MonoBehaviour
         light.range = 0.1f;
         light.shadows = LightShadows.None;
 
-        // Add expanding sphere collider
+        // Add small static trigger collider
         var echoCollider = go.AddComponent<EchoCollider>();
-        echoCollider.Initialize(speed, maxRadius, lifetime);
+        echoCollider.Initialize(preset);
 
         _instances[slot] = new EchoInstance
         {
@@ -203,7 +205,8 @@ public class EchoManager : MonoBehaviour
             Intensity = intensity,
             Color = color,
             Lifetime = lifetime,
-            PointLight = light
+            PointLight = light,
+            Preset = preset
         };
         _activeCount++;
     }

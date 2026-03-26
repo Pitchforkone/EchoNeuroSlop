@@ -224,7 +224,7 @@ MonoBehaviour:
   - inputType: 0
     key: 26
     mouseButton: 0
-    word: Light
+    word: AllLight
   - inputType: 0
     key: 29
     mouseButton: 0
