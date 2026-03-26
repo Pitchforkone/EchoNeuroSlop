@@ -28,7 +28,7 @@ public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
         if (string.Equals(word, "Open", StringComparison.OrdinalIgnoreCase))
         {
             listPlayer.ForEach(voice => voice.RemoveListener(this));
-            Destroy(gameObject);
+            GetComponent<Animator>().SetBool("Open", true);
         }
     }
 }
