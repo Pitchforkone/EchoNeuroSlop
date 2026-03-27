@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using Mirror;
 
 /// <summary>
-/// Патруль по точкам с синхронизацией по сети.
-/// Враг ходит к ближайшей точке (кроме предыдущей), останавливается, затем продолжает.
-/// Поддерживает преследование целей, обнаруженных детекторами.
-/// Логика AI выполняется только на сервере, позиция синхронизируется через NetworkTransform.
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ.
+/// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ), пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+/// пїЅпїЅпїЅпїЅпїЅпїЅ AI пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ NetworkTransform.
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(NetworkIdentity))]
@@ -22,29 +22,37 @@ public class EnemyAI : NetworkBehaviour
     }
 
     [Header("Patrol Settings")]
-    [Tooltip("Список точек патрулирования")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private List<PatrolPoint> _patrolPoints = new List<PatrolPoint>();
 
-    [Tooltip("Время ожидания по умолчанию, если у точки не указано")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float _defaultWaitTime = 2f;
 
-    [Tooltip("Скорость передвижения при патрулировании")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float _patrolSpeed = 3.5f;
 
     [Header("Chase Settings")]
-    [Tooltip("Скорость передвижения при преследовании")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float _chaseSpeed = 5f;
 
-    [Tooltip("Дистанция, на которой враг считает, что достиг цели преследования")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float _chaseReachDistance = 1.5f;
 
-    [Tooltip("Интервал обновления пути к движущейся цели")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ")]
     [SerializeField] private float _pathUpdateInterval = 0.2f;
+
+    [Header("Audio")]
+    [Tooltip("Р—РІСѓРє РїСЂРё РЅР°С‡Р°Р»Рµ РїСЂРµСЃР»РµРґРѕРІР°РЅРёСЏ РёРіСЂРѕРєР°")]
+    [SerializeField] private AudioClip _chaseStartClip;
+
+    [Tooltip("Р“СЂРѕРјРєРѕСЃС‚СЊ Р·РІСѓРєР° РїСЂРµСЃР»РµРґРѕРІР°РЅРёСЏ")]
+    [SerializeField] [Range(0f, 1f)] private float _chaseStartVolume = 1f;
 
     [Header("Debug")]
     [SerializeField] private bool _showDebugInfo = true;
 
     private NavMeshAgent _agent;
+    private AudioSource _audioSource;
     
     [SyncVar]
     private EnemyState _currentState = EnemyState.Idle;
@@ -53,7 +61,7 @@ public class EnemyAI : NetworkBehaviour
     private PatrolPoint _previousTarget;
     private float _waitTimer;
 
-    // Преследование
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private Vector3 _chaseTargetPosition;
     private Transform _chaseTargetTransform;
     private float _chaseDuration;
@@ -61,22 +69,31 @@ public class EnemyAI : NetworkBehaviour
     private int _currentChasePriority;
     private float _pathUpdateTimer;
 
-    // Синхронизируем индекс текущей цели для клиентов (опционально, для отладки)
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
     [SyncVar]
     private int _currentTargetIndex = -1;
 
     /// <summary>
-    /// Текущая скорость врага (для внешнего доступа).
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ).
     /// </summary>
     public float CurrentSpeed => _agent != null ? _agent.speed : 0f;
 
     /// <summary>
-    /// Враг сейчас преследует цель.
+    /// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.
     /// </summary>
     public bool IsChasing => _currentState == EnemyState.Chasing;
 
     private void Awake()
     {
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            _audioSource = gameObject.AddComponent<AudioSource>();
+            _audioSource.spatialBlend = 1f;
+            _audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
+            _audioSource.maxDistance = 30f;
+            _audioSource.playOnAwake = false;
+        }
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = _patrolSpeed;
     }
@@ -91,7 +108,7 @@ public class EnemyAI : NetworkBehaviour
             return;
         }
 
-        // Начинаем патрулирование с ближайшей точки
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         SelectNextPatrolPoint();
     }
 
@@ -99,7 +116,7 @@ public class EnemyAI : NetworkBehaviour
     {
         base.OnStartClient();
         
-        // На клиентах отключаем NavMeshAgent, т.к. позиция синхронизируется через NetworkTransform
+        // пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ NavMeshAgent, пїЅ.пїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ NetworkTransform
         if (!isServer)
         {
             _agent.enabled = false;
@@ -108,7 +125,7 @@ public class EnemyAI : NetworkBehaviour
 
     private void Update()
     {
-        // Логика AI выполняется только на сервере
+        // пїЅпїЅпїЅпїЅпїЅпїЅ AI пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (!isServer) return;
 
         switch (_currentState)
@@ -126,7 +143,7 @@ public class EnemyAI : NetworkBehaviour
                 break;
 
             case EnemyState.Idle:
-                // Ничего не делаем
+                // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 break;
         }
     }
@@ -139,13 +156,13 @@ public class EnemyAI : NetworkBehaviour
             return;
         }
 
-        // Проверяем, достигли ли точки
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         float distanceToTarget = Vector3.Distance(transform.position, _currentTarget.transform.position);
         
         if (distanceToTarget <= _currentTarget.ReachRadius || 
             (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance))
         {
-            // Достигли точки - начинаем ожидание
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             StartWaiting();
         }
     }
@@ -156,7 +173,7 @@ public class EnemyAI : NetworkBehaviour
 
         if (_waitTimer <= 0f)
         {
-            // Время ожидания истекло - идём к следующей точке
+            // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             SelectNextPatrolPoint();
         }
     }
@@ -165,14 +182,14 @@ public class EnemyAI : NetworkBehaviour
     {
         _chaseTimer -= Time.deltaTime;
 
-        // Время преследования истекло
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (_chaseTimer <= 0f)
         {
             EndChase();
             return;
         }
 
-        // Обновляем путь к движущейся цели
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         if (_chaseTargetTransform != null)
         {
             _pathUpdateTimer -= Time.deltaTime;
@@ -184,7 +201,7 @@ public class EnemyAI : NetworkBehaviour
             }
         }
 
-        // Проверяем, достигли ли цели
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
         float distanceToTarget = Vector3.Distance(transform.position, _chaseTargetPosition);
         if (distanceToTarget <= _chaseReachDistance)
         {
@@ -193,7 +210,7 @@ public class EnemyAI : NetworkBehaviour
                 Debug.Log($"[EnemyAI] {gameObject.name} reached chase target");
             }
 
-            // Если преследуем Transform - продолжаем, иначе заканчиваем
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Transform - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (_chaseTargetTransform == null)
             {
                 EndChase();
@@ -242,7 +259,7 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Находит ближайшую точку патрулирования, исключая предыдущую.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     private PatrolPoint FindNearestPatrolPoint()
     {
@@ -253,10 +270,10 @@ public class EnemyAI : NetworkBehaviour
         {
             if (point == null) continue;
 
-            // Пропускаем предыдущую точку (чтобы враг ходил дальше)
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
             if (point == _previousTarget && _patrolPoints.Count > 1) continue;
 
-            // Пропускаем текущую точку
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (point == _currentTarget) continue;
 
             float distance = Vector3.Distance(transform.position, point.transform.position);
@@ -268,7 +285,7 @@ public class EnemyAI : NetworkBehaviour
             }
         }
 
-        // Если не нашли (например, только предыдущая точка), возвращаем её
+        // пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ), пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ
         if (nearest == null && _previousTarget != null)
         {
             nearest = _previousTarget;
@@ -294,15 +311,24 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Устанавливает цель преследования (статичная позиция).
-    /// Вызывается детекторами.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ).
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     [Server]
     public void SetPursuitTarget(Vector3 position, float duration, int priority)
     {
-        // Игнорируем, если текущее преследование имеет более высокий приоритет
         if (_currentState == EnemyState.Chasing && priority < _currentChasePriority)
         {
+            return;
+        }
+
+        if (_currentState == EnemyState.Chasing)
+        {
+            _chaseTargetPosition = position;
+            _chaseTargetTransform = null;
+            _chaseTimer = duration;
+            _currentChasePriority = priority;
+            _agent.SetDestination(position);
             return;
         }
 
@@ -310,17 +336,26 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Устанавливает цель преследования (движущийся Transform).
-    /// Вызывается детекторами.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Transform).
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     [Server]
     public void SetPursuitTransform(Transform target, float duration, int priority)
     {
         if (target == null) return;
 
-        // Игнорируем, если текущее преследование имеет более высокий приоритет
         if (_currentState == EnemyState.Chasing && priority < _currentChasePriority)
         {
+            return;
+        }
+
+        if (_currentState == EnemyState.Chasing)
+        {
+            _chaseTargetPosition = target.position;
+            _chaseTargetTransform = target;
+            _chaseTimer = duration;
+            _currentChasePriority = priority;
+            _agent.SetDestination(target.position);
             return;
         }
 
@@ -328,12 +363,12 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Обновляет таймер преследования (для постоянного контакта).
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ).
     /// </summary>
     [Server]
     public void RefreshPursuitTarget(Transform target, float duration, int priority)
     {
-        // Только если уже преследуем эту цель или приоритет выше
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         if (_currentState == EnemyState.Chasing)
         {
             if (_chaseTargetTransform == target || priority >= _currentChasePriority)
@@ -365,10 +400,21 @@ public class EnemyAI : NetworkBehaviour
         _agent.isStopped = false;
         _agent.SetDestination(position);
 
+        RpcPlayChaseSound();
+
         if (_showDebugInfo)
         {
             string targetName = target != null ? target.name : "position";
             Debug.Log($"[EnemyAI] {gameObject.name} started chasing {targetName} for {duration}s (priority: {priority})");
+        }
+    }
+
+    [ClientRpc]
+    private void RpcPlayChaseSound()
+    {
+        if (_chaseStartClip != null && _audioSource != null)
+        {
+            _audioSource.PlayOneShot(_chaseStartClip, _chaseStartVolume);
         }
     }
 
@@ -383,12 +429,12 @@ public class EnemyAI : NetworkBehaviour
             Debug.Log($"[EnemyAI] {gameObject.name} ended chase, resuming patrol");
         }
 
-        // Возвращаемся к патрулированию
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         SelectNextPatrolPoint();
     }
 
     /// <summary>
-    /// Принудительно останавливает преследование.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     [Server]
     public void CancelChase()
@@ -400,7 +446,7 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Добавляет точку патрулирования в список.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     [Server]
     public void AddPatrolPoint(PatrolPoint point)
@@ -412,7 +458,7 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Удаляет точку патрулирования из списка.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     [Server]
     public void RemovePatrolPoint(PatrolPoint point)
@@ -421,7 +467,7 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Останавливает патрулирование.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     [Server]
     public void StopPatrol()
@@ -431,7 +477,7 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Возобновляет патрулирование.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     [Server]
     public void ResumePatrol()
@@ -443,7 +489,7 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Команда от клиента для остановки патруля (если нужно).
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ).
     /// </summary>
     [Command(requiresAuthority = false)]
     public void CmdStopPatrol()
@@ -452,7 +498,7 @@ public class EnemyAI : NetworkBehaviour
     }
 
     /// <summary>
-    /// Команда от клиента для возобновления патруля (если нужно).
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ).
     /// </summary>
     [Command(requiresAuthority = false)]
     public void CmdResumePatrol()
@@ -464,7 +510,7 @@ public class EnemyAI : NetworkBehaviour
     {
         if (_patrolPoints == null || _patrolPoints.Count == 0) return;
 
-        // Рисуем линии от врага к точкам патрулирования
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Gizmos.color = Color.green;
         foreach (var point in _patrolPoints)
         {
@@ -474,7 +520,7 @@ public class EnemyAI : NetworkBehaviour
             }
         }
 
-        // Рисуем текущую цель патруля
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (_currentTarget != null && _currentState != EnemyState.Chasing)
         {
             Gizmos.color = Color.yellow;
@@ -482,7 +528,7 @@ public class EnemyAI : NetworkBehaviour
             Gizmos.DrawWireSphere(_currentTarget.transform.position, 0.3f);
         }
 
-        // Рисуем цель преследования
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (_currentState == EnemyState.Chasing)
         {
             Gizmos.color = Color.red;
