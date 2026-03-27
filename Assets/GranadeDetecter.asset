@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4321c15d43b44484ba79c83518556cda, type: 3}
-  m_Name: Footstep
+  m_Name: GranadeDetecter
   m_EditorClassIdentifier: Assembly-CSharp::EchoPreset
-  _echoType: 1
-  _speed: 8
-  _maxRadius: 5
-  _color: {r: 1, g: 1, b: 1, a: 1}
-  _intensity: 1.5
-  _lifetimeOverride: 0.6
+  _echoType: 3
+  _speed: 20
+  _maxRadius: 30
+  _color: {r: 0.3726415, g: 0.6863208, b: 1, a: 1}
+  _intensity: 10
+  _lifetimeOverride: 0

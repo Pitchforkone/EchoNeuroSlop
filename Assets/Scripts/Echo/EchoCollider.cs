@@ -1,95 +1,52 @@
 using UnityEngine;
 
 /// <summary>
-/// Component that adds an expanding spherical collider to an echo object.
-/// The collider expands over time based on echo parameters.
+/// Component that adds a small static spherical trigger collider to an echo object.
+/// Contains the EchoType that defines this echo.
+/// Includes a kinematic Rigidbody to enable trigger-trigger collision detection.
 /// </summary>
 [RequireComponent(typeof(SphereCollider))]
+[RequireComponent(typeof(Rigidbody))]
 public class EchoCollider : MonoBehaviour
 {
+    private const float ColliderRadius = 0.5f;
+
     private SphereCollider _sphereCollider;
-    private float _startTime;
-    private float _speed;
-    private float _maxRadius;
-    private float _lifetime;
-    private bool _isInitialized;
+    private Rigidbody _rigidbody;
 
     /// <summary>
-    /// Initializes the echo collider with the specified parameters.
+    /// The type of echo.
     /// </summary>
-    /// <param name="speed">Expansion speed in m/s</param>
-    /// <param name="maxRadius">Maximum radius the collider can reach</param>
-    /// <param name="lifetime">Total lifetime in seconds</param>
-    public void Initialize(float speed, float maxRadius, float lifetime)
-    {
-        _speed = speed;
-        _maxRadius = maxRadius;
-        _lifetime = lifetime;
-        _startTime = Time.time;
-        _isInitialized = true;
-
-        _sphereCollider = GetComponent<SphereCollider>();
-        _sphereCollider.isTrigger = true;
-        _sphereCollider.radius = 0.1f;
-    }
+    public EchoType EchoType;
 
     /// <summary>
-    /// Initializes the echo collider using an EchoPreset.
+    /// Initializes the echo collider with the specified echo type directly.
     /// </summary>
-    /// <param name="preset">The echo preset containing parameters</param>
-    public void Initialize(EchoPreset preset)
+    /// <param name="echoType">The echo type</param>
+    public void Initialize(EchoType echoType)
     {
-        if (preset == null) return;
-        Initialize(preset.Speed, preset.MaxRadius, preset.Lifetime);
+        EchoType = echoType;
     }
 
     private void Awake()
     {
+        // Setup SphereCollider
         _sphereCollider = GetComponent<SphereCollider>();
         if (_sphereCollider == null)
         {
             _sphereCollider = gameObject.AddComponent<SphereCollider>();
         }
         _sphereCollider.isTrigger = true;
-    }
+        _sphereCollider.radius = ColliderRadius;
 
-    private void Update()
-    {
-        if (!_isInitialized) return;
-
-        float elapsed = Time.time - _startTime;
-
-        // Check if lifetime exceeded
-        if (elapsed >= _lifetime)
+        // Setup Rigidbody as kinematic (required for trigger-trigger collision detection)
+        _rigidbody = GetComponent<Rigidbody>();
+        if (_rigidbody == null)
         {
-            Destroy(gameObject);
-            return;
+            _rigidbody = gameObject.AddComponent<Rigidbody>();
         }
-
-        // Expand the collider radius
-        float currentRadius = Mathf.Min(_speed * elapsed, _maxRadius);
-        _sphereCollider.radius = currentRadius;
-    }
-
-    /// <summary>
-    /// Gets the current radius of the echo collider.
-    /// </summary>
-    public float CurrentRadius => _sphereCollider != null ? _sphereCollider.radius : 0f;
-
-    /// <summary>
-    /// Gets the normalized progress of the echo (0 to 1).
-    /// </summary>
-    public float NormalizedProgress
-    {
-        get
-        {
-            if (!_isInitialized || _lifetime <= 0f) return 0f;
-            return Mathf.Clamp01((Time.time - _startTime) / _lifetime);
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
+        _rigidbody.isKinematic = true;
+        _rigidbody.useGravity = false;
     }
 
     private void OnDrawGizmosSelected()
