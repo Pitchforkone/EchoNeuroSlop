@@ -12,18 +12,18 @@ public class ExitKeyItem : BaseInventoryItem
     
     protected override void OnUse()
     {
-        Debug.Log("[ExitKeyItem] Exit Key used!");
+        //Debug.Log("[ExitKeyItem] Exit Key used!");
         // Логика использования ключа будет обрабатываться в двери выхода,
         // которая слушает голосовую команду "key" и проверяет наличие ключа в инвентаре
     }
     
     protected override void OnAdded()
     {
-        Debug.Log("[ExitKeyItem] Exit Key added to inventory");
+        //Debug.Log("[ExitKeyItem] Exit Key added to inventory");
     }
     
     protected override void OnRemoved()
     {
-        Debug.Log("[ExitKeyItem] Exit Key removed from inventory");
+        //Debug.Log("[ExitKeyItem] Exit Key removed from inventory");
     }
 }

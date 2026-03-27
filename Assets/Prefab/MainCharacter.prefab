@@ -242,6 +242,10 @@ MonoBehaviour:
     key: 34
     mouseButton: 1
     word: Take
+  - inputType: 0
+    key: 25
+    mouseButton: 1
+    word: Key
   _onWordSent:
     m_PersistentCalls:
       m_Calls: []

@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7757748090664274489}
+  - component: {fileID: 5666729274798949547}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -107,6 +108,38 @@ Transform:
   - {fileID: 584575676659303407}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5666729274798949547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373427470417433902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 127
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 8bd4fea013e4dd54a911b7bb82552f5b, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1001 &242389269013229686
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1640,12 +1673,21 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 10.43
       objectReference: {fileID: 0}
+    - target: {fileID: 8938597095229951643, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8938597095229951643, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.59
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 4813600301828470628, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
     - {fileID: 7754946228242909305, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
     - {fileID: 3512671908115555459, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
     - {fileID: 3228083956082222168, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
+    - {fileID: 6355900735325554880, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
@@ -2750,6 +2792,10 @@ PrefabInstance:
       propertyPath: _assetId
       value: 1593596258
       objectReference: {fileID: 0}
+    - target: {fileID: 2969768334658436055, guid: cc09f6a21dacd7e48af07435184a1ac9, type: 3}
+      propertyPath: KeyWord
+      value: Key
+      objectReference: {fileID: 0}
     - target: {fileID: 3059502374910287045, guid: cc09f6a21dacd7e48af07435184a1ac9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -3387,7 +3433,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 211737078406151514, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.249998
+      value: -3.34
       objectReference: {fileID: 0}
     - target: {fileID: 211737078406151514, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3395,7 +3441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 211737078406151514, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.429999
+      value: -5.43
       objectReference: {fileID: 0}
     - target: {fileID: 211737078406151514, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3441,6 +3487,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 4813600301828470628, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
     - {fileID: 7754946228242909305, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
+    - {fileID: 3228083956082222168, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e2a7098f3ee29a478590d7cffee9077, type: 3}

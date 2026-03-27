@@ -15,6 +15,7 @@ public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
     
     public void Start()
     {
+        activateZoneMB.SetKeyword(KeyWord);
         activateZoneMB.activate += OnActivate;
         activateZoneMB.deactivate += OnDeactivate;
     }
@@ -42,6 +43,27 @@ public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
     {
         if (isOpened) return;
         
+        // Special handling for "Key" keyword - requires key item in inventory
+        if (string.Equals(KeyWord, "Key", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(word, KeyWord, StringComparison.OrdinalIgnoreCase))
+        {
+            // Check if player has a key in inventory
+            if (PlayerInventory.LocalInstance == null)
+            {
+                return;
+            }
+            
+            var keyItem = PlayerInventory.LocalInstance.FindItemByKeyword("key");
+            if (keyItem != null)
+            {
+                // Use the key (removes it from inventory if count becomes 0)
+                PlayerInventory.LocalInstance.UseItem(keyItem);
+                CmdOpenDoor();
+            }
+            return;
+        }
+        
+        // Normal keyword handling (no inventory check required)
         if (string.Equals(word, KeyWord, StringComparison.OrdinalIgnoreCase))
         {
             CmdOpenDoor();

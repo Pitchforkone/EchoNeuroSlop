@@ -55,7 +55,6 @@ public class PlayerInventory : NetworkBehaviour
         }
         
         LocalInstance = this;
-        Debug.Log("[PlayerInventory] Initialized for local player");
     }
 
     /// <summary>
@@ -88,7 +87,6 @@ public class PlayerInventory : NetworkBehaviour
             // Подписываем на VoiceRecognizer
             RegisterItemToVoiceRecognizer(item);
             
-            Debug.Log($"[PlayerInventory] Added item '{item.DisplayName}' with keyword '{item.Keyword}'");
         }
         
         NotifyInventoryChanged();
@@ -177,11 +175,11 @@ public class PlayerInventory : NetworkBehaviour
         if (VoiceRecognizer.LocalInstance != null)
         {
             VoiceRecognizer.LocalInstance.AddListener(item);
-            Debug.Log($"[PlayerInventory] Registered '{item.DisplayName}' to VoiceRecognizer");
+            //Debug.Log($"[PlayerInventory] Registered '{item.DisplayName}' to VoiceRecognizer");
         }
         else
         {
-            Debug.LogWarning("[PlayerInventory] VoiceRecognizer.LocalInstance is null, cannot register item");
+            Debug.LogError("[PlayerInventory] VoiceRecognizer.LocalInstance is null, cannot register item");
         }
     }
 

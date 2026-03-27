@@ -147,7 +147,6 @@ public class VoiceGrenadeThrow : NetworkBehaviour, IVoiceWordListener
         EchoGrenade echoComponent = grenade.AddComponent<EchoGrenade>();
         echoComponent.Initialize(_echoPreset, _blinkInterval, _grenadeLifetime);
 
-        Debug.Log("[VoiceGrenadeThrow] ������� �������!");
     }
 
     /// <summary>

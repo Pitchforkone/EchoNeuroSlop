@@ -71,7 +71,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
         {
             _currentRecognizer = recognizer;
             recognizer.AddListener(this);
-            Debug.Log($"[PickupableItem] Player entered pickup zone for {_itemType}");
         }
     }
     
@@ -103,7 +102,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
         // Проверяем ключевое слово подбора
         if (string.Equals(word, _pickupKeyword, System.StringComparison.OrdinalIgnoreCase))
         {
-            Debug.Log($"[PickupableItem] Pickup command recognized: '{word}'");
             
             // Добавляем предмет в инвентарь локально
             AddItemToLocalInventory();
@@ -126,7 +124,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
         if (item != null)
         {
             PlayerInventory.LocalInstance.AddItem(item);
-            Debug.Log($"[PickupableItem] Added {item.DisplayName} to inventory");
         }
     }
     
@@ -155,7 +152,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
         }
         
         _isPickedUp = true;
-        Debug.Log($"[PickupableItem] Server: Item {_itemType} picked up by {sender}");
 
         OnPickedUpLocally();
         RpcOnPickedUp();

@@ -85,7 +85,6 @@ public class SharedMicrophone : NetworkBehaviour
         DeviceName = Microphone.devices[0];
         Clip = Microphone.Start(DeviceName, true, _bufferLengthSec, _sampleRate);
         IsRecording = true;
-        Debug.Log($"[SharedMicrophone] ������ ��������: {DeviceName}, {_sampleRate} Hz");
     }
 
     public void StopRecording()

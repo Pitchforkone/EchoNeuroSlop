@@ -194,7 +194,6 @@ public class VoiceRecognizer : NetworkBehaviour
         _processThread.IsBackground = true;
         _processThread.Start();
 
-        Debug.Log("[VoiceRecognizer] Успешно инициализирован");
     }
 
     private void Update()
@@ -355,6 +354,8 @@ public class VoiceRecognizer : NetworkBehaviour
             try
             {
                 _listeners[i].OnWordRecognized(word);
+                Debug.Log($"[VoiceWordSender] Отправлено слово: {word}");
+
             }
             catch (Exception e)
             {

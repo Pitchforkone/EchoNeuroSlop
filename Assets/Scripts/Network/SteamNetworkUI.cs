@@ -212,7 +212,6 @@ public class SteamNetworkUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         
-        Debug.Log("[SteamNetworkUI] Menu shown");
     }
     
     /// <summary>
@@ -232,7 +231,6 @@ public class SteamNetworkUI : MonoBehaviour
             SetMenuElementsActive(false);
         }
         
-        Debug.Log("[SteamNetworkUI] Menu hidden");
     }
     
     /// <summary>
@@ -416,7 +414,6 @@ public class SteamNetworkUI : MonoBehaviour
     private void DestroyAllLights()
     {
         LightDestroy[] lights = FindObjectsOfType<LightDestroy>();
-        Debug.Log($"[SteamNetworkUI] Found {lights.Length} LightDestroy objects to destroy");
         
         foreach (LightDestroy light in lights)
         {
@@ -444,7 +441,6 @@ public class SteamNetworkUI : MonoBehaviour
             voiceHintText.text = $"Speak: \"{keyword}\"";
         }
         
-        Debug.Log($"[SteamNetworkUI] Voice hint shown: {keyword}");
     }
     
     /// <summary>

@@ -68,10 +68,6 @@ public abstract class EnemyDetectorBase : MonoBehaviour
         // Проверка только на сервере
         if (!_enemyAI.isServer) return;
 
-        if (_showDebugInfo)
-        {
-            Debug.Log($"[{GetType().Name}] OnTriggerEnter with {other.name}");
-        }
 
         ProcessCollision(other);
     }
@@ -92,11 +88,6 @@ public abstract class EnemyDetectorBase : MonoBehaviour
     protected void NotifyTargetDetected(Vector3 targetPosition, float duration, int priority)
     {
         if (_enemyAI == null) return;
-
-        if (_showDebugInfo)
-        {
-            Debug.Log($"[{GetType().Name}] {_enemyAI.gameObject.name} detected target at {targetPosition}, calling SetPursuitTarget");
-        }
 
         _enemyAI.SetPursuitTarget(targetPosition, duration, priority);
     }

@@ -183,8 +183,6 @@ public class VoiceWordSender : NetworkBehaviour
         recognizer.SimulateWord(word);
 
         _onWordSent?.Invoke(word);
-
-        Debug.Log($"[VoiceWordSender] Отправлено слово: {word}");
     }
 
     /// <summary>
