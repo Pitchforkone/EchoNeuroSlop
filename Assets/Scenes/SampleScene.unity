@@ -2417,6 +2417,10 @@ PrefabInstance:
       value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 5898079252020088970, guid: 957eaf3155e56eb43a1c7345a4c46f4e, type: 3}
+      propertyPath: _chaseStartClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 6b7a8f739f273b54dbda67cdbf72f51f, type: 3}
+    - target: {fileID: 5898079252020088970, guid: 957eaf3155e56eb43a1c7345a4c46f4e, type: 3}
       propertyPath: '_patrolPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 475178116}
