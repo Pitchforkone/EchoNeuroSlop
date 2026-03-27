@@ -286,7 +286,7 @@ MonoBehaviour:
   _throwForce: 20
   _throwAngle: 15
   _spawnOffset: {x: 0, y: 1.5, z: 0.5}
-  _boltPrefab: {fileID: 0}
+  _boltPrefab: {fileID: 393246898847985716, guid: 327be37af9bc9da48802f3af18289c74, type: 3}
   _maxCollisions: 3
   _boltLifetime: 10
   _echoPreset: {fileID: 11400000, guid: 145355dbe1713c3448c7e4a80cb047d2, type: 2}

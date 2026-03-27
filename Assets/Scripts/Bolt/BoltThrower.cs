@@ -8,10 +8,15 @@ using Mirror;
 /// Бросает болт, который создаёт эхо при столкновениях.
 /// Болт виден всем игрокам через сетевую синхронизацию.
 /// 
+/// ВАЖНО: Префаб болта должен быть добавлен в Registered Spawnable Prefabs в NetworkManager!
+// Синхронизация параметров через сеть не требуется, так как используется только локальный ввод
+/// 
 /// Использование:
 ///   1. Добавьте на объект игрока.
 ///   2. Назначьте EchoPreset для визуальных эффектов.
-///   3. Создайте и назначьте префаб болта с компонентом EchoBolt и NetworkIdentity.
+///   3. Создайте префаб болта с компонентами: EchoBolt, NetworkIdentity, Rigidbody, SphereCollider.
+///   4. Добавьте префаб в NetworkManager -> Registered Spawnable Prefabs.
+///   5. Назначьте префаб в поле Bolt Prefab.
 /// </summary>
 public class BoltThrower : NetworkBehaviour
 {
@@ -36,7 +41,7 @@ public class BoltThrower : NetworkBehaviour
     [SerializeField] private Vector3 _spawnOffset = new Vector3(0f, 1.5f, 0.5f);
 
     [Header("Настройки болта")]
-    [Tooltip("Префаб болта (должен иметь EchoBolt и NetworkIdentity)")]
+    [Tooltip("Префаб болта (ОБЯЗАТЕЛЬНО для мультиплеера! Должен быть в NetworkManager Spawnable Prefabs)")]
     [SerializeField] private GameObject _boltPrefab;
 
     [Tooltip("Максимальное количество столкновений до уничтожения")]
@@ -57,14 +62,42 @@ public class BoltThrower : NetworkBehaviour
     private float _lastThrowTime = -999f;
     private bool _isInitialized;
     private InputAction _throwAction;
+    private static bool _prefabRegistered;
 
     private void Start()
     {
+        // Регистрируем префаб в NetworkManager (один раз)
+        RegisterPrefabIfNeeded();
+        
         // Для синглплеера
         if (!NetworkClient.active)
         {
             InitializeLocal();
         }
+    }
+
+    /// <summary>
+    /// Регистрирует префаб болта в NetworkManager, если ещё не зарегистрирован.
+    /// </summary>
+    private void RegisterPrefabIfNeeded()
+    {
+        if (_prefabRegistered || _boltPrefab == null) return;
+        
+        // Проверяем есть ли NetworkIdentity
+        if (_boltPrefab.GetComponent<NetworkIdentity>() == null)
+        {
+            Debug.LogError("[BoltThrower] Bolt prefab must have a NetworkIdentity component!");
+            return;
+        }
+
+        // Регистрируем префаб для спавна
+        if (!NetworkClient.prefabs.ContainsValue(_boltPrefab))
+        {
+            NetworkClient.RegisterPrefab(_boltPrefab);
+            Debug.Log($"[BoltThrower] Registered bolt prefab: {_boltPrefab.name}");
+        }
+        
+        _prefabRegistered = true;
     }
 
     public override void OnStartLocalPlayer()
@@ -76,6 +109,12 @@ public class BoltThrower : NetworkBehaviour
     private void InitializeLocal()
     {
         if (_isInitialized) return;
+
+        // Проверка префаба для мультиплеера
+        if (NetworkClient.active && _boltPrefab == null)
+        {
+            Debug.LogError("[BoltThrower] Bolt Prefab is required for multiplayer! Please assign a prefab with NetworkIdentity.");
+        }
 
         // Ищем камеру игрока
         _playerCamera = GetComponentInChildren<Camera>();
@@ -139,13 +178,6 @@ public class BoltThrower : NetworkBehaviour
         }
     }
 
-    private void Update()
-    {
-        // Обрабатываем ввод только для локального игрока
-        if (!_isInitialized) return;
-        if (NetworkClient.active && !isLocalPlayer) return;
-    }
-
     /// <summary>
     /// Попытка бросить болт с проверкой перезарядки.
     /// </summary>
@@ -155,6 +187,13 @@ public class BoltThrower : NetworkBehaviour
         {
             float remaining = _cooldown - (Time.time - _lastThrowTime);
             Debug.Log($"[BoltThrower] Перезарядка: {remaining:F1}с");
+            return;
+        }
+
+        // Проверка префаба для мультиплеера
+        if (NetworkClient.active && _boltPrefab == null)
+        {
+            Debug.LogError("[BoltThrower] Cannot throw bolt - prefab not assigned!");
             return;
         }
 
@@ -193,7 +232,14 @@ public class BoltThrower : NetworkBehaviour
     [Server]
     private void SpawnBoltOnServer(Vector3 spawnPosition, Vector3 velocity, Vector3 angularVelocity)
     {
-        GameObject bolt = CreateBoltObject(spawnPosition, forNetwork: true);
+        if (_boltPrefab == null)
+        {
+            Debug.LogError("[BoltThrower] Cannot spawn bolt on server - prefab not assigned!");
+            return;
+        }
+
+        // Создаём болт из префаба
+        GameObject bolt = Instantiate(_boltPrefab, spawnPosition, Quaternion.identity);
         
         // Игнорируем коллизии болта с игроком
         Collider boltCollider = bolt.GetComponent<Collider>();
@@ -212,21 +258,18 @@ public class BoltThrower : NetworkBehaviour
 
         // Настраиваем Rigidbody (будет кинематическим, EchoBolt сам включит физику)
         Rigidbody rb = bolt.GetComponent<Rigidbody>();
-        if (rb == null)
+        if (rb != null)
         {
-            rb = bolt.AddComponent<Rigidbody>();
+            rb.isKinematic = true; // EchoBolt включит физику после инициализации
         }
-        rb.mass = 0.2f;
-        rb.linearDamping = 0.05f;
-        rb.angularDamping = 0.5f;
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        rb.isKinematic = true; // EchoBolt включит физику после инициализации
 
         // Получаем компонент EchoBolt
         EchoBolt echoBolt = bolt.GetComponent<EchoBolt>();
         if (echoBolt == null)
         {
-            echoBolt = bolt.AddComponent<EchoBolt>();
+            Debug.LogError("[BoltThrower] Bolt prefab must have EchoBolt component!");
+            Destroy(bolt);
+            return;
         }
 
         // Спавним объект в сети (будет виден всем игрокам)
@@ -241,7 +284,38 @@ public class BoltThrower : NetworkBehaviour
     /// </summary>
     private void SpawnBoltLocal(Vector3 spawnPosition, Vector3 velocity, Vector3 angularVelocity)
     {
-        GameObject bolt = CreateBoltObject(spawnPosition, forNetwork: false);
+        GameObject bolt;
+        
+        if (_boltPrefab != null)
+        {
+            bolt = Instantiate(_boltPrefab, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            // Создаём простой болт-сферу для синглплеера
+            bolt = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            bolt.name = "EchoBolt";
+            bolt.transform.position = spawnPosition;
+            bolt.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+
+            // Тёмный металлический материал
+            Renderer renderer = bolt.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                Material mat = new Material(Shader.Find("Standard"));
+                mat.color = new Color(0.15f, 0.15f, 0.2f);
+                mat.SetFloat("_Metallic", 0.9f);
+                mat.SetFloat("_Glossiness", 0.7f);
+                renderer.material = mat;
+            }
+            
+            // Добавляем Rigidbody
+            Rigidbody rb = bolt.AddComponent<Rigidbody>();
+            rb.mass = 0.2f;
+            rb.linearDamping = 0.05f;
+            rb.angularDamping = 0.5f;
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        }
 
         // Игнорируем коллизии болта с игроком
         Collider boltCollider = bolt.GetComponent<Collider>();
@@ -259,70 +333,20 @@ public class BoltThrower : NetworkBehaviour
         }
 
         // Настраиваем Rigidbody
-        Rigidbody rb = bolt.GetComponent<Rigidbody>();
-        if (rb == null)
+        Rigidbody boltRb = bolt.GetComponent<Rigidbody>();
+        if (boltRb != null)
         {
-            rb = bolt.AddComponent<Rigidbody>();
+            boltRb.linearVelocity = velocity;
+            boltRb.angularVelocity = angularVelocity;
         }
-        rb.mass = 0.2f;
-        rb.linearDamping = 0.05f;
-        rb.angularDamping = 0.5f;
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        rb.linearVelocity = velocity;
-        rb.angularVelocity = angularVelocity;
 
-        // Добавляем простую логику эхо для синглплеера
-        LocalEchoBolt localBolt = bolt.AddComponent<LocalEchoBolt>();
+        // Добавляем логику эхо для синглплеера
+        LocalEchoBolt localBolt = bolt.GetComponent<LocalEchoBolt>();
+        if (localBolt == null)
+        {
+            localBolt = bolt.AddComponent<LocalEchoBolt>();
+        }
         localBolt.Initialize(_echoPreset, _maxCollisions, _boltLifetime);
-        
-        Debug.Log($"[BoltThrower] Болт создан локально. Collider: {boltCollider != null}, IsTrigger: {boltCollider?.isTrigger}");
-    }
-
-    /// <summary>
-    /// Создаёт объект болта.
-    /// </summary>
-    private GameObject CreateBoltObject(Vector3 position, bool forNetwork = false)
-    {
-        GameObject bolt;
-
-        if (_boltPrefab != null)
-        {
-            bolt = Instantiate(_boltPrefab, position, Quaternion.identity);
-        }
-        else
-        {
-            // Создаём простой болт-капсулу
-            bolt = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            bolt.name = "EchoBolt";
-            bolt.transform.position = position;
-            bolt.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
-
-            // Убеждаемся что коллайдер не триггер
-            Collider col = bolt.GetComponent<Collider>();
-            if (col != null)
-            {
-                col.isTrigger = false;
-            }
-
-            // Тёмный металлический материал
-            Renderer renderer = bolt.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                Material mat = new Material(Shader.Find("Standard"));
-                mat.color = new Color(0.15f, 0.15f, 0.2f);
-                mat.SetFloat("_Metallic", 0.9f);
-                mat.SetFloat("_Glossiness", 0.7f);
-                renderer.material = mat;
-            }
-
-            // Добавляем NetworkIdentity для сетевой синхронизации
-            if (forNetwork)
-            {
-                bolt.AddComponent<NetworkIdentity>();
-            }
-        }
-
-        return bolt;
     }
 
     /// <summary>
@@ -365,6 +389,28 @@ public class BoltThrower : NetworkBehaviour
     {
         return Time.time - _lastThrowTime >= _cooldown;
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        // Проверка в редакторе
+        if (_boltPrefab != null)
+        {
+            if (_boltPrefab.GetComponent<NetworkIdentity>() == null)
+            {
+                Debug.LogWarning("[BoltThrower] Bolt prefab should have a NetworkIdentity component for multiplayer!");
+            }
+            if (_boltPrefab.GetComponent<EchoBolt>() == null)
+            {
+                Debug.LogWarning("[BoltThrower] Bolt prefab should have an EchoBolt component!");
+            }
+            if (_boltPrefab.GetComponent<Rigidbody>() == null)
+            {
+                Debug.LogWarning("[BoltThrower] Bolt prefab should have a Rigidbody component!");
+            }
+        }
+    }
+#endif
 }
 
 
