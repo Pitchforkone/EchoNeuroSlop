@@ -17,8 +17,8 @@ GameObject:
   - component: {fileID: -4466514309222158251}
   - component: {fileID: 6665567610513970435}
   - component: {fileID: -5183927483751508333}
-  - component: {fileID: 6473902731479702494}
   - component: {fileID: 5718293217040492545}
+  - component: {fileID: -1175952030455131555}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Untagged
@@ -249,30 +249,6 @@ MonoBehaviour:
   _onWordSent:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6473902731479702494
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 768691847901248487}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 032a93ea0a8f0a74793de85d2caef036, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VoiceGrenadeThrow
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _throwWord: grenade
-  _throwForce: 7
-  _throwAngle: 30
-  _spawnOffset: {x: 0, y: 1.5, z: 0.5}
-  _grenadePrefab: {fileID: 5867086208846927751, guid: 0ef5e66378bb451418ae6eefd919a63a, type: 3}
-  _grenadeLifetime: 10
-  _echoPreset: {fileID: 11400000, guid: 1ddca8a0ce6442d4bae6e5623b1114c7, type: 2}
-  _blinkInterval: 1
-  _cooldown: 0
 --- !u!114 &5718293217040492545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,6 +264,32 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &-1175952030455131555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 743d8786bf8657548a58d77e2d0ad2b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoltThrower
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _inputActions: {fileID: 0}
+  _actionMapName: Player
+  _throwActionName: ThrowBolt
+  _throwForce: 20
+  _throwAngle: 15
+  _spawnOffset: {x: 0, y: 1.5, z: 0.5}
+  _boltPrefab: {fileID: 0}
+  _maxCollisions: 3
+  _boltLifetime: 10
+  _echoPreset: {fileID: 11400000, guid: 145355dbe1713c3448c7e4a80cb047d2, type: 2}
+  _cooldown: 3
 --- !u!1 &2812847854523134801
 GameObject:
   m_ObjectHideFlags: 0
