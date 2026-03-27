@@ -32,9 +32,6 @@ public class VoiceGrenadeThrow : NetworkBehaviour, IVoiceWordListener
     [Tooltip("������ ������� (�����������, ���� null - ��������� �����)")]
     [SerializeField] private GameObject _grenadePrefab;
 
-    [Tooltip("������ �������")]
-    [SerializeField] private float _grenadeSize = 0.15f;
-
     [Tooltip("����� ����� ������� (�������)")]
     [SerializeField] private float _grenadeLifetime = 5f;
 
@@ -140,13 +137,6 @@ public class VoiceGrenadeThrow : NetworkBehaviour, IVoiceWordListener
         rb.angularDamping = 0.5f;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-        // ��������� Collider ���� ��� ���
-        if (grenade.GetComponent<Collider>() == null)
-        {
-            SphereCollider collider = grenade.AddComponent<SphereCollider>();
-            collider.radius = _grenadeSize * 0.5f;
-        }
-
         // ��������� ���� ������
         rb.linearVelocity = throwDirection * _throwForce;
 
@@ -201,7 +191,6 @@ public class VoiceGrenadeThrow : NetworkBehaviour, IVoiceWordListener
             grenade = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             grenade.name = "EchoGrenade";
             grenade.transform.position = position;
-            grenade.transform.localScale = Vector3.one * _grenadeSize;
 
             // ������ � �����
             Renderer renderer = grenade.GetComponent<Renderer>();
