@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using Mirror;
 using TMPro;
@@ -28,6 +29,10 @@ public class SteamNetworkUI : MonoBehaviour
     [Header("Input Fields")]
     public InputField lobbyIdInput;
     
+    [Header("Menu Panel")]
+    [Tooltip("Parent panel containing all menu buttons (will be toggled with ESC)")]
+    public GameObject menuPanel;
+    
     [Header("Voice Hint UI")]
     [Tooltip("Panel containing the voice hint (will be shown/hidden)")]
     public GameObject voiceHintPanel;
@@ -43,6 +48,9 @@ public class SteamNetworkUI : MonoBehaviour
     private SteamLobby steamLobby;
     private PlayerInventory _currentInventory;
     private readonly StringBuilder _inventoryStringBuilder = new StringBuilder();
+    
+    private bool _menuVisible = true;
+    private bool _wasConnected = false;
 
     private void Awake()
     {
@@ -102,6 +110,9 @@ public class SteamNetworkUI : MonoBehaviour
         
         // Hide inventory panel by default
         HideInventoryPanel();
+        
+        // Show menu at start (before connecting)
+        ShowMenu();
 
         UpdateUI();
     }
@@ -122,8 +133,28 @@ public class SteamNetworkUI : MonoBehaviour
     {
         UpdateUI();
         
-        // Keep cursor visible when not connected
-        if (!NetworkClient.isConnected)
+        // Toggle menu on ESC key (using new Input System)
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            ToggleMenu();
+        }
+        
+        // Check if just connected - hide menu automatically
+        bool isConnected = NetworkClient.isConnected || NetworkServer.active;
+        if (isConnected && !_wasConnected)
+        {
+            // Just connected - hide menu
+            HideMenu();
+        }
+        else if (!isConnected && _wasConnected)
+        {
+            // Just disconnected - show menu
+            ShowMenu();
+        }
+        _wasConnected = isConnected;
+        
+        // Cursor management
+        if (_menuVisible || !isConnected)
         {
             if (Cursor.lockState != CursorLockMode.None)
             {
@@ -131,10 +162,97 @@ public class SteamNetworkUI : MonoBehaviour
                 Cursor.visible = true;
             }
         }
+        else if (isConnected && !_menuVisible)
+        {
+            // Lock cursor when in game and menu is closed
+            if (Cursor.lockState != CursorLockMode.Locked)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
         
         // Check for PlayerInventory and subscribe to changes
         UpdateInventorySubscription();
     }
+
+    /// <summary>
+    /// Toggles the menu visibility.
+    /// </summary>
+    public void ToggleMenu()
+    {
+        if (_menuVisible)
+        {
+            HideMenu();
+        }
+        else
+        {
+            ShowMenu();
+        }
+    }
+    
+    /// <summary>
+    /// Shows the menu panel.
+    /// </summary>
+    public void ShowMenu()
+    {
+        _menuVisible = true;
+        
+        if (menuPanel != null)
+        {
+            menuPanel.SetActive(true);
+        }
+        else
+        {
+            // Fallback: show individual elements if no panel assigned
+            SetMenuElementsActive(true);
+        }
+        
+        // Show cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        Debug.Log("[SteamNetworkUI] Menu shown");
+    }
+    
+    /// <summary>
+    /// Hides the menu panel.
+    /// </summary>
+    public void HideMenu()
+    {
+        _menuVisible = false;
+        
+        if (menuPanel != null)
+        {
+            menuPanel.SetActive(false);
+        }
+        else
+        {
+            // Fallback: hide individual elements if no panel assigned
+            SetMenuElementsActive(false);
+        }
+        
+        Debug.Log("[SteamNetworkUI] Menu hidden");
+    }
+    
+    /// <summary>
+    /// Sets active state for all menu UI elements.
+    /// Used as fallback when menuPanel is not assigned.
+    /// </summary>
+    private void SetMenuElementsActive(bool active)
+    {
+        if (hostButton != null) hostButton.gameObject.SetActive(active);
+        if (leaveButton != null) leaveButton.gameObject.SetActive(active);
+        if (inviteButton != null) inviteButton.gameObject.SetActive(active);
+        if (joinButton != null) joinButton.gameObject.SetActive(active);
+        if (copyLobbyIdButton != null) copyLobbyIdButton.gameObject.SetActive(active);
+        if (lobbyIdInput != null) lobbyIdInput.gameObject.SetActive(active);
+    }
+    
+    /// <summary>
+    /// Returns true if menu is currently visible.
+    /// </summary>
+    public bool IsMenuVisible => _menuVisible;
 
     private void UpdateInventorySubscription()
     {

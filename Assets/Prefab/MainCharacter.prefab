@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 6665567610513970435}
   - component: {fileID: -5183927483751508333}
   - component: {fileID: 6473902731479702494}
+  - component: {fileID: 5718293217040492545}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Untagged
@@ -237,6 +238,10 @@ MonoBehaviour:
     key: 32
     mouseButton: 1
     word: Light
+  - inputType: 0
+    key: 34
+    mouseButton: 1
+    word: Take
   _onWordSent:
     m_PersistentCalls:
       m_Calls: []
@@ -265,6 +270,21 @@ MonoBehaviour:
   _echoPreset: {fileID: 11400000, guid: 1ddca8a0ce6442d4bae6e5623b1114c7, type: 2}
   _blinkInterval: 1
   _cooldown: 0
+--- !u!114 &5718293217040492545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 348399dd7117d1f47988e7f60ced4b92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &2812847854523134801
 GameObject:
   m_ObjectHideFlags: 0
