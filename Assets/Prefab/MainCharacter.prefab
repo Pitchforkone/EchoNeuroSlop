@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: -5183927483751508333}
   - component: {fileID: 5718293217040492545}
   - component: {fileID: -1175952030455131555}
+  - component: {fileID: -3264970170658783643}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Untagged
@@ -289,7 +290,30 @@ MonoBehaviour:
   _maxCollisions: 3
   _boltLifetime: 10
   _echoPreset: {fileID: 11400000, guid: 145355dbe1713c3448c7e4a80cb047d2, type: 2}
-  _cooldown: 3
+  _cooldown: 10
+--- !u!114 &-3264970170658783643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 032a93ea0a8f0a74793de85d2caef036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceGrenadeThrow
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _throwForce: 15
+  _throwAngle: 30
+  _spawnOffset: {x: 0, y: 1.5, z: 0.5}
+  _grenadePrefab: {fileID: 0}
+  _grenadeLifetime: 5
+  _echoPreset: {fileID: 11400000, guid: 145355dbe1713c3448c7e4a80cb047d2, type: 2}
+  _blinkInterval: 0.3
+  _cooldown: 0.5
 --- !u!1 &2812847854523134801
 GameObject:
   m_ObjectHideFlags: 0

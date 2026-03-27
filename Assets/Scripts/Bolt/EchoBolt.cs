@@ -29,10 +29,18 @@ public class EchoBolt : NetworkBehaviour
     [SyncVar]
     private float _spawnTime;
 
+    [Header("Настройки позиции эхо")]
+    [Tooltip("Минимальная высота над точкой столкновения для спавна эхо")]
+    [SerializeField] private float _minEchoHeight = 0.3f;
+
     private EchoPreset _echoPreset;
     private Rigidbody _rigidbody;
     private bool _isReady;
-    private bool _isServerInstance; // Локальный флаг сервера
+    private bool _isServerInstance;
+    
+    // Позиция в предыдущем кадре
+    private Vector3 _previousPosition;
+    private bool _hasPreviousPosition;
     
     // Сохранённые параметры броска для отложенного применения
     private Vector3 _pendingVelocity;
@@ -52,12 +60,16 @@ public class EchoBolt : NetworkBehaviour
         _maxLifetime = maxLifetime;
         _currentCollisions = 0;
         _spawnTime = Time.time;
-        _isServerInstance = true; // Мы на сервере
+        _isServerInstance = true;
         
         // Сохраняем параметры броска
         _pendingVelocity = velocity;
         _pendingAngularVelocity = angularVelocity;
         _hasPendingForce = true;
+        
+        // Инициализируем предыдущую позицию
+        _previousPosition = transform.position;
+        _hasPreviousPosition = true;
         
         // Запускаем отложенную активацию
         StartCoroutine(DelayedActivation());
@@ -119,22 +131,65 @@ public class EchoBolt : NetworkBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        // Сохраняем позицию для следующего кадра (только на сервере)
+        if (_isReady && _isServerInstance)
+        {
+            _previousPosition = transform.position;
+            _hasPreviousPosition = true;
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         // Проверяем готовность
         if (!_isReady || !_isServerInstance) return;
 
-        // Создаём эхо на месте столкновения
-        SpawnEchoAtCollision(collision.contacts[0].point);
+        // Определяем позицию для спавна эхо
+        Vector3 echoPosition = GetEchoSpawnPosition(collision);
+        
+        // Создаём эхо
+        SpawnEchoAtCollision(echoPosition);
 
         _currentCollisions++;
 
         if (_currentCollisions >= _maxCollisions)
         {
             // Финальное эхо перед уничтожением
-            SpawnFinalEcho(collision.contacts[0].point);
+            SpawnFinalEcho(echoPosition);
             NetworkServer.Destroy(gameObject);
         }
+    }
+
+    /// <summary>
+    /// Определяет позицию для спавна эхо.
+    /// Использует предыдущую позицию если коллизия с полом (нормаль направлена вверх).
+    /// </summary>
+    private Vector3 GetEchoSpawnPosition(Collision collision)
+    {
+        Vector3 contactPoint = collision.contacts[0].point;
+        Vector3 contactNormal = collision.contacts[0].normal;
+        
+        // Проверяем, это коллизия с полом (нормаль направлена вверх)?
+        bool isFloorCollision = Vector3.Dot(contactNormal, Vector3.up) > 0.7f;
+        
+        if (isFloorCollision && _hasPreviousPosition)
+        {
+            // Используем предыдущую позицию, но не ниже минимальной высоты над точкой контакта
+            Vector3 echoPos = _previousPosition;
+            
+            // Убеждаемся что эхо не ниже минимальной высоты
+            if (echoPos.y < contactPoint.y + _minEchoHeight)
+            {
+                echoPos.y = contactPoint.y + _minEchoHeight;
+            }
+            
+            return echoPos;
+        }
+        
+        // Для стен и потолков используем точку контакта со смещением по нормали
+        return contactPoint + contactNormal * 0.1f;
     }
 
     /// <summary>
