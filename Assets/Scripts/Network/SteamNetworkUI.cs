@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using Mirror;
 using TMPro;
-
+using System.Text;
 
 #if !DISABLESTEAMWORKS
 using Steamworks;
@@ -14,6 +14,7 @@ using Steamworks;
 /// UI controller for Steam network operations.
 /// Handles Host, Leave, Invite, Join and Copy Lobby ID buttons.
 /// Also displays voice hints when player enters voice activation zones.
+/// Also displays inventory items with their voice keywords and counts.
 /// </summary>
 public class SteamNetworkUI : MonoBehaviour
 {
@@ -32,8 +33,16 @@ public class SteamNetworkUI : MonoBehaviour
     public GameObject voiceHintPanel;
     [Tooltip("Text field to display the voice hint (e.g. 'Speak: Open')")]
     public TextMeshProUGUI voiceHintText;
+    
+    [Header("Inventory UI")]
+    [Tooltip("Panel containing the inventory display (will be shown/hidden based on items)")]
+    public GameObject inventoryPanel;
+    [Tooltip("Text field to display inventory items with keywords and counts")]
+    public TextMeshProUGUI inventoryText;
 
     private SteamLobby steamLobby;
+    private PlayerInventory _currentInventory;
+    private readonly StringBuilder _inventoryStringBuilder = new StringBuilder();
 
     private void Awake()
     {
@@ -90,6 +99,9 @@ public class SteamNetworkUI : MonoBehaviour
 
         // Hide voice hint by default
         HideVoiceHint();
+        
+        // Hide inventory panel by default
+        HideInventoryPanel();
 
         UpdateUI();
     }
@@ -118,6 +130,79 @@ public class SteamNetworkUI : MonoBehaviour
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
+        }
+        
+        // Check for PlayerInventory and subscribe to changes
+        UpdateInventorySubscription();
+    }
+
+    private void UpdateInventorySubscription()
+    {
+        var inventory = PlayerInventory.LocalInstance;
+        
+        // If inventory changed, update subscription
+        if (inventory != _currentInventory)
+        {
+            // Unsubscribe from old inventory
+            if (_currentInventory != null)
+            {
+                _currentInventory.OnInventoryChanged -= RefreshInventoryDisplay;
+            }
+            
+            _currentInventory = inventory;
+            
+            // Subscribe to new inventory
+            if (_currentInventory != null)
+            {
+                _currentInventory.OnInventoryChanged += RefreshInventoryDisplay;
+                RefreshInventoryDisplay();
+            }
+            else
+            {
+                HideInventoryPanel();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Refreshes the inventory display UI.
+    /// </summary>
+    public void RefreshInventoryDisplay()
+    {
+        if (_currentInventory == null || _currentInventory.ItemCount == 0)
+        {
+            HideInventoryPanel();
+            return;
+        }
+        
+        _inventoryStringBuilder.Clear();
+        _inventoryStringBuilder.AppendLine("<b>Inventory:</b>");
+        
+        foreach (var item in _currentInventory.Items)
+        {
+            // Format: "ItemName" - say "keyword" (x3)
+            _inventoryStringBuilder.AppendLine($"• {item.DisplayName} - say \"<color=#FFD700>{item.Keyword}</color>\" (x{item.Count})");
+        }
+        
+        if (inventoryText != null)
+        {
+            inventoryText.text = _inventoryStringBuilder.ToString();
+        }
+        
+        if (inventoryPanel != null)
+        {
+            inventoryPanel.SetActive(true);
+        }
+    }
+    
+    /// <summary>
+    /// Hides the inventory panel.
+    /// </summary>
+    public void HideInventoryPanel()
+    {
+        if (inventoryPanel != null)
+        {
+            inventoryPanel.SetActive(false);
         }
     }
 
@@ -267,5 +352,15 @@ public class SteamNetworkUI : MonoBehaviour
             Debug.Log($"[SteamNetworkUI] Lobby ID copied: {lobbyId}");
         }
 #endif
+    }
+    
+    private void OnDestroy()
+    {
+        // Unsubscribe from inventory
+        if (_currentInventory != null)
+        {
+            _currentInventory.OnInventoryChanged -= RefreshInventoryDisplay;
+            _currentInventory = null;
+        }
     }
 }

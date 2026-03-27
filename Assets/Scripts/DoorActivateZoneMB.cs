@@ -7,8 +7,12 @@ public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
 {
     public VoiceActivateZoneMB activateZoneMB;
     private List<VoiceRecognizer> listPlayer = new();
+    
+    [SyncVar]
     private bool isOpened = false;
-    public string KeyWord = "Open"; // —лово дл€ открыти€ двери
+    
+    public string KeyWord = "Open";
+    
     public void Start()
     {
         activateZoneMB.activate += OnActivate;
@@ -28,7 +32,6 @@ public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
         voice.RemoveListener(this);
         listPlayer.Remove(voice);
         
-        // ”ничтожаем зону только если дверь уже открыта
         if (isOpened)
         {
             Destroy(activateZoneMB.gameObject);
@@ -41,15 +44,35 @@ public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
         
         if (string.Equals(word, KeyWord, StringComparison.OrdinalIgnoreCase))
         {
-            isOpened = true;
-            listPlayer.ForEach(voice => voice.RemoveListener(this));
-            listPlayer.Clear();
-            GetComponent<Animator>().SetBool("Open", true);
-            
-            // —крываем подсказку дл€ локального игрока
-            VoiceHintUI.Hide();
-            
-            // ”ничтожаем зону активации
+            CmdOpenDoor();
+        }
+    }
+    
+    [Command(requiresAuthority = false)]
+    private void CmdOpenDoor()
+    {
+        if (isOpened) return;
+        
+        isOpened = true;
+        RpcOpenDoor();
+    }
+    
+    [ClientRpc]
+    private void RpcOpenDoor()
+    {
+        OpenDoorLocally();
+    }
+    
+    private void OpenDoorLocally()
+    {
+        listPlayer.ForEach(voice => voice.RemoveListener(this));
+        listPlayer.Clear();
+        GetComponent<Animator>().SetBool("Open", true);
+        
+        VoiceHintUI.Hide();
+        
+        if (activateZoneMB != null)
+        {
             Destroy(activateZoneMB.gameObject);
         }
     }
