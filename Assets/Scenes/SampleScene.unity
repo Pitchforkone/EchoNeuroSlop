@@ -1574,6 +1574,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EBAKA
       objectReference: {fileID: 0}
+    - target: {fileID: 4798604300193791425, guid: 957eaf3155e56eb43a1c7345a4c46f4e, type: 3}
+      propertyPath: _detectAllTypes
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5607300969885882837, guid: 957eaf3155e56eb43a1c7345a4c46f4e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 29.83
@@ -1634,6 +1638,10 @@ PrefabInstance:
       propertyPath: '_patrolPoints.Array.data[4]'
       value: 
       objectReference: {fileID: 1636094650}
+    - target: {fileID: 7581270090154440395, guid: 957eaf3155e56eb43a1c7345a4c46f4e, type: 3}
+      propertyPath: _detectAllTypes
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
