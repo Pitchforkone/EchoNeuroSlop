@@ -51,6 +51,10 @@ public class EnemyAI : NetworkBehaviour
     [Header("Debug")]
     [SerializeField] private bool _showDebugInfo = true;
 
+    [Header("Kill Settings")]
+    [Tooltip("Тег игрока для обнаружения коллизии")]
+    [SerializeField] private string _playerTag = "Player";
+
     private NavMeshAgent _agent;
     private AudioSource _audioSource;
     
@@ -535,6 +539,129 @@ public class EnemyAI : NetworkBehaviour
             Vector3 targetPos = _chaseTargetTransform != null ? _chaseTargetTransform.position : _chaseTargetPosition;
             Gizmos.DrawLine(transform.position, targetPos);
             Gizmos.DrawWireSphere(targetPos, _chaseReachDistance);
+        }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (!isServer) return;
+        
+        if (hit.gameObject.CompareTag(_playerTag))
+        {
+            HandlePlayerCaught(hit.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!isServer) return;
+        
+        if (collision.gameObject.CompareTag(_playerTag))
+        {
+            HandlePlayerCaught(collision.gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!isServer) return;
+        
+        if (other.CompareTag(_playerTag))
+        {
+            HandlePlayerCaught(other.gameObject);
+        }
+    }
+
+    [Server]
+    private void HandlePlayerCaught(GameObject playerObject)
+    {
+        NetworkIdentity playerIdentity = playerObject.GetComponent<NetworkIdentity>();
+        if (playerIdentity == null)
+        {
+            // Попробуем найти в родителе
+            playerIdentity = playerObject.GetComponentInParent<NetworkIdentity>();
+        }
+
+        if (playerIdentity != null && playerIdentity.connectionToClient != null)
+        {
+            if (_showDebugInfo)
+            {
+                Debug.Log($"[EnemyAI] {gameObject.name} caught player {playerObject.name}, teleporting to start position...");
+            }
+
+            TeleportPlayerToStartPosition(playerIdentity);
+        }
+    }
+
+    [Server]
+    private void TeleportPlayerToStartPosition(NetworkIdentity playerIdentity)
+    {
+        // Получаем позицию спавна
+        Vector3 startPosition = GetPlayerSpawnPosition();
+
+        // Отключаем CharacterController перед телепортацией (он блокирует изменение позиции)
+        CharacterController characterController = playerIdentity.GetComponent<CharacterController>();
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+        }
+
+        // Перемещаем игрока на точку NetworkStartPosition
+        playerIdentity.transform.position = startPosition;
+        playerIdentity.transform.rotation = Quaternion.identity;
+
+        // Включаем CharacterController обратно
+        if (characterController != null)
+        {
+            characterController.enabled = true;
+        }
+
+        // Уведомляем клиента о перемещении и передаём позицию
+        RpcOnPlayerTeleported(playerIdentity.connectionToClient, startPosition);
+    }
+
+    private Vector3 GetPlayerSpawnPosition()
+    {
+        // Используем зарегистрированные точки спавна из NetworkManager
+        if (NetworkManager.startPositions.Count > 0)
+        {
+            Transform startPos = NetworkManager.startPositions[Random.Range(0, NetworkManager.startPositions.Count)];
+            if (startPos != null)
+            {
+                return startPos.position;
+            }
+        }
+
+        // Fallback - начальная позиция
+        Debug.LogWarning("[EnemyAI] No NetworkStartPosition found!");
+        return new Vector3(0, 1, 0);
+    }
+
+    [TargetRpc]
+    private void RpcOnPlayerTeleported(NetworkConnectionToClient target, Vector3 position)
+    {
+        // На клиенте тоже нужно телепортировать с отключением CharacterController
+        CharacterController characterController = GetComponent<CharacterController>();
+        if (characterController == null)
+        {
+            // Ищем CharacterController у локального игрока
+            NetworkIdentity localPlayer = NetworkClient.localPlayer;
+            if (localPlayer != null)
+            {
+                characterController = localPlayer.GetComponent<CharacterController>();
+            }
+        }
+
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+            characterController.transform.position = position;
+            characterController.enabled = true;
+        }
+
+        if (_showDebugInfo)
+        {
+            Debug.Log($"[EnemyAI] Player teleported to start position: {position}");
         }
     }
 }

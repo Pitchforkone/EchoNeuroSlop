@@ -112,11 +112,11 @@ GameObject:
   - component: {fileID: 5607300969885882837}
   - component: {fileID: 514954755217802436}
   - component: {fileID: 6387802809312541951}
-  - component: {fileID: -1752169002543913649}
   - component: {fileID: -4545412613623986966}
   - component: {fileID: -2101208918939036318}
   - component: {fileID: 5898079252020088970}
   - component: {fileID: -6344903117653302786}
+  - component: {fileID: 7265303411552419649}
   m_Layer: 0
   m_Name: EBAKA
   m_TagString: Untagged
@@ -199,29 +199,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &-1752169002543913649
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1480877992616214926}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2.5
-  m_Direction: 1
-  m_Center: {x: 0, y: 1.14, z: 0}
 --- !u!195 &-4545412613623986966
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -290,6 +267,7 @@ MonoBehaviour:
   _chaseStartClip: {fileID: 8300000, guid: 6b7a8f739f273b54dbda67cdbf72f51f, type: 3}
   _chaseStartVolume: 1
   _showDebugInfo: 0
+  _playerTag: Player
 --- !u!114 &-6344903117653302786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,6 +302,29 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!136 &7265303411552419649
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1480877992616214926}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.83
+  m_Height: 4.54
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.0025591, z: -0.02}
 --- !u!1 &1985581293526244069
 GameObject:
   m_ObjectHideFlags: 0
