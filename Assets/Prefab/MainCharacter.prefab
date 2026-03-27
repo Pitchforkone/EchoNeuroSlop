@@ -231,10 +231,6 @@ MonoBehaviour:
     key: 29
     mouseButton: 0
     word: Open
-  - inputType: 1
-    key: 21
-    mouseButton: 1
-    word: Grenade
   - inputType: 0
     key: 41
     mouseButton: 1
