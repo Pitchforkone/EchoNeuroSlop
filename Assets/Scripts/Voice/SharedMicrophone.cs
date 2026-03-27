@@ -2,29 +2,29 @@ using UnityEngine;
 using Mirror;
 
 /// <summary>
-/// Компонент микрофона для игрока в мультиплеере.
-/// Запускает запись только для локального игрока.
-/// Другие скрипты могут получить доступ через статическое свойство LocalInstance.
-/// Повесить на префаб игрока.
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
+/// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ LocalInstance.
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
 /// </summary>
 public class SharedMicrophone : NetworkBehaviour
 {
     /// <summary>
-    /// Ссылка на микрофон локального игрока.
-    /// Доступна только на клиенте для локального игрока.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     public static SharedMicrophone LocalInstance { get; private set; }
 
     /// <summary>
-    /// Устаревшее свойство для обратной совместимости.
-    /// Используйте LocalInstance.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ LocalInstance.
     /// </summary>
     public static SharedMicrophone Instance => LocalInstance;
 
-    [Tooltip("Частота дискретизации микрофона")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private int _sampleRate = 16000;
 
-    [Tooltip("Длина кольцевого буфера записи (секунды)")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)")]
     [SerializeField] private int _bufferLengthSec = 1;
 
     public AudioClip Clip { get; private set; }
@@ -34,8 +34,8 @@ public class SharedMicrophone : NetworkBehaviour
 
     private void Awake()
     {
-        // В мультиплеере инициализация происходит в OnStartLocalPlayer
-        // В синглплеере - здесь
+        // пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ OnStartLocalPlayer
+        // пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅ
         if (!NetworkClient.active)
         {
             InitializeAsLocal();
@@ -50,7 +50,7 @@ public class SharedMicrophone : NetworkBehaviour
 
     private void InitializeAsLocal()
     {
-        // Если уже есть локальный микрофон, уничтожаем старый
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (LocalInstance != null && LocalInstance != this)
         {
             LocalInstance.StopRecording();
@@ -62,7 +62,7 @@ public class SharedMicrophone : NetworkBehaviour
 
     private void Start()
     {
-        // Для синглплеера запускаем запись в Start если ещё не запущена
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Start пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (!NetworkClient.active && !IsRecording)
         {
             StartRecording();
@@ -71,21 +71,21 @@ public class SharedMicrophone : NetworkBehaviour
 
     public void StartRecording()
     {
-        // Запись только для локального игрока
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (NetworkClient.active && !isLocalPlayer) return;
 
         if (IsRecording) return;
 
         if (Microphone.devices.Length == 0)
         {
-            Debug.LogWarning("[SharedMicrophone] Микрофон не найден!");
+            Debug.LogWarning("[SharedMicrophone] пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!");
             return;
         }
 
         DeviceName = Microphone.devices[0];
         Clip = Microphone.Start(DeviceName, true, _bufferLengthSec, _sampleRate);
         IsRecording = true;
-        Debug.Log($"[SharedMicrophone] Запись запущена: {DeviceName}, {_sampleRate} Hz");
+        Debug.Log($"[SharedMicrophone] пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {DeviceName}, {_sampleRate} Hz");
     }
 
     public void StopRecording()
@@ -97,11 +97,11 @@ public class SharedMicrophone : NetworkBehaviour
 
         Clip = null;
         IsRecording = false;
-        Debug.Log("[SharedMicrophone] Запись остановлена");
+        Debug.Log("[SharedMicrophone] пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
     }
 
     /// <summary>
-    /// Текущая позиция записи в сэмплах.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     public int GetPosition()
     {
@@ -117,7 +117,7 @@ public class SharedMicrophone : NetworkBehaviour
 
     private void OnDisable()
     {
-        // Для синглплеера
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (!NetworkClient.active)
         {
             CleanupLocal();
