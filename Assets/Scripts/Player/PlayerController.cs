@@ -28,6 +28,10 @@ public class PlayerController : NetworkBehaviour
     [Header("Input")]
     [SerializeField] private InputActionAsset _inputActions;
 
+    [Header("Animation")]
+    [SerializeField] private Animator _animator;
+    [SerializeField] private float _animSmoothTime = 0.1f;
+
     [Header("Step Events")]
     [SerializeField] private float _stepInterval = 0.5f;
     [SerializeField] private float _sprintStepInterval = 0.35f;
@@ -42,6 +46,7 @@ public class PlayerController : NetworkBehaviour
     private Camera _camera;
     private AudioListener _audioListener;
     private bool _isSetup;
+    private Vector2 _smoothAnimInput;
 
     private InputAction _moveAction;
     private InputAction _lookAction;
@@ -72,15 +77,15 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        // Для мультиплеера - ждём OnStartLocalPlayer
-        // Для синглплеера (если нет NetworkClient) - сразу настраиваем
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅ OnStartLocalPlayer
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ NetworkClient) - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (!NetworkClient.active)
         {
             SetupLocalPlayer();
         }
         else if (!isLocalPlayer)
         {
-            // Для удалённых игроков отключаем камеру и аудио
+            // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
             DisableRemotePlayerComponents();
         }
     }
@@ -121,7 +126,7 @@ public class PlayerController : NetworkBehaviour
 
     private void DisableRemotePlayerComponents()
     {
-        // Отключаем камеру и аудио для удалённых игроков
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
         if (_camera != null)
             _camera.enabled = false;
@@ -147,7 +152,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        // Только локальный игрок управляет своим персонажем
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (!_isSetup) return;
         if (NetworkClient.active && !isLocalPlayer) return;
 
@@ -195,7 +200,17 @@ public class PlayerController : NetworkBehaviour
         _verticalVelocity += _gravity * Time.deltaTime;
         _controller.Move(Vector3.up * (_verticalVelocity * Time.deltaTime));
 
+        UpdateAnimator(moveInput);
         UpdateStepTimer(moveInput);
+    }
+
+    private void UpdateAnimator(Vector2 moveInput)
+    {
+        if (_animator == null) return;
+
+        _smoothAnimInput = Vector2.MoveTowards(_smoothAnimInput, moveInput, Time.deltaTime / _animSmoothTime);
+        _animator.SetFloat("X", _smoothAnimInput.x);
+        _animator.SetFloat("Y", _smoothAnimInput.y);
     }
 
     private void UpdateCrouch()
