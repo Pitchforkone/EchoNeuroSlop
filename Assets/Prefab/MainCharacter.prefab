@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: -1175952030455131555}
   - component: {fileID: -3264970170658783643}
   - component: {fileID: -9122777143176006464}
+  - component: {fileID: -2931695944372483484}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Player
@@ -337,6 +338,31 @@ MonoBehaviour:
   _activeDuration: 10
   _fadeDuration: 3
   _cooldown: 0
+--- !u!114 &-2931695944372483484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932ef4997eba7f343bdc041e93dc158a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MicrophoneVolumeUI
+  _volumeBar: {fileID: 0}
+  _backgroundBar: {fileID: 0}
+  _canvas: {fileID: 0}
+  _sampleSize: 256
+  _sensitivity: 100
+  _smoothSpeed: 5
+  _minThreshold: 0.01
+  _lowVolumeColor: {r: 0.2, g: 0.8, b: 0.2, a: 1}
+  _midVolumeColor: {r: 1, g: 0.8, b: 0.2, a: 1}
+  _highVolumeColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  _barWidth: 200
+  _barHeight: 20
+  _bottomOffset: 50
 --- !u!1 &2812847854523134801
 GameObject:
   m_ObjectHideFlags: 0
