@@ -664,4 +664,5 @@ public class EnemyAI : NetworkBehaviour
             Debug.Log($"[EnemyAI] Player teleported to start position: {position}");
         }
     }
+
 }

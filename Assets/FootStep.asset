@@ -16,5 +16,5 @@ MonoBehaviour:
   _speed: 8
   _maxRadius: 5
   _color: {r: 1, g: 1, b: 1, a: 1}
-  _intensity: 1.5
+  _intensity: 3
   _lifetimeOverride: 0.6

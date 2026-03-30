@@ -396,7 +396,7 @@ MonoBehaviour:
   _priority: 10
   _showDebugInfo: 1
   _detectableEchoType: 4
-  _detectAllTypes: 0
+  _detectAllTypes: 1
   _minIntensity: 0
 --- !u!54 &7193130986727505737
 Rigidbody:
@@ -496,7 +496,7 @@ MonoBehaviour:
   _priority: 9
   _showDebugInfo: 1
   _detectableEchoType: 1
-  _detectAllTypes: 0
+  _detectAllTypes: 1
   _minIntensity: 0
 --- !u!54 &2848373397624964341
 Rigidbody:
