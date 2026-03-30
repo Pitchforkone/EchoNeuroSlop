@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 5718293217040492545}
   - component: {fileID: -1175952030455131555}
   - component: {fileID: -3264970170658783643}
+  - component: {fileID: -9122777143176006464}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Player
@@ -243,6 +244,10 @@ MonoBehaviour:
     key: 25
     mouseButton: 1
     word: Key
+  - inputType: 0
+    key: 19
+    mouseButton: 1
+    word: Glasses
   _onWordSent:
     m_PersistentCalls:
       m_Calls: []
@@ -309,6 +314,28 @@ MonoBehaviour:
   _grenadeLifetime: 5
   _echoPreset: {fileID: 11400000, guid: 145355dbe1713c3448c7e4a80cb047d2, type: 2}
   _blinkInterval: 0.3
+  _cooldown: 0
+--- !u!114 &-9122777143176006464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebf6a110719f6b14b871b060c82a6bab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NightVisionController
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _lightPrefab: {fileID: 458185241364638914, guid: 9d501e5b5485e0644b1e3e22e12f0c2f, type: 3}
+  _lightIntensity: 2
+  _lightRange: 50
+  _lightColor: {r: 1, g: 1, b: 1, a: 1}
+  _activeDuration: 10
+  _fadeDuration: 3
   _cooldown: 0
 --- !u!1 &2812847854523134801
 GameObject:

@@ -29,7 +29,8 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
     public enum PickupItemType
     {
         ExitKey,
-        Grenade
+        Grenade,
+        NightVision
     }
     
     private void Start()
@@ -136,6 +137,8 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
                 return new ExitKeyItem(_count);
             case PickupItemType.Grenade:
                 return new GrenadeItem(_count);
+            case PickupItemType.NightVision:
+                return new NightVisionItem(_count);
             default:
                 Debug.LogError($"[PickupableItem] Unknown item type: {_itemType}");
                 return null;

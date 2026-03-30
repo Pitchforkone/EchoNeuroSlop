@@ -186,7 +186,6 @@ public class BoltThrower : NetworkBehaviour
         if (Time.time - _lastThrowTime < _cooldown)
         {
             float remaining = _cooldown - (Time.time - _lastThrowTime);
-            Debug.Log($"[BoltThrower] Перезарядка: {remaining:F1}с");
             return;
         }
 
