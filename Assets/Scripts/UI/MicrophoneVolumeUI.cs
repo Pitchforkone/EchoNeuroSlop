@@ -7,6 +7,8 @@ using UnityEngine.UI;
 /// Автоматически создаёт Canvas с UI элементами.
 /// Использует SharedMicrophone для получения аудио данных.
 /// 
+/// ВАЖНО: Этот компонент только читает данные, не влияет на работу VoiceRecognizer.
+/// 
 /// Использование:
 ///   1. Добавьте этот компонент на любой GameObject в сцене.
 ///   2. При запуске автоматически создастся Canvas с полоской громкости.
@@ -29,7 +31,7 @@ public class MicrophoneVolumeUI : MonoBehaviour
     
     [Header("Settings")]
     [Tooltip("Количество сэмплов для анализа громкости")]
-    [SerializeField] private int _sampleSize = 256;
+    [SerializeField] private int _sampleSize = 128;
     
     [Tooltip("Множитель чувствительности микрофона")]
     [SerializeField] private float _sensitivity = 100f;
@@ -39,6 +41,9 @@ public class MicrophoneVolumeUI : MonoBehaviour
     
     [Tooltip("Минимальный порог громкости для отображения")]
     [SerializeField] private float _minThreshold = 0.01f;
+    
+    [Tooltip("Интервал обновления громкости (секунды). Меньше = чаще обновляется")]
+    [SerializeField] private float _updateInterval = 0.05f;
     
     [Header("Visual Settings")]
     [Tooltip("Цвет полоски при низкой громкости")]
@@ -62,8 +67,8 @@ public class MicrophoneVolumeUI : MonoBehaviour
     private float[] _samples;
     private float _currentVolume;
     private float _smoothedVolume;
-    private int _lastPosition;
     private bool _isInitialized;
+    private float _lastUpdateTime;
 
     private void Start()
     {
@@ -193,7 +198,14 @@ public class MicrophoneVolumeUI : MonoBehaviour
     {
         if (!_isInitialized) return;
         
-        UpdateVolume();
+        // Обновляем громкость с заданным интервалом (чтобы не нагружать систему)
+        if (Time.time - _lastUpdateTime >= _updateInterval)
+        {
+            _lastUpdateTime = Time.time;
+            UpdateVolume();
+        }
+        
+        // UI обновляем каждый кадр для плавной анимации
         UpdateUI();
     }
 
@@ -207,49 +219,70 @@ public class MicrophoneVolumeUI : MonoBehaviour
             return;
         }
         
+        AudioClip clip = mic.Clip;
+        
+        // Проверяем валидность клипа
+        if (clip.channels <= 0 || clip.samples <= 0)
+        {
+            _currentVolume = 0f;
+            return;
+        }
+        
         // Получаем текущую позицию записи
         int currentPosition = mic.GetPosition();
         
-        // Вычисляем сколько сэмплов доступно
-        int samplesToRead = _sampleSize;
-        int readPosition = currentPosition - samplesToRead;
+        // Защита от невалидной позиции
+        if (currentPosition < 0 || currentPosition >= clip.samples)
+        {
+            _currentVolume = 0f;
+            return;
+        }
+        
+        // Вычисляем безопасную позицию для чтения
+        // Читаем немного позади текущей позиции, чтобы не конфликтовать с записью
+        int samplesToRead = Mathf.Min(_sampleSize, clip.samples / 2);
+        int readPosition = currentPosition - samplesToRead - 64; // небольшой отступ
         
         if (readPosition < 0)
         {
-            readPosition += mic.Clip.samples;
+            readPosition += clip.samples;
         }
         
-        // Читаем сэмплы из AudioClip
-        if (mic.Clip.channels > 0 && mic.Clip.samples > 0)
+        // Убеждаемся что позиция в допустимых пределах
+        readPosition = Mathf.Clamp(readPosition, 0, clip.samples - samplesToRead);
+        
+        // Проверяем размер буфера
+        if (_samples == null || _samples.Length != samplesToRead)
         {
-            try
+            _samples = new float[samplesToRead];
+        }
+        
+        try
+        {
+            // Читаем сэмплы из AudioClip
+            clip.GetData(_samples, readPosition);
+            
+            // Вычисляем RMS (Root Mean Square) для громкости
+            float sum = 0f;
+            for (int i = 0; i < _samples.Length; i++)
             {
-                mic.Clip.GetData(_samples, readPosition % mic.Clip.samples);
-                
-                // Вычисляем RMS (Root Mean Square) для громкости
-                float sum = 0f;
-                for (int i = 0; i < _samples.Length; i++)
-                {
-                    sum += _samples[i] * _samples[i];
-                }
-                
-                float rms = Mathf.Sqrt(sum / _samples.Length);
-                _currentVolume = Mathf.Clamp01(rms * _sensitivity);
-                
-                // Применяем минимальный порог
-                if (_currentVolume < _minThreshold)
-                {
-                    _currentVolume = 0f;
-                }
+                sum += _samples[i] * _samples[i];
             }
-            catch (System.Exception)
+            
+            float rms = Mathf.Sqrt(sum / _samples.Length);
+            _currentVolume = Mathf.Clamp01(rms * _sensitivity);
+            
+            // Применяем минимальный порог
+            if (_currentVolume < _minThreshold)
             {
-                // Игнорируем ошибки чтения (может произойти при старте)
                 _currentVolume = 0f;
             }
         }
-        
-        _lastPosition = currentPosition;
+        catch (System.Exception)
+        {
+            // Игнорируем ошибки чтения (может произойти при старте или смене устройства)
+            _currentVolume = 0f;
+        }
     }
 
     private void UpdateUI()
@@ -339,11 +372,12 @@ public class MicrophoneVolumeUI : MonoBehaviour
     private void OnValidate()
     {
         // Проверки в редакторе
-        if (_sampleSize < 64) _sampleSize = 64;
-        if (_sampleSize > 2048) _sampleSize = 2048;
+        if (_sampleSize < 32) _sampleSize = 32;
+        if (_sampleSize > 1024) _sampleSize = 1024;
         if (_sensitivity < 1f) _sensitivity = 1f;
         if (_barMaxWidth < 50f) _barMaxWidth = 50f;
         if (_barHeight < 5f) _barHeight = 5f;
+        if (_updateInterval < 0.01f) _updateInterval = 0.01f;
     }
 #endif
 }

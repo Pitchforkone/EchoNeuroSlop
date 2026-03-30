@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: -3264970170658783643}
   - component: {fileID: -9122777143176006464}
   - component: {fileID: -2931695944372483484}
+  - component: {fileID: -13429881480025382}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Player
@@ -97,6 +98,8 @@ MonoBehaviour:
   _crouchHeight: 1.2
   _crouchTransitionSpeed: 8
   _inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _animator: {fileID: 0}
+  _animSmoothTime: 0.1
   _stepInterval: 0.5
   _sprintStepInterval: 0.35
 --- !u!114 &-8153825331983513599
@@ -351,6 +354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MicrophoneVolumeUI
   _volumeBar: {fileID: 0}
+  _volumeBarRect: {fileID: 0}
   _backgroundBar: {fileID: 0}
   _canvas: {fileID: 0}
   _sampleSize: 256
@@ -360,9 +364,26 @@ MonoBehaviour:
   _lowVolumeColor: {r: 0.2, g: 0.8, b: 0.2, a: 1}
   _midVolumeColor: {r: 1, g: 0.8, b: 0.2, a: 1}
   _highVolumeColor: {r: 1, g: 0.2, b: 0.2, a: 1}
-  _barWidth: 200
+  _barMaxWidth: 200
   _barHeight: 20
   _bottomOffset: 50
+--- !u!114 &-13429881480025382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768691847901248487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkAnimator
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 0
+  animator: {fileID: 0}
 --- !u!1 &2812847854523134801
 GameObject:
   m_ObjectHideFlags: 0

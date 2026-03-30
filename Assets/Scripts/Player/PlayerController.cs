@@ -66,6 +66,7 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
+        _animator = GetComponent<Animator>();
         _targetHeight = _standHeight;
     }
 
