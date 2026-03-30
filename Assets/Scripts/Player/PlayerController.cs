@@ -31,6 +31,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Animation")]
     [SerializeField] private Animator _animator;
     [SerializeField] private float _animSmoothTime = 0.1f;
+    [SerializeField] private NetworkAnimator _networkAnimator;
 
     [Header("Step Events")]
     [SerializeField] private float _stepInterval = 0.5f;
@@ -67,6 +68,7 @@ public class PlayerController : NetworkBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
+        _networkAnimator = GetComponent<NetworkAnimator>();
         _targetHeight = _standHeight;
     }
 
@@ -210,6 +212,8 @@ public class PlayerController : NetworkBehaviour
         if (_animator == null) return;
 
         _smoothAnimInput = Vector2.MoveTowards(_smoothAnimInput, moveInput, Time.deltaTime / _animSmoothTime);
+        
+        // Устанавливаем параметры напрямую - NetworkAnimator синхронизирует их
         _animator.SetFloat("X", _smoothAnimInput.x);
         _animator.SetFloat("Y", _smoothAnimInput.y);
     }
