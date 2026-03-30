@@ -379,7 +379,8 @@ MonoBehaviour:
   evaluationInterval: 3
   timeInterpolationGui: 0
   characterPrefabs:
-  - {fileID: 768691847901248487, guid: fcb0f7396b3228643847e380baf6e063, type: 3}
+  - {fileID: 1328023254706044480, guid: 257c304c754d3b247a51ef5bea7a90d0, type: 3}
+  - {fileID: 5352958571798197664, guid: c564c8c0d0cdc45429417f315e9f3e41, type: 3}
   spawnPosition: {x: 0, y: 1, z: 0}
   spawnRadius: 3
 --- !u!1 &145780586
