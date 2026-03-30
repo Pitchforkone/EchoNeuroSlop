@@ -78,17 +78,30 @@ public class PlayerController : NetworkBehaviour
         SetupLocalPlayer();
     }
 
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        
+        // Для удалённых игроков отключаем CharacterController,
+        // чтобы NetworkTransform мог устанавливать позицию
+        if (!isLocalPlayer)
+        {
+            if (_controller != null)
+                _controller.enabled = false;
+        }
+    }
+
     private void Start()
     {
-        // ��� ������������ - ��� OnStartLocalPlayer
-        // ��� ����������� (���� ��� NetworkClient) - ����� �����������
+        // Для одиночной игры - без OnStartLocalPlayer
+        // Для мультиплеера (если без NetworkClient) - тоже инициализируем
         if (!NetworkClient.active)
         {
             SetupLocalPlayer();
         }
         else if (!isLocalPlayer)
         {
-            // ��� �������� ������� ��������� ������ � �����
+            // Для удалённых игроков отключаем камеру и аудио
             DisableRemotePlayerComponents();
         }
     }
@@ -129,7 +142,7 @@ public class PlayerController : NetworkBehaviour
 
     private void DisableRemotePlayerComponents()
     {
-        // ��������� ������ � ����� ��� �������� �������
+        // Для удалённых игроков отключаем камеру и аудио
         _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
         if (_camera != null)
             _camera.enabled = false;
@@ -155,7 +168,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        // ������ ��������� ����� ��������� ����� ����������
+        // Обновление логики игрока производится только на локальном клиенте
         if (!_isSetup) return;
         if (NetworkClient.active && !isLocalPlayer) return;
 
