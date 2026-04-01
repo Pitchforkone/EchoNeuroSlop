@@ -1,469 +1,434 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Mirror;
+using Unity.Services.Core;
+using Unity.Services.Authentication;
+using Unity.Services.Vivox;
 
 /// <summary>
-/// Компонент голосового чата для мультиплеера.
-/// Вешается на префаб игрока рядом с SharedMicrophone.
+/// Компонент голосового чата на базе Vivox.
+/// Автоматически подключается к голосовому каналу при спавне игрока.
 ///
-/// Локальный игрок: захватывает аудио с микрофона, сжимает в PCM16-байты,
-/// отправляет чанками через Mirror Command ? ClientRpc.
-///
-/// Удалённый игрок: принимает аудио-чанки, помещает в кольцевой буфер
-/// и воспроизводит через AudioSource с 3D-позиционированием.
-///
-/// Поддерживает Push-to-Talk (по кнопке) и Voice Activity Detection (VAD).
+/// Поддерживает Push-to-Talk (по умолчанию) и Voice Activity Detection (VAD).
+/// Сохраняет публичный API для совместимости с VoiceChatUI.
 /// </summary>
 [RequireComponent(typeof(NetworkIdentity))]
 public class VoiceChat : NetworkBehaviour
 {
-    // ??????????????????????? Настройки ???????????????????????
+    // ========================= Настройки =========================
 
-    [Header("Режим активации")]
-    [Tooltip("Если true — нужно зажимать кнопку для передачи голоса (Push-to-Talk).\n" +
-             "Если false — передача включена всегда когда громкость выше порога (VAD).")]
+    [Header("Режим передачи")]
+    [Tooltip("Если true — голос передаётся только при зажатии кнопки (Push-to-Talk).\n" +
+             "Если false — голосовая активация (VAD).")]
     [SerializeField] private bool _pushToTalk = true;
 
-    [Tooltip("Клавиша Push-to-Talk")]
+    [Tooltip("Кнопка Push-to-Talk")]
     [SerializeField] private Key _pttKey = Key.T;
 
-    [Header("VAD (Voice Activity Detection)")]
-    [Tooltip("Минимальный RMS-уровень для включения передачи (0-1)")]
-    [SerializeField] private float _vadThreshold = 0.01f;
+    [Header("Звук")]
+    [Tooltip("Громкость воспроизведения входящего голоса (0-100)")]
+    [SerializeField, Range(0, 100)] private int _playbackVolume = 50;
 
-    [Tooltip("Время удержания передачи после падения громкости ниже порога (сек)")]
-    [SerializeField] private float _vadHoldTime = 0.3f;
+    [Header("Vivox канал")]
+    [Tooltip("Имя голосового канала Vivox. Все игроки с одинаковым именем слышат друг друга.")]
+    [SerializeField] private string _channelName = "GameVoice";
 
-    [Header("Аудио")]
-    [Tooltip("Длина одного чанка в миллисекундах (20-100). Меньше = ниже задержка, больше трафик.")]
-    [SerializeField] private int _chunkMs = 20;
+    [Tooltip("Тип канала: Positional (3D) или NonPositional (обычный)")]
+    [SerializeField] private bool _use3DPositional = true;
 
-    [Tooltip("Громкость воспроизведения входящего голоса (0-2)")]
-    [SerializeField] private float _playbackVolume = 1f;
+    [Header("3D-звук (Positional)")]
+    [Tooltip("Максимальная дистанция слышимости голоса")]
+    [SerializeField] private int _audibleDistance = 30;
 
-    [Tooltip("Даунсэмплинг: передавать аудио с пониженной частотой для экономии трафика.\n" +
-             "8000 — телефонное качество (~50%% трафика). 0 — без даунсэмплинга.")]
-    [SerializeField] private int _transmitSampleRate = 8000;
+    [Tooltip("Дистанция полной громкости (без затухания)")]
+    [SerializeField] private int _conversationalDistance = 5;
 
-    [Header("Джиттер-буфер")]
-    [Tooltip("Количество чанков, которые нужно накопить перед началом воспроизведения.\n" +
-             "Больше = стабильнее, но выше задержка. 2-4 рекомендуется.")]
-    [SerializeField] private int _jitterBufferSize = 3;
+    [Tooltip("Fade intensity (1.0 = линейное затухание)")]
+    [SerializeField] private float _audioFadeIntensity = 1.0f;
 
-    [Header("3D-звук")]
-    [Tooltip("Минимальная дистанция 3D-звука")]
-    [SerializeField] private float _minDistance = 1f;
+    // ========================= Публичные свойства =========================
 
-    [Tooltip("Максимальная дистанция 3D-звука. За ней голос не слышен.")]
-    [SerializeField] private float _maxDistance = 30f;
-
-    // ??????????????????????? Публичные свойства ???????????????????????
-
-    /// <summary>Передаёт ли локальный игрок голос прямо сейчас.</summary>
+    /// <summary>Говорит ли локальный игрок прямо сейчас.</summary>
     public bool IsTransmitting { get; private set; }
 
-    /// <summary>Воспроизводит ли удалённый игрок голос прямо сейчас.</summary>
+    /// <summary>Воспроизводится ли входящий голос другого игрока.</summary>
     public bool IsPlayingVoice { get; private set; }
 
-    /// <summary>Событие: изменилось состояние передачи (true = начал говорить).</summary>
+    /// <summary>Событие: изменилось состояние передачи (true = голос передаётся).</summary>
     public event Action<bool> OnTransmitStateChanged;
 
-    /// <summary>Событие: изменилось состояние воспроизведения удалённого голоса.</summary>
+    /// <summary>Событие: изменилось состояние воспроизведения входящего голоса.</summary>
     public event Action<bool> OnPlaybackStateChanged;
 
-    // ??????????????????????? Приватные поля ???????????????????????
+    // ========================= Приватные поля =========================
 
-    // --- Локальный игрок (отправка) ---
-    private SharedMicrophone _microphone;
-    private int _lastMicPosition;
-    private int _chunkSizeSamples;          // размер чанка в семплах
-    private readonly List<float> _sendBuffer = new List<float>();
     private Keyboard _keyboard;
-    private float _vadTimer;
     private bool _wasTransmitting;
-
-    // --- Удалённый игрок (приём) ---
-    private AudioSource _audioSource;
-    private AudioClip _playbackClip;
-    private int _playbackWritePos;
-    private float _playbackSilenceTimer;
     private bool _wasPlaying;
-    private int _playbackSampleRate;
-    private bool _playbackStarted;
-    private int _jitterChunksReceived;
-    private readonly Queue<float[]> _jitterQueue = new Queue<float[]>();
+    private bool _isLoggedIn;
+    private bool _isInChannel;
+    private bool _isMuted;
+    private bool _localPlayerInitialized;
 
-    // Константы
-    private const int PlaybackBufferSeconds = 2;   // длина буфера воспроизведения
-    private const float PlaybackSilenceTimeout = 0.5f;
+    private static bool _servicesInitialized;
+    private static bool _vivoxInitialized;
+    private static bool _authenticated;
 
-    // ??????????????????????? Жизненный цикл ???????????????????????
+    // ========================= Жизненный цикл =========================
 
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
-        SetupLocal();
+        StartCoroutine(InitializeAndJoin());
     }
 
     private void Start()
     {
-        // Для одиночной игры (без Mirror)
+        // Для оффлайн-режима
         if (!NetworkClient.active)
         {
-            SetupLocal();
-        }
-
-        // Для удалённых игроков — настраиваем воспроизведение
-        if (NetworkClient.active && !isLocalPlayer)
-        {
-            SetupRemotePlayback();
+            StartCoroutine(InitializeAndJoin());
         }
     }
 
-    private void SetupLocal()
+    private IEnumerator InitializeAndJoin()
     {
-        _microphone = GetComponent<SharedMicrophone>();
-        if (_microphone == null)
-            _microphone = SharedMicrophone.LocalInstance;
+        if (_localPlayerInitialized) yield break;
+        _localPlayerInitialized = true;
 
         _keyboard = Keyboard.current;
 
-        if (_microphone != null)
+        // 1. Инициализация Unity Services (один раз)
+        if (!_servicesInitialized)
         {
-            _chunkSizeSamples = (_microphone.SampleRate * _chunkMs) / 1000;
+            if (UnityServices.State != ServicesInitializationState.Initialized)
+            {
+                var initTask = UnityServices.InitializeAsync();
+                while (!initTask.IsCompleted) yield return null;
+
+                if (initTask.IsFaulted)
+                {
+                    Debug.LogError($"[VoiceChat] Unity Services initialization failed: {initTask.Exception}");
+                    yield break;
+                }
+            }
+            _servicesInitialized = true;
+            Debug.Log("[VoiceChat] Unity Services initialized");
+        }
+
+        // 2. Аутентификация через Unity Authentication (требуется для Vivox)
+        if (!_authenticated)
+        {
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                var authTask = AuthenticationService.Instance.SignInAnonymouslyAsync();
+                while (!authTask.IsCompleted) yield return null;
+
+                if (authTask.IsFaulted)
+                {
+                    Debug.LogError($"[VoiceChat] Authentication failed: {authTask.Exception}");
+                    yield break;
+                }
+            }
+            _authenticated = true;
+            Debug.Log($"[VoiceChat] Authenticated. Player ID: {AuthenticationService.Instance.PlayerId}");
+        }
+
+        // 3. Инициализация Vivox (один раз)
+        if (!_vivoxInitialized)
+        {
+            var vivoxInitTask = VivoxService.Instance.InitializeAsync();
+            while (!vivoxInitTask.IsCompleted) yield return null;
+
+            if (vivoxInitTask.IsFaulted)
+            {
+                Debug.LogError($"[VoiceChat] Vivox initialization failed: {vivoxInitTask.Exception}");
+                yield break;
+            }
+
+            _vivoxInitialized = true;
+            Debug.Log("[VoiceChat] Vivox initialized");
+        }
+
+        // 4. Login
+        if (!_isLoggedIn)
+        {
+            yield return LoginToVivox();
+        }
+
+        // 5. Join channel
+        if (_isLoggedIn && !_isInChannel)
+        {
+            yield return JoinChannel();
+        }
+
+        // 6. Настройка режима передачи
+        ApplyTransmissionMode();
+        ApplyVolume();
+    }
+
+    private IEnumerator LoginToVivox()
+    {
+        string playerId;
+
+        if (NetworkClient.active)
+        {
+            playerId = $"Player_{netId}";
+        }
+        else
+        {
+            playerId = $"Player_{UnityEngine.Random.Range(1000, 9999)}";
+        }
+
+        var loginOptions = new LoginOptions()
+        {
+            DisplayName = playerId
+        };
+
+        var loginTask = VivoxService.Instance.LoginAsync(loginOptions);
+        while (!loginTask.IsCompleted) yield return null;
+
+        if (loginTask.IsFaulted)
+        {
+            Debug.LogError($"[VoiceChat] Vivox login failed: {loginTask.Exception}");
+            yield break;
+        }
+
+        _isLoggedIn = true;
+        Debug.Log($"[VoiceChat] Vivox logged in as {playerId}");
+    }
+
+    private IEnumerator JoinChannel()
+    {
+        ChatCapability capability = ChatCapability.AudioOnly;
+
+        if (_use3DPositional)
+        {
+            Channel3DProperties spatialProps = new Channel3DProperties(
+                _audibleDistance,
+                _conversationalDistance,
+                _audioFadeIntensity,
+                AudioFadeModel.InverseByDistance
+            );
+
+            var joinTask = VivoxService.Instance.JoinPositionalChannelAsync(
+                _channelName, capability, spatialProps);
+            while (!joinTask.IsCompleted) yield return null;
+
+            if (joinTask.IsFaulted)
+            {
+                Debug.LogError($"[VoiceChat] Failed to join positional channel: {joinTask.Exception}");
+                yield break;
+            }
+        }
+        else
+        {
+            var joinTask = VivoxService.Instance.JoinGroupChannelAsync(
+                _channelName, capability);
+            while (!joinTask.IsCompleted) yield return null;
+
+            if (joinTask.IsFaulted)
+            {
+                Debug.LogError($"[VoiceChat] Failed to join group channel: {joinTask.Exception}");
+                yield break;
+            }
+        }
+
+        _isInChannel = true;
+        Debug.Log($"[VoiceChat] Joined Vivox channel: {_channelName}");
+
+        // Подписываемся на события участников для отслеживания говорящих
+        VivoxService.Instance.ParticipantAddedToChannel += OnParticipantAdded;
+        VivoxService.Instance.ParticipantRemovedFromChannel += OnParticipantRemoved;
+    }
+
+    private void OnParticipantAdded(VivoxParticipant participant)
+    {
+        if (!participant.IsSelf)
+        {
+            participant.ParticipantSpeechDetected += () => UpdatePlaybackState();
         }
     }
 
-    private void SetupRemotePlayback()
+    private void OnParticipantRemoved(VivoxParticipant participant)
     {
-        // Создаём AudioSource для воспроизведения голоса удалённого игрока
-        _audioSource = gameObject.AddComponent<AudioSource>();
-        _audioSource.spatialBlend = 1f;        // полностью 3D
-        _audioSource.rolloffMode = AudioRolloffMode.Linear;
-        _audioSource.minDistance = _minDistance;
-        _audioSource.maxDistance = _maxDistance;
-        _audioSource.volume = _playbackVolume;
-        _audioSource.loop = true;
-        _audioSource.dopplerLevel = 0f;
-        _audioSource.playOnAwake = false;
-        _audioSource.priority = 0;             // высший приоритет
+        // VivoxParticipant events are auto-cleaned by Vivox SDK on removal
+        UpdatePlaybackState();
     }
+
+    private void UpdatePlaybackState()
+    {
+        if (!_isInChannel || VivoxService.Instance == null) return;
+
+        bool anyoneSpeaking = false;
+
+        try
+        {
+            if (VivoxService.Instance.ActiveChannels.ContainsKey(_channelName))
+            {
+                foreach (var participant in VivoxService.Instance.ActiveChannels[_channelName])
+                {
+                    if (!participant.IsSelf && participant.SpeechDetected)
+                    {
+                        anyoneSpeaking = true;
+                        break;
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+            // Channel may not be ready
+        }
+
+        if (anyoneSpeaking != _wasPlaying)
+        {
+            _wasPlaying = anyoneSpeaking;
+            IsPlayingVoice = anyoneSpeaking;
+            OnPlaybackStateChanged?.Invoke(anyoneSpeaking);
+        }
+    }
+
+    // ========================= Update =========================
 
     private void Update()
     {
-        if (NetworkClient.active && !isLocalPlayer)
-        {
-            UpdateRemotePlayback();
-            return;
-        }
+        // Только для локального игрока
+        if (NetworkClient.active && !isLocalPlayer) return;
 
-        if (!NetworkClient.active || isLocalPlayer)
-        {
-            UpdateLocalTransmit();
-        }
-    }
-
-    // ??????????????????????? Локальный игрок — передача ???????????????????????
-
-    private void UpdateLocalTransmit()
-    {
-        if (_microphone == null || !_microphone.IsRecording || _microphone.Clip == null)
-            return;
+        if (!_isInChannel) return;
 
         if (_keyboard == null)
             _keyboard = Keyboard.current;
 
-        // Определяем, нужно ли передавать
-        bool shouldTransmit = ShouldTransmit();
-
-        // Обновляем состояние
-        if (shouldTransmit != _wasTransmitting)
+        // Push-to-Talk
+        if (_pushToTalk)
         {
-            _wasTransmitting = shouldTransmit;
-            IsTransmitting = shouldTransmit;
-            OnTransmitStateChanged?.Invoke(shouldTransmit);
+            bool isPressed = _keyboard != null && _keyboard[_pttKey].isPressed;
+
+            if (isPressed && !_wasTransmitting)
+            {
+                SetTransmitting(true);
+            }
+            else if (!isPressed && _wasTransmitting)
+            {
+                SetTransmitting(false);
+            }
         }
 
-        if (!shouldTransmit)
+        // Обновляем 3D-позицию
+        if (_use3DPositional && _isInChannel)
         {
-            // Сбрасываем позицию чтобы не накапливать буфер
-            _lastMicPosition = _microphone.GetPosition();
-            _sendBuffer.Clear();
-            return;
+            try
+            {
+                VivoxService.Instance.Set3DPosition(gameObject, _channelName);
+            }
+            catch (Exception)
+            {
+                // Игнорируем ошибки если канал ещё не готов
+            }
         }
 
-        // Читаем новые семплы из микрофона
-        int currentPos = _microphone.GetPosition();
-        if (currentPos == _lastMicPosition) return;
-
-        int totalSamples = _microphone.Clip.samples;
-        int samplesToRead;
-
-        if (currentPos > _lastMicPosition)
+        // В режиме VAD проверяем состояние через Vivox
+        if (!_pushToTalk)
         {
-            samplesToRead = currentPos - _lastMicPosition;
-        }
-        else
-        {
-            samplesToRead = (totalSamples - _lastMicPosition) + currentPos;
-        }
+            bool speaking = false;
+            try
+            {
+                if (VivoxService.Instance.ActiveChannels.ContainsKey(_channelName))
+                {
+                    foreach (var p in VivoxService.Instance.ActiveChannels[_channelName])
+                    {
+                        if (p.IsSelf && p.SpeechDetected)
+                        {
+                            speaking = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore
+            }
 
-        float[] samples = new float[samplesToRead];
-        _microphone.Clip.GetData(samples, _lastMicPosition);
-        _lastMicPosition = currentPos;
-
-        // Добавляем в буфер отправки
-        _sendBuffer.AddRange(samples);
-
-        // Отправляем чанками
-        while (_sendBuffer.Count >= _chunkSizeSamples)
-        {
-            float[] chunk = new float[_chunkSizeSamples];
-            _sendBuffer.CopyTo(0, chunk, 0, _chunkSizeSamples);
-            _sendBuffer.RemoveRange(0, _chunkSizeSamples);
-
-            // Даунсэмплинг для уменьшения трафика
-            float[] toSend = Downsample(chunk, _microphone.SampleRate, _transmitSampleRate);
-
-            byte[] pcmBytes = FloatToPCM16(toSend);
-            CmdSendVoiceData(pcmBytes, _transmitSampleRate > 0 ? _transmitSampleRate : _microphone.SampleRate);
+            if (speaking != _wasTransmitting)
+            {
+                _wasTransmitting = speaking;
+                IsTransmitting = speaking;
+                OnTransmitStateChanged?.Invoke(speaking);
+            }
         }
     }
 
-    private bool ShouldTransmit()
+    private void SetTransmitting(bool transmitting)
     {
-        if (_pushToTalk)
+        _wasTransmitting = transmitting;
+        IsTransmitting = transmitting;
+
+        try
         {
-            // Push-to-Talk: передаём только пока зажата кнопка
-            return _keyboard != null && _keyboard[_pttKey].isPressed;
-        }
-        else
-        {
-            // VAD: передаём если громкость выше порога
-            float rms = GetCurrentRMS();
-            if (rms >= _vadThreshold)
+            if (transmitting)
             {
-                _vadTimer = _vadHoldTime;
-                return true;
+                VivoxService.Instance.SetChannelTransmissionModeAsync(TransmissionMode.All);
+                VivoxService.Instance.UnmuteInputDevice();
             }
             else
             {
-                _vadTimer -= Time.deltaTime;
-                return _vadTimer > 0f;
+                VivoxService.Instance.MuteInputDevice();
             }
         }
-    }
-
-    private float GetCurrentRMS()
-    {
-        if (_microphone == null || !_microphone.IsRecording || _microphone.Clip == null)
-            return 0f;
-
-        int pos = _microphone.GetPosition();
-        int samplesToCheck = Mathf.Min(256, _microphone.Clip.samples);
-        int readPos = pos - samplesToCheck;
-        if (readPos < 0) readPos += _microphone.Clip.samples;
-        readPos = Mathf.Clamp(readPos, 0, _microphone.Clip.samples - samplesToCheck);
-
-        float[] samples = new float[samplesToCheck];
-        _microphone.Clip.GetData(samples, readPos);
-
-        float sum = 0f;
-        for (int i = 0; i < samples.Length; i++)
+        catch (Exception e)
         {
-            sum += samples[i] * samples[i];
+            Debug.LogWarning($"[VoiceChat] SetTransmitting error: {e.Message}");
         }
-        return Mathf.Sqrt(sum / samples.Length);
+
+        OnTransmitStateChanged?.Invoke(transmitting);
     }
 
-    // ??????????????????????? Сеть ???????????????????????
+    // ========================= Настройки режимов =========================
 
-    /// <summary>
-    /// Клиент отправляет чанк аудио на сервер.
-    /// </summary>
-    [Command(channel = Channels.Unreliable)]
-    private void CmdSendVoiceData(byte[] pcmData, int sampleRate)
+    private void ApplyTransmissionMode()
     {
-        // Сервер пересылает всем клиентам кроме отправителя
-        RpcReceiveVoiceData(pcmData, sampleRate);
-    }
+        if (!_isInChannel) return;
 
-    /// <summary>
-    /// Сервер рассылает аудио всем клиентам.
-    /// </summary>
-    [ClientRpc(includeOwner = false)]
-    private void RpcReceiveVoiceData(byte[] pcmData, int sampleRate)
-    {
-        ReceiveVoiceChunk(pcmData, sampleRate);
-    }
-
-    // ??????????????????????? Удалённый игрок — воспроизведение ???????????????????????
-
-    private void ReceiveVoiceChunk(byte[] pcmData, int sampleRate)
-    {
-        if (_audioSource == null) return;
-
-        float[] samples = PCM16ToFloat(pcmData);
-        if (samples.Length == 0) return;
-
-        // Создаём клип-буфер при первом получении или если sampleRate изменился
-        if (_playbackClip == null || _playbackSampleRate != sampleRate)
+        try
         {
-            if (_playbackClip != null)
+            if (_pushToTalk)
             {
-                _audioSource.Stop();
-                Destroy(_playbackClip);
+                // В PTT режиме начинаем с выключенным микрофоном
+                VivoxService.Instance.MuteInputDevice();
             }
-
-            _playbackSampleRate = sampleRate;
-            _playbackClip = AudioClip.Create(
-                "VoiceChatPlayback",
-                sampleRate * PlaybackBufferSeconds,
-                1,
-                sampleRate,
-                false
-            );
-            _playbackWritePos = 0;
-            _playbackStarted = false;
-            _jitterChunksReceived = 0;
-            _jitterQueue.Clear();
-            _audioSource.clip = _playbackClip;
-        }
-
-        // Джиттер-буфер: накапливаем несколько чанков перед стартом воспроизведения
-        if (!_playbackStarted)
-        {
-            _jitterQueue.Enqueue(samples);
-            _jitterChunksReceived++;
-
-            if (_jitterChunksReceived >= _jitterBufferSize)
+            else
             {
-                // Записываем все накопленные чанки и стартуем
-                while (_jitterQueue.Count > 0)
-                {
-                    WriteToPlaybackBuffer(_jitterQueue.Dequeue());
-                }
-                _audioSource.Play();
-                _playbackStarted = true;
+                // В VAD режиме микрофон всегда включен, Vivox сам детектит голос
+                VivoxService.Instance.UnmuteInputDevice();
+                VivoxService.Instance.SetChannelTransmissionModeAsync(TransmissionMode.All);
             }
         }
-        else
+        catch (Exception e)
         {
-            WriteToPlaybackBuffer(samples);
+            Debug.LogWarning($"[VoiceChat] ApplyTransmissionMode error: {e.Message}");
         }
-
-        _playbackSilenceTimer = PlaybackSilenceTimeout;
     }
 
-    private void WriteToPlaybackBuffer(float[] samples)
+    private void ApplyVolume()
     {
-        int clipSamples = _playbackClip.samples;
+        if (!_isInChannel) return;
 
-        if (_playbackWritePos + samples.Length <= clipSamples)
+        try
         {
-            _playbackClip.SetData(samples, _playbackWritePos);
+            VivoxService.Instance.SetOutputDeviceVolume(_playbackVolume);
         }
-        else
+        catch (Exception e)
         {
-            // Оборачиваем через конец буфера
-            int firstPart = clipSamples - _playbackWritePos;
-            float[] first = new float[firstPart];
-            Array.Copy(samples, 0, first, 0, firstPart);
-            _playbackClip.SetData(first, _playbackWritePos);
-
-            int secondPart = samples.Length - firstPart;
-            float[] second = new float[secondPart];
-            Array.Copy(samples, firstPart, second, 0, secondPart);
-            _playbackClip.SetData(second, 0);
-        }
-
-        _playbackWritePos = (_playbackWritePos + samples.Length) % clipSamples;
-    }
-
-    private void UpdateRemotePlayback()
-    {
-        if (_audioSource == null) return;
-
-        bool isPlaying = _playbackSilenceTimer > 0f;
-
-        if (_playbackSilenceTimer > 0f)
-        {
-            _playbackSilenceTimer -= Time.deltaTime;
-
-            // Если тишина закончилась — останавливаем и сбрасываем джиттер-буфер
-            if (_playbackSilenceTimer <= 0f)
-            {
-                _audioSource.Stop();
-                _playbackStarted = false;
-                _jitterChunksReceived = 0;
-                _jitterQueue.Clear();
-                _playbackWritePos = 0;
-            }
-        }
-
-        // Обновляем громкость на лету
-        _audioSource.volume = _playbackVolume;
-
-        // Обновляем состояние
-        if (isPlaying != _wasPlaying)
-        {
-            _wasPlaying = isPlaying;
-            IsPlayingVoice = isPlaying;
-            OnPlaybackStateChanged?.Invoke(isPlaying);
+            Debug.LogWarning($"[VoiceChat] ApplyVolume error: {e.Message}");
         }
     }
 
-    // ??????????????????????? Утилиты конвертации ???????????????????????
-
-    private static byte[] FloatToPCM16(float[] floatSamples)
-    {
-        byte[] bytes = new byte[floatSamples.Length * 2];
-        for (int i = 0; i < floatSamples.Length; i++)
-        {
-            float clamped = Mathf.Clamp(floatSamples[i], -1f, 1f);
-            short val = (short)(clamped * 32767f);
-            bytes[i * 2] = (byte)(val & 0xFF);
-            bytes[i * 2 + 1] = (byte)((val >> 8) & 0xFF);
-        }
-        return bytes;
-    }
-
-    private static float[] PCM16ToFloat(byte[] pcmBytes)
-    {
-        if (pcmBytes == null || pcmBytes.Length < 2) return Array.Empty<float>();
-
-        int sampleCount = pcmBytes.Length / 2;
-        float[] floats = new float[sampleCount];
-        for (int i = 0; i < sampleCount; i++)
-        {
-            short val = (short)(pcmBytes[i * 2] | (pcmBytes[i * 2 + 1] << 8));
-            floats[i] = val / 32767f;
-        }
-        return floats;
-    }
-
-    /// <summary>
-    /// Простой даунсэмплинг: берём каждый N-й семпл.
-    /// Если targetRate <= 0 или >= sourceRate — возвращает исходный массив.
-    /// </summary>
-    private static float[] Downsample(float[] samples, int sourceRate, int targetRate)
-    {
-        if (targetRate <= 0 || targetRate >= sourceRate)
-            return samples;
-
-        int ratio = sourceRate / targetRate;
-        int newLength = samples.Length / ratio;
-        float[] result = new float[newLength];
-        for (int i = 0; i < newLength; i++)
-        {
-            result[i] = samples[i * ratio];
-        }
-        return result;
-    }
-
-    // ??????????????????????? Публичные методы ???????????????????????
+    // ========================= Публичные методы =========================
 
     /// <summary>
     /// Включить/выключить Push-to-Talk режим.
@@ -471,10 +436,11 @@ public class VoiceChat : NetworkBehaviour
     public void SetPushToTalk(bool enabled)
     {
         _pushToTalk = enabled;
+        ApplyTransmissionMode();
     }
 
     /// <summary>
-    /// Установить клавишу Push-to-Talk.
+    /// Установить кнопку Push-to-Talk.
     /// </summary>
     public void SetPTTKey(Key key)
     {
@@ -482,31 +448,47 @@ public class VoiceChat : NetworkBehaviour
     }
 
     /// <summary>
-    /// Установить громкость воспроизведения (0-2).
+    /// Установить громкость воспроизведения (0-2). Пересчитывается в Vivox (0-100).
     /// </summary>
     public void SetPlaybackVolume(float volume)
     {
-        _playbackVolume = Mathf.Clamp(volume, 0f, 2f);
+        float clamped = Mathf.Clamp(volume, 0f, 2f);
+        _playbackVolume = Mathf.RoundToInt((clamped / 2f) * 100f);
+        ApplyVolume();
     }
 
     /// <summary>
-    /// Установить порог VAD (0-1).
+    /// Установить порог VAD (0-1). В Vivox VAD работает автоматически.
     /// </summary>
     public void SetVADThreshold(float threshold)
     {
-        _vadThreshold = Mathf.Clamp01(threshold);
+        // Vivox использует внутренний VAD; порог настраивается через VivoxConfigurationOptions
+        // при инициализации. Для runtime настройки этот параметр не поддерживается напрямую.
     }
 
     /// <summary>
-    /// Отключить/включить голосовой чат целиком (mute).
+    /// Заглушить/разглушить входящий голос (mute).
     /// </summary>
     public void SetMuted(bool muted)
     {
-        if (_audioSource != null)
-            _audioSource.mute = muted;
+        _isMuted = muted;
+        try
+        {
+            if (_isInChannel)
+            {
+                if (muted)
+                    VivoxService.Instance.MuteOutputDevice();
+                else
+                    VivoxService.Instance.UnmuteOutputDevice();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[VoiceChat] SetMuted error: {e.Message}");
+        }
     }
 
-    // ??????????????????????? Очистка ???????????????????????
+    // ========================= Очистка =========================
 
     public override void OnStopClient()
     {
@@ -524,12 +506,32 @@ public class VoiceChat : NetworkBehaviour
         IsTransmitting = false;
         IsPlayingVoice = false;
 
-        if (_playbackClip != null)
+        if (_isInChannel)
         {
-            if (_audioSource != null)
-                _audioSource.Stop();
-            Destroy(_playbackClip);
-            _playbackClip = null;
+            try
+            {
+                VivoxService.Instance.ParticipantAddedToChannel -= OnParticipantAdded;
+                VivoxService.Instance.ParticipantRemovedFromChannel -= OnParticipantRemoved;
+                VivoxService.Instance.LeaveChannelAsync(_channelName);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[VoiceChat] Cleanup channel error: {e.Message}");
+            }
+            _isInChannel = false;
+        }
+
+        if (_isLoggedIn)
+        {
+            try
+            {
+                VivoxService.Instance.LogoutAsync();
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[VoiceChat] Cleanup logout error: {e.Message}");
+            }
+            _isLoggedIn = false;
         }
     }
 }
