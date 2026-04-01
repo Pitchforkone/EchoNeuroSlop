@@ -1723,6 +1723,8 @@ GameObject:
   - component: {fileID: 6521146839567017022}
   - component: {fileID: 6022998760169736708}
   - component: {fileID: 3197984882741860398}
+  - component: {fileID: -3202100927381645994}
+  - component: {fileID: 7031025114909970746}
   m_Layer: 0
   m_Name: MaleCharacterPolyart
   m_TagString: Player
@@ -2108,6 +2110,49 @@ MonoBehaviour:
   syncInterval: 0
   clientAuthority: 1
   animator: {fileID: 5082574569444486177}
+--- !u!114 &-3202100927381645994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5352958571798197664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f568abd6f53d59e49bcee9fa8ea18f9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceChat
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _pushToTalk: 0
+  _pttKey: 34
+  _vadThreshold: 0.01
+  _vadHoldTime: 0.3
+  _chunkMs: 40
+  _playbackVolume: 1
+  _minDistance: 1
+  _maxDistance: 30
+--- !u!114 &7031025114909970746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5352958571798197664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c8563c9dd11a164ca652800d96eabdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceChatUI
+  _indicatorHeight: 2.3
+  _indicatorSize: 0.3
+  _hudMicIcon: {fileID: 0}
+  _hudOffset: {x: 60, y: 60}
+  _hudIconSize: 40
+  _speakingColor: {r: 0.2, g: 1, b: 0.3, a: 1}
+  _mutedColor: {r: 1, g: 0.3, b: 0.3, a: 0.6}
+  _idleColor: {r: 1, g: 1, b: 1, a: 0.3}
 --- !u!1 &5691243874327788079
 GameObject:
   m_ObjectHideFlags: 0
