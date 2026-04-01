@@ -1,30 +1,16 @@
 using UnityEngine;
-using Mirror;
+using Photon.Pun;
 
 /// <summary>
-/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
-/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
-/// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ LocalInstance.
-/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
+/// Общий микрофон для записи и распознавания.
+/// Работает только для локального игрока.
 /// </summary>
-public class SharedMicrophone : NetworkBehaviour
+public class SharedMicrophone : MonoBehaviourPun
 {
-    /// <summary>
-    /// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
-    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
-    /// </summary>
     public static SharedMicrophone LocalInstance { get; private set; }
-
-    /// <summary>
-    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
-    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ LocalInstance.
-    /// </summary>
     public static SharedMicrophone Instance => LocalInstance;
 
-    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private int _sampleRate = 16000;
-
-    [Tooltip("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)")]
     [SerializeField] private int _bufferLengthSec = 1;
 
     public AudioClip Clip { get; private set; }
@@ -34,23 +20,27 @@ public class SharedMicrophone : NetworkBehaviour
 
     private void Awake()
     {
-        // пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ OnStartLocalPlayer
-        // пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅ
-        if (!NetworkClient.active)
+        if (!PhotonNetwork.IsConnected)
         {
             InitializeAsLocal();
         }
     }
 
-    public override void OnStartLocalPlayer()
+    private void Start()
     {
-        base.OnStartLocalPlayer();
-        InitializeAsLocal();
+        if (PhotonNetwork.IsConnected && photonView.IsMine)
+        {
+            InitializeAsLocal();
+        }
+        
+        if (!PhotonNetwork.IsConnected && !IsRecording)
+        {
+            StartRecording();
+        }
     }
 
     private void InitializeAsLocal()
     {
-        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (LocalInstance != null && LocalInstance != this)
         {
             LocalInstance.StopRecording();
@@ -60,25 +50,14 @@ public class SharedMicrophone : NetworkBehaviour
         StartRecording();
     }
 
-    private void Start()
-    {
-        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Start пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-        if (!NetworkClient.active && !IsRecording)
-        {
-            StartRecording();
-        }
-    }
-
     public void StartRecording()
     {
-        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-        if (NetworkClient.active && !isLocalPlayer) return;
-
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) return;
         if (IsRecording) return;
 
         if (Microphone.devices.Length == 0)
         {
-            Debug.LogWarning("[SharedMicrophone] пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!");
+            Debug.LogWarning("[SharedMicrophone] Микрофон не найден!");
             return;
         }
 
@@ -96,28 +75,18 @@ public class SharedMicrophone : NetworkBehaviour
 
         Clip = null;
         IsRecording = false;
-        Debug.Log("[SharedMicrophone] пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
+        Debug.Log("[SharedMicrophone] Запись остановлена");
     }
 
-    /// <summary>
-    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
-    /// </summary>
     public int GetPosition()
     {
         if (!IsRecording || string.IsNullOrEmpty(DeviceName)) return 0;
         return Microphone.GetPosition(DeviceName);
     }
 
-    public override void OnStopLocalPlayer()
-    {
-        base.OnStopLocalPlayer();
-        CleanupLocal();
-    }
-
     private void OnDisable()
     {
-        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-        if (!NetworkClient.active)
+        if (!PhotonNetwork.IsConnected)
         {
             CleanupLocal();
         }

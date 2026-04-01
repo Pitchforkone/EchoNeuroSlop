@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Mirror;
+using Photon.Pun;
 
 /// <summary>
-/// First-person controller for multiplayer with Mirror.
+/// First-person controller for multiplayer with Photon PUN 2.
 /// CharacterController movement, mouse look, walk/sprint/crouch.
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : NetworkBehaviour
+public class PlayerController : MonoBehaviourPun
 {
     [Header("Movement")]
     [SerializeField] private float _walkSpeed = 4f;
@@ -31,7 +31,6 @@ public class PlayerController : NetworkBehaviour
     [Header("Animation")]
     [SerializeField] private Animator _animator;
     [SerializeField] private float _animSmoothTime = 0.1f;
-    [SerializeField] private NetworkAnimator _networkAnimator;
 
     [Header("Step Events")]
     [SerializeField] private float _stepInterval = 0.5f;
@@ -68,41 +67,22 @@ public class PlayerController : NetworkBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
-        _networkAnimator = GetComponent<NetworkAnimator>();
         _targetHeight = _standHeight;
-    }
-
-    public override void OnStartLocalPlayer()
-    {
-        base.OnStartLocalPlayer();
-        SetupLocalPlayer();
-    }
-
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-        
-        // Для удалённых игроков отключаем CharacterController,
-        // чтобы NetworkTransform мог устанавливать позицию
-        if (!isLocalPlayer)
-        {
-            if (_controller != null)
-                _controller.enabled = false;
-        }
     }
 
     private void Start()
     {
-        // Для одиночной игры - без OnStartLocalPlayer
-        // Для мультиплеера (если без NetworkClient) - тоже инициализируем
-        if (!NetworkClient.active)
+        if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
             SetupLocalPlayer();
         }
-        else if (!isLocalPlayer)
+        else
         {
-            // Для удалённых игроков отключаем камеру и аудио
             DisableRemotePlayerComponents();
+            // ��� �������� ������� ��������� CharacterController,
+            // ����� PhotonTransformView ��� ������������� �������
+            if (_controller != null)
+                _controller.enabled = false;
         }
     }
 
@@ -142,7 +122,6 @@ public class PlayerController : NetworkBehaviour
 
     private void DisableRemotePlayerComponents()
     {
-        // Для удалённых игроков отключаем камеру и аудио
         _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
         if (_camera != null)
             _camera.enabled = false;
@@ -168,9 +147,8 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        // Обновление логики игрока производится только на локальном клиенте
         if (!_isSetup) return;
-        if (NetworkClient.active && !isLocalPlayer) return;
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) return;
 
         UpdateGroundCheck();
         UpdateLook();
@@ -226,7 +204,6 @@ public class PlayerController : NetworkBehaviour
 
         _smoothAnimInput = Vector2.MoveTowards(_smoothAnimInput, moveInput, Time.deltaTime / _animSmoothTime);
         
-        // Устанавливаем параметры напрямую - NetworkAnimator синхронизирует их
         _animator.SetFloat("X", _smoothAnimInput.x);
         _animator.SetFloat("Y", _smoothAnimInput.y);
     }

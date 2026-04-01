@@ -1,14 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Mirror;
+using Photon.Pun;
 
 /// <summary>
-/// Player echo locator for multiplayer with Mirror.
+/// Player echo locator for multiplayer with Photon PUN 2.
 /// Active echo: LMB (Attack action) with cooldown or loud sound into microphone.
 /// Passive echo: footstep events from PlayerController.
-/// Использует SharedMicrophone для доступа к микрофону (на том же игроке или LocalInstance).
 /// </summary>
-public class PlayerEchoLocator : NetworkBehaviour
+public class PlayerEchoLocator : MonoBehaviourPun
 {
     [Header("Presets")]
     [SerializeField] private EchoPreset _activePingPreset;
@@ -35,6 +34,7 @@ public class PlayerEchoLocator : NetworkBehaviour
     private float _lastVolume;
     private float _lastEchoTime;
     private float _lastActiveEchoTime;
+    private bool _isSetup;
 
     private void Awake()
     {
@@ -43,16 +43,9 @@ public class PlayerEchoLocator : NetworkBehaviour
         _microphone = GetComponent<SharedMicrophone>();
     }
 
-    public override void OnStartLocalPlayer()
-    {
-        base.OnStartLocalPlayer();
-        SetupInput();
-    }
-
     private void OnEnable()
     {
-        // Для синглплеера
-        if (!NetworkClient.active)
+        if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
             SetupInput();
         }
@@ -66,6 +59,9 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private void SetupInput()
     {
+        if (_isSetup) return;
+        _isSetup = true;
+
         if (_inputActions != null)
         {
             _echoAction = _inputActions.FindActionMap("Player")?.FindAction("Attack");
@@ -77,25 +73,18 @@ public class PlayerEchoLocator : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// Получает активный микрофон (локальный компонент или LocalInstance).
-    /// </summary>
     private SharedMicrophone GetMicrophone()
     {
-        // Сначала проверяем локальный компонент на этом игроке
         if (_microphone != null && _microphone.IsRecording)
             return _microphone;
 
-        // Иначе используем глобальный LocalInstance
         return SharedMicrophone.LocalInstance;
     }
 
     private void Update()
     {
-        // Только локальный игрок может использовать ввод
-        if (NetworkClient.active && !isLocalPlayer) return;
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) return;
 
-        // Проверка нажатия левой кнопки мыши напрямую
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             TriggerActiveEchoWithCooldown();
@@ -107,20 +96,17 @@ public class PlayerEchoLocator : NetworkBehaviour
         float volume = GetMicrophoneVolume(mic);
         float volumeChange = Mathf.Abs(volume - _lastVolume);
 
-        // Срабатывает при изменении громкости больше минимального шага и выше порога
         if (volumeChange >= _minVolumeChangeStep && volume > _volumeThreshold)
         {
             TriggerActiveEchoFromMicrophone();
             _lastVolume = volume;
             _lastEchoTime = Time.time;
         }
-        // Если громкость выше порога, но шаг не пройден - срабатываем раз в N секунд
         else if (volume > _volumeThreshold && Time.time - _lastEchoTime >= _echoIntervalWhenLoud)
         {
             TriggerActiveEchoFromMicrophone();
             _lastEchoTime = Time.time;
         }
-        // Обновляем последнюю громкость если она упала ниже порога
         else if (volume <= _volumeThreshold)
         {
             _lastVolume = volume;
@@ -159,6 +145,8 @@ public class PlayerEchoLocator : NetworkBehaviour
 
         if (_fpsController != null)
             _fpsController.OnFootstep -= OnFootstep;
+
+        _isSetup = false;
     }
 
     private void OnEchoPerformed(InputAction.CallbackContext ctx)
@@ -168,7 +156,6 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private void TriggerActiveEchoWithCooldown()
     {
-        // Проверка кулдауна
         if (Time.time - _lastActiveEchoTime < _activeEchoCooldown) return;
 
         TriggerActiveEcho();
@@ -177,8 +164,7 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private void TriggerActiveEcho()
     {
-        // Только локальный игрок может активировать эхо
-        if (NetworkClient.active && !isLocalPlayer) return;
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) return;
         if (_activePingPreset == null || EchoManager.Instance == null) return;
 
         EchoManager.Instance.SpawnEcho(transform.position, _activePingPreset);
@@ -186,9 +172,7 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private void TriggerActiveEchoFromMicrophone()
     {
-        // Только локальный игрок может активировать эхо
-        if (NetworkClient.active && !isLocalPlayer) return;
-
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) return;
         if (_activePingPreset == null || EchoManager.Instance == null) return;
 
         EchoManager.Instance.SpawnEcho(transform.position, _activePingPreset);
@@ -196,12 +180,9 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private void OnFootstep(Vector3 position, bool isSprinting)
     {
-        // Только локальный игрок генерирует эхо от шагов
-        if (NetworkClient.active && !isLocalPlayer) return;
-
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) return;
         if (EchoManager.Instance == null) return;
 
-        // Crouching = silent, no passive echo
         bool isCrouching = (_playerController != null && _playerController.IsCrouching) ||
                           (_fpsController != null && _fpsController.IsCrouching);
         if (isCrouching) return;

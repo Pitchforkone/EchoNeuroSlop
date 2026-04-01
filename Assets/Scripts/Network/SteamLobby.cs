@@ -1,14 +1,15 @@
 using UnityEngine;
-using Mirror;
+using Photon.Pun;
+using Photon.Realtime;
 #if !DISABLESTEAMWORKS
 using Steamworks;
 #endif
 
 /// <summary>
 /// Steam Lobby manager for creating and joining lobbies via Steam.
-/// Handles Steam callbacks and integrates with Mirror networking.
+/// Handles Steam callbacks and integrates with Photon PUN 2 networking.
 /// </summary>
-public class SteamLobby : MonoBehaviour
+public class SteamLobby : MonoBehaviourPunCallbacks
 {
 #if !DISABLESTEAMWORKS
     // Callbacks
@@ -19,9 +20,16 @@ public class SteamLobby : MonoBehaviour
     // Lobby ID
     public static CSteamID CurrentLobbyID { get; private set; }
 
-    private NetworkManager networkManager;
+    [Header("Photon Settings")]
+    [Tooltip("Maximum players in room")]
+    public byte maxPlayers = 4;
 
     private const string HostAddressKey = "HostAddress";
+    private const string PhotonRoomKey = "PhotonRoom";
+
+    // Pending action to execute once Photon is connected
+    private System.Action _pendingPhotonAction;
+    private bool _photonReady;
 
     private void Start()
     {
@@ -31,16 +39,34 @@ public class SteamLobby : MonoBehaviour
             return;
         }
 
-        networkManager = GetComponent<NetworkManager>();
-        if (networkManager == null)
-        {
-            networkManager = FindObjectOfType<NetworkManager>();
-        }
-
-        // Setup callbacks
+        // Setup Steam callbacks
         LobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         JoinRequest = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
         LobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+
+        // Connect to Photon master server
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+            Debug.Log("[SteamLobby] Connecting to Photon...");
+        }
+        else
+        {
+            _photonReady = true;
+        }
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("[SteamLobby] Connected to Photon Master Server");
+        _photonReady = true;
+
+        // Execute any pending action (CreateRoom / JoinRoom)
+        if (_pendingPhotonAction != null)
+        {
+            _pendingPhotonAction.Invoke();
+            _pendingPhotonAction = null;
+        }
     }
 
     /// <summary>
@@ -53,7 +79,7 @@ public class SteamLobby : MonoBehaviour
             Debug.LogError("[SteamLobby] Cannot create lobby - Steam not initialized!");
             return;
         }
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, networkManager.maxConnections);
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, maxPlayers);
     }
 
     /// <summary>
@@ -99,16 +125,26 @@ public class SteamLobby : MonoBehaviour
         // Copy lobby ID to clipboard for easy sharing
         GUIUtility.systemCopyBuffer = CurrentLobbyID.ToString();
 
-        // Start hosting
-        networkManager.StartHost();
+        string roomName = CurrentLobbyID.ToString();
 
-        // Set lobby data so others can find the host
+        // Set lobby data so others can find the Photon room
         SteamMatchmaking.SetLobbyData(
             CurrentLobbyID,
             HostAddressKey,
             SteamUser.GetSteamID().ToString()
         );
+        SteamMatchmaking.SetLobbyData(
+            CurrentLobbyID,
+            PhotonRoomKey,
+            roomName
+        );
 
+        // Create Photon room (defer if not yet connected)
+        ExecuteWhenPhotonReady(() =>
+        {
+            RoomOptions roomOptions = new RoomOptions { MaxPlayers = maxPlayers };
+            PhotonNetwork.CreateRoom(roomName, roomOptions);
+        });
     }
 
     private void OnJoinRequest(GameLobbyJoinRequested_t callback)
@@ -120,24 +156,48 @@ public class SteamLobby : MonoBehaviour
     {
         CurrentLobbyID = new CSteamID(callback.m_ulSteamIDLobby);
 
-        // If we're the host, we already started hosting
-        if (NetworkServer.active)
+        // If we're the host (MasterClient), we already created the room
+        if (PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
         {
             return;
         }
 
-        // Get host address from lobby data
-        string hostAddress = SteamMatchmaking.GetLobbyData(CurrentLobbyID, HostAddressKey);
+        // Get Photon room name from lobby data
+        string roomName = SteamMatchmaking.GetLobbyData(CurrentLobbyID, PhotonRoomKey);
 
-        if (string.IsNullOrEmpty(hostAddress))
+        if (string.IsNullOrEmpty(roomName))
         {
-            Debug.LogError("[SteamLobby] Could not get host address from lobby!");
-            return;
+            // Fallback: use lobby ID as room name
+            roomName = CurrentLobbyID.ToString();
         }
 
-        Debug.Log($"[SteamLobby] Connecting to host: {hostAddress}");
-        networkManager.networkAddress = hostAddress;
-        networkManager.StartClient();
+        // Join Photon room (defer if not yet connected)
+        ExecuteWhenPhotonReady(() =>
+        {
+            Debug.Log($"[SteamLobby] Joining Photon room: {roomName}");
+            PhotonNetwork.JoinRoom(roomName);
+        });
+    }
+
+    /// <summary>
+    /// Executes an action immediately if Photon is ready, or queues it for OnConnectedToMaster.
+    /// </summary>
+    private void ExecuteWhenPhotonReady(System.Action action)
+    {
+        if (_photonReady && PhotonNetwork.IsConnectedAndReady)
+        {
+            action.Invoke();
+        }
+        else
+        {
+            Debug.Log("[SteamLobby] Photon not ready yet, queuing action...");
+            _pendingPhotonAction = action;
+
+            if (!PhotonNetwork.IsConnected)
+            {
+                PhotonNetwork.ConnectUsingSettings();
+            }
+        }
     }
 
     /// <summary>
@@ -149,20 +209,16 @@ public class SteamLobby : MonoBehaviour
         {
             SteamMatchmaking.LeaveLobby(CurrentLobbyID);
             CurrentLobbyID = CSteamID.Nil;
-            Debug.Log("[SteamLobby] Left lobby");
+            Debug.Log("[SteamLobby] Left Steam lobby");
         }
 
-        if (NetworkServer.active && NetworkClient.isConnected)
+        if (PhotonNetwork.InRoom)
         {
-            networkManager.StopHost();
+            PhotonNetwork.LeaveRoom();
         }
-        else if (NetworkClient.isConnected)
+        else if (PhotonNetwork.IsConnected)
         {
-            networkManager.StopClient();
-        }
-        else if (NetworkServer.active)
-        {
-            networkManager.StopServer();
+            PhotonNetwork.Disconnect();
         }
     }
 
@@ -199,7 +255,6 @@ public class SteamLobby : MonoBehaviour
 
     private void OnGUI()
     {
-        // Debug info в правом верхнем углу
         if (SteamManager.Initialized)
         {
             GUILayout.BeginArea(new Rect(Screen.width - 310, 10, 300, 200));
@@ -210,6 +265,11 @@ public class SteamLobby : MonoBehaviour
             {
                 GUILayout.Label($"Lobby: {CurrentLobbyID}");
                 GUILayout.Label($"Players: {SteamMatchmaking.GetNumLobbyMembers(CurrentLobbyID)}");
+            }
+            if (PhotonNetwork.InRoom)
+            {
+                GUILayout.Label($"Photon Room: {PhotonNetwork.CurrentRoom.Name}");
+                GUILayout.Label($"Photon Players: {PhotonNetwork.CurrentRoom.PlayerCount}");
             }
             GUILayout.EndVertical();
             GUILayout.EndArea();

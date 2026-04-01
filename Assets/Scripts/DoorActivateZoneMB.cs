@@ -1,14 +1,12 @@
-using Mirror;
-using System;
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
+public class DoorActivateZoneMB : MonoBehaviourPun, IVoiceWordListener
 {
     public VoiceActivateZoneMB activateZoneMB;
     private List<VoiceRecognizer> listPlayer = new();
     
-    [SyncVar]
     private bool isOpened = false;
     
     public string KeyWord = "Open";
@@ -44,10 +42,9 @@ public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
         if (isOpened) return;
         
         // Special handling for "Key" keyword - requires key item in inventory
-        if (string.Equals(KeyWord, "Key", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(word, KeyWord, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(KeyWord, "Key", System.StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(word, KeyWord, System.StringComparison.OrdinalIgnoreCase))
         {
-            // Check if player has a key in inventory
             if (PlayerInventory.LocalInstance == null)
             {
                 return;
@@ -56,32 +53,24 @@ public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
             var keyItem = PlayerInventory.LocalInstance.FindItemByKeyword("key");
             if (keyItem != null)
             {
-                // Use the key (removes it from inventory if count becomes 0)
                 PlayerInventory.LocalInstance.UseItem(keyItem);
-                CmdOpenDoor();
+                photonView.RPC(nameof(RpcOpenDoor), RpcTarget.All);
             }
             return;
         }
         
-        // Normal keyword handling (no inventory check required)
-        if (string.Equals(word, KeyWord, StringComparison.OrdinalIgnoreCase))
+        // Normal keyword handling
+        if (string.Equals(word, KeyWord, System.StringComparison.OrdinalIgnoreCase))
         {
-            CmdOpenDoor();
+            photonView.RPC(nameof(RpcOpenDoor), RpcTarget.All);
         }
     }
     
-    [Command(requiresAuthority = false)]
-    private void CmdOpenDoor()
-    {
-        if (isOpened) return;
-        
-        isOpened = true;
-        RpcOpenDoor();
-    }
-    
-    [ClientRpc]
+    [PunRPC]
     private void RpcOpenDoor()
     {
+        if (isOpened) return;
+        isOpened = true;
         OpenDoorLocally();
     }
     

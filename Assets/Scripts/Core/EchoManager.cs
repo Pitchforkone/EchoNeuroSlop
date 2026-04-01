@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using Mirror;
+using Photon.Pun;
 
 /// <summary>
 /// Central manager for the echo system (Approach A: Point Light) with Mirror networking support.
@@ -104,7 +104,7 @@ public class EchoManager : MonoBehaviour
     public void SpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType = EchoType.Default)
     {
         // Если мы в сети
-        if (NetworkClient.active)
+        if (PhotonNetwork.IsConnected)
         {
             // Находим EchoNetworkHelper для отправки команд
             var helper = EchoNetworkHelper.Instance;

@@ -1,11 +1,14 @@
 using UnityEngine;
-using Mirror;
+using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
 
 /// <summary>
 /// Network helper for synchronizing echo spawns across all clients.
-/// This component must be on a GameObject with NetworkIdentity (e.g., on the NetworkManager or a dedicated network object).
+/// Uses PhotonNetwork.RaiseEvent instead of RPC — no PhotonView required.
+/// Can live on any scene GameObject (e.g. the same object as EchoManager).
 /// </summary>
-public class EchoNetworkHelper : NetworkBehaviour
+public class EchoNetworkHelper : MonoBehaviour, IOnEventCallback
 {
     public static EchoNetworkHelper Instance { get; private set; }
 
@@ -14,6 +17,8 @@ public class EchoNetworkHelper : NetworkBehaviour
     /// EchoManager subscribes to this.
     /// </summary>
     public static event System.Action<Vector3, float, float, float, Color, float, EchoType> OnNetworkEchoSpawn;
+
+    private const byte EchoSpawnEventCode = 42;
 
     private void Awake()
     {
@@ -25,6 +30,16 @@ public class EchoNetworkHelper : NetworkBehaviour
         Instance = this;
     }
 
+    private void OnEnable()
+    {
+        PhotonNetwork.AddCallbackTarget(this);
+    }
+
+    private void OnDisable()
+    {
+        PhotonNetwork.RemoveCallbackTarget(this);
+    }
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -32,33 +47,48 @@ public class EchoNetworkHelper : NetworkBehaviour
     }
 
     /// <summary>
-    /// Request to spawn an echo. Will be synchronized to all clients.
+    /// Request to spawn an echo. Will be synchronized to all clients (including sender).
     /// </summary>
     public void RequestSpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType = EchoType.Default)
     {
-        if (isServer)
+        object[] data = new object[]
         {
-            // Server directly broadcasts to all clients
-            RpcSpawnEcho(position, speed, maxRadius, intensity, color, lifetime, echoType);
-        }
-        else
-        {
-            // Client sends command to server
-            CmdSpawnEcho(position, speed, maxRadius, intensity, color, lifetime, echoType);
-        }
+            position,
+            speed,
+            maxRadius,
+            intensity,
+            color.r,
+            color.g,
+            color.b,
+            color.a,
+            lifetime,
+            (int)echoType
+        };
+
+        RaiseEventOptions options = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        PhotonNetwork.RaiseEvent(EchoSpawnEventCode, data, options, SendOptions.SendReliable);
     }
 
-    [Command(requiresAuthority = false)]
-    private void CmdSpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType)
+    public void OnEvent(EventData photonEvent)
     {
-        // Server received command, broadcast to all clients
-        RpcSpawnEcho(position, speed, maxRadius, intensity, color, lifetime, echoType);
-    }
+        if (photonEvent.Code != EchoSpawnEventCode) return;
 
-    [ClientRpc]
-    private void RpcSpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType)
-    {
-        // Fire event for local spawn
+        object[] data = (object[])photonEvent.CustomData;
+
+        Vector3 position = (Vector3)data[0];
+        float speed = (float)data[1];
+        float maxRadius = (float)data[2];
+        float intensity = (float)data[3];
+        float colorR = (float)data[4];
+        float colorG = (float)data[5];
+        float colorB = (float)data[6];
+        float colorA = (float)data[7];
+        float lifetime = (float)data[8];
+        int echoTypeInt = (int)data[9];
+
+        Color color = new Color(colorR, colorG, colorB, colorA);
+        EchoType echoType = (EchoType)echoTypeInt;
+
         OnNetworkEchoSpawn?.Invoke(position, speed, maxRadius, intensity, color, lifetime, echoType);
     }
 }

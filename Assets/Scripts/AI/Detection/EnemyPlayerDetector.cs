@@ -63,7 +63,7 @@ public class EnemyPlayerDetector : EnemyDetectorBase
     protected override void OnTriggerStay(Collider other)
     {
         // Обновляем преследование пока игрок в зоне детекции
-        if (_enemyAI == null || !_enemyAI.isServer) return;
+        if (_enemyAI == null || !_enemyAI.IsMasterClient) return;
 
         var player = other.GetComponent<PlayerController>();
         if (player == null)

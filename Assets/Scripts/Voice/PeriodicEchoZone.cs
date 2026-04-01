@@ -1,5 +1,5 @@
 using System;
-using Mirror;
+using Photon.Pun;
 using UnityEngine;
 
 public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
@@ -90,8 +90,8 @@ public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
         if (_playerInside) return;
 
         // Проверяем что это локальный игрок
-        var networkIdentity = other.GetComponent<NetworkIdentity>();
-        if (networkIdentity != null && !networkIdentity.isLocalPlayer) return;
+        var pv = other.GetComponent<PhotonView>();
+        if (pv != null && !pv.IsMine) return;
 
         if (!other.TryGetComponent<VoiceRecognizer>(out var voiceRecognizer)) return;
         if (voiceRecognizer == null) return;
@@ -109,8 +109,8 @@ public class PeriodicEchoZone : MonoBehaviour, IVoiceWordListener
         if (!_playerInside) return;
 
         // Проверяем что это локальный игрок
-        var networkIdentity = other.GetComponent<NetworkIdentity>();
-        if (networkIdentity != null && !networkIdentity.isLocalPlayer) return;
+        var pvExit = other.GetComponent<PhotonView>();
+        if (pvExit != null && !pvExit.IsMine) return;
 
         if (!other.TryGetComponent<VoiceRecognizer>(out var voiceRecognizer)) return;
 

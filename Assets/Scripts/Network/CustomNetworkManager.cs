@@ -1,98 +1,147 @@
 using UnityEngine;
-using Mirror;
+using Photon.Pun;
+using Photon.Realtime;
 using System.Collections.Generic;
 
 /// <summary>
-/// Custom NetworkManager for handling player spawning with multiple character prefabs.
+/// Custom Network Manager for handling player spawning with multiple character prefabs.
+/// Uses Photon PUN 2 for networking.
+///
+/// Prefabs are assigned as GameObject references in the Inspector (drag-and-drop).
+/// They are registered in Photon's DefaultPool at runtime, so they do NOT need to be in a Resources folder.
+///
+/// Required components on each player prefab:
+///   - PhotonView               (обязательно — идентификация объекта в сети)
+///   - PhotonTransformView       (синхронизация позиции/поворота, добавить в Observed Components на PhotonView)
+///   - CharacterController       (движение игрока)
+///   - PlayerController          (управление от первого лица)
+///   - PlayerEchoLocator         (эхолокация: шаги, активный пинг, микрофон)
+///   - SharedMicrophone           (доступ к микрофону)
+///   - VoiceRecognizer            (распознавание голоса через Vosk)
+///   - VoiceWordSender            (отправка слов по горячим клавишам)
+///   - PlayerInventory            (инвентарь)
+///   - BoltThrower                (бросок болтов)
+///   - VoiceGrenadeThrow          (бросок гранат из инвентаря)
+///   - NightVisionController      (очки ночного видения)
+///   - Animator                   (если есть анимации) + PhotonAnimatorView (в Observed Components)
+///   - Camera + AudioListener     (на дочернем объекте — камера от первого лица)
 /// </summary>
-public class CustomNetworkManager : NetworkManager
+public class CustomNetworkManager : MonoBehaviourPunCallbacks
 {
+    public static CustomNetworkManager Instance { get; private set; }
+
     [Header("Player Prefabs")]
-    [Tooltip("Список всех доступных персонажей. Первый игрок получит Element 0, второй - Element 1 и т.д.")]
+    [Tooltip("Перетащите сюда префабы персонажей.\n" +
+             "Первый игрок получит Element 0, второй — Element 1 и т.д.\n" +
+             "Префабы НЕ обязаны лежать в папке Resources.")]
     public GameObject[] characterPrefabs;
 
     [Header("Spawn Settings")]
     public Vector3 spawnPosition = new Vector3(0, 1, 0);
     public float spawnRadius = 3f;
 
-    // Счётчик для чередования персонажей
-    private int nextCharacterIndex = 0;
+    [Header("Spawn Points")]
+    [Tooltip("Точки спавна игроков")]
+    public List<Transform> startPositions = new List<Transform>();
 
-    public override void Awake()
+    private void Awake()
     {
-        // Регистрируем все characterPrefabs ДО base.Awake()
-        RegisterCharacterPrefabs();
-        
-        // Автоматически устанавливаем playerPrefab если он пустой
-        if (playerPrefab == null && characterPrefabs != null && characterPrefabs.Length > 0)
+        if (Instance != null && Instance != this)
         {
-            playerPrefab = characterPrefabs[0];
-            Debug.Log($"[CustomNetworkManager] Auto-assigned playerPrefab: {playerPrefab.name}");
+            Destroy(gameObject);
+            return;
         }
-        
-        base.Awake();
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        RegisterPrefabs();
     }
 
-    private void RegisterCharacterPrefabs()
+    /// <summary>
+    /// Registers all character prefabs in Photon's DefaultPool so
+    /// PhotonNetwork.Instantiate can find them by name without Resources folder.
+    /// </summary>
+    private void RegisterPrefabs()
     {
-        if (characterPrefabs == null) return;
-        
+        if (characterPrefabs == null || characterPrefabs.Length == 0) return;
+
+        DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
+        if (pool == null)
+        {
+            Debug.LogError("[CustomNetworkManager] PhotonNetwork.PrefabPool is not DefaultPool! Cannot register prefabs.");
+            return;
+        }
+
         foreach (GameObject prefab in characterPrefabs)
         {
-            if (prefab != null && !spawnPrefabs.Contains(prefab))
+            if (prefab == null) continue;
+
+            if (!pool.ResourceCache.ContainsKey(prefab.name))
             {
-                spawnPrefabs.Add(prefab);
+                pool.ResourceCache.Add(prefab.name, prefab);
+                Debug.Log($"[CustomNetworkManager] Registered prefab: {prefab.name}");
             }
         }
     }
 
-    public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+    public override void OnJoinedRoom()
     {
-        // Определяем какой префаб использовать
-        GameObject prefabToSpawn;
-        
-        if (characterPrefabs != null && characterPrefabs.Length > 0)
+        base.OnJoinedRoom();
+        SpawnLocalPlayer();
+    }
+
+    private void SpawnLocalPlayer()
+    {
+        if (characterPrefabs == null || characterPrefabs.Length == 0)
         {
-            // Берём следующий персонаж по очереди
-            prefabToSpawn = characterPrefabs[nextCharacterIndex];
-            nextCharacterIndex = (nextCharacterIndex + 1) % characterPrefabs.Length;
-        }
-        else
-        {
-            // Если массив пустой, используем стандартный playerPrefab
-            prefabToSpawn = playerPrefab;
+            Debug.LogError("[CustomNetworkManager] No character prefabs assigned! " +
+                           "Drag your player prefab(s) into the 'Character Prefabs' array in the Inspector.");
+            return;
         }
 
-        // Получаем позицию спавна
+        int index = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % characterPrefabs.Length;
+        GameObject prefab = characterPrefabs[index];
+
+        if (prefab == null)
+        {
+            Debug.LogError($"[CustomNetworkManager] Character prefab at index {index} is null!");
+            return;
+        }
+
+        if (prefab.GetComponent<PhotonView>() == null)
+        {
+            Debug.LogError($"[CustomNetworkManager] Prefab '{prefab.name}' is missing a PhotonView component!");
+            return;
+        }
+
         Vector3 position = GetSpawnPos();
-
-        // Создаём игрока
-        GameObject player = Instantiate(prefabToSpawn, position, Quaternion.identity);
-
-        // Регистрируем игрока для этого соединения
-        NetworkServer.AddPlayerForConnection(conn, player);
-
+        PhotonNetwork.Instantiate(prefab.name, position, Quaternion.identity);
+        Debug.Log($"[CustomNetworkManager] Spawned player '{prefab.name}' at {position}");
     }
 
     private Vector3 GetSpawnPos()
     {
-        // Если есть точки спавна в сцене — используем их
         if (startPositions.Count > 0)
         {
-            Transform startPos = GetStartPosition();
+            Transform startPos = startPositions[Random.Range(0, startPositions.Count)];
             if (startPos != null)
                 return startPos.position;
         }
 
-        // Иначе спавним вокруг заданной позиции
         Vector2 randomOffset = Random.insideUnitCircle * spawnRadius;
         return spawnPosition + new Vector3(randomOffset.x, 0, randomOffset.y);
     }
 
-    // Сброс счётчика при остановке сервера
-    public override void OnStopServer()
+    public override void OnLeftRoom()
     {
-        base.OnStopServer();
-        nextCharacterIndex = 0;
+        base.OnLeftRoom();
+    }
+
+    /// <summary>
+    /// Returns a random spawn position from startPositions list.
+    /// </summary>
+    public Vector3 GetRandomSpawnPosition()
+    {
+        return GetSpawnPos();
     }
 }

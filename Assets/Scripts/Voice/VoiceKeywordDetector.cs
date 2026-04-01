@@ -4,37 +4,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using UnityEngine;
-using Mirror;
+using Photon.Pun;
 using Vosk;
 
 /// <summary>
-/// Компонент распознавания речи через библиотеку Vosk (offline) и передачи
-/// каждого распознанного слова зарегистрированным слушателям (IVoiceWordListener).
-/// Использует SharedMicrophone для доступа к микрофону.
-/// Работает только для локального игрока в мультиплеере.
-///
-/// Использование:
-///   1. Повесьте на префаб игрока или на сцену.
-///   2. Убедитесь, что у игрока есть компонент SharedMicrophone.
-///   3. Положите модель Vosk в StreamingAssets/vosk-model.
-///   4. Зарегистрируйте слушателей через AddListener / RemoveListener.
+/// Компонент распознавания речи через библиотеку Vosk (offline).
+/// Работает только для локального игрока.
 /// </summary>
-public class VoiceRecognizer : NetworkBehaviour
+public class VoiceRecognizer : MonoBehaviourPun
 {
-    /// <summary>
-    /// Ссылка на VoiceRecognizer локального игрока для доступа из других скриптов.
-    /// </summary>
     public static VoiceRecognizer LocalInstance { get; private set; }
 
     [Header("Настройки Vosk")]
-    [Tooltip("Имя папки модели внутри StreamingAssets")]
     [SerializeField] private string _modelFolder = "vosk-model";
 
     [Header("Инициализация")]
-    [Tooltip("Максимальное время ожидания SharedMicrophone (секунды)")]
     [SerializeField] private float _maxWaitTime = 5f;
-
-    [Tooltip("Интервал проверки SharedMicrophone (секунды)")]
     [SerializeField] private float _checkInterval = 0.1f;
 
     private Model _model;
@@ -44,7 +29,6 @@ public class VoiceRecognizer : NetworkBehaviour
 
     private readonly List<IVoiceWordListener> _listeners = new List<IVoiceWordListener>();
 
-    // Потокобезопасная очередь результатов из рабочего потока
     private readonly Queue<string> _resultQueue = new Queue<string>();
     private readonly object _lock = new object();
 
@@ -53,7 +37,6 @@ public class VoiceRecognizer : NetworkBehaviour
     private readonly object _audioLock = new object();
     private volatile bool _threadRunning;
 
-    // Отслеживание уже отправленных слов для предотвращения дублирования
     private readonly HashSet<string> _sentWordsInCurrentPhrase = new HashSet<string>();
     private string _lastPartialText = "";
 
@@ -72,33 +55,15 @@ public class VoiceRecognizer : NetworkBehaviour
             _listeners.Remove(listener);
     }
 
-    /// <summary>
-    /// Отправляет указанное слово всем зарегистрированным слушателям.
-    /// Полезно для тестирования или симуляции голосовых команд.
-    /// </summary>
-    /// <param name="word">Слово для отправки слушателям.</param>
     public void SimulateWord(string word)
     {
         if (string.IsNullOrWhiteSpace(word)) return;
         NotifyListeners(word.Trim());
     }
 
-    private void Awake()
-    {
-        // В синглплеере инициализация происходит в Start
-        // В мультиплеере - в OnStartLocalPlayer
-    }
-
-    public override void OnStartLocalPlayer()
-    {
-        base.OnStartLocalPlayer();
-        InitializeAsLocal();
-    }
-
     private void Start()
     {
-        // Для синглплеера
-        if (!NetworkClient.active)
+        if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
             InitializeAsLocal();
         }
@@ -113,7 +78,6 @@ public class VoiceRecognizer : NetworkBehaviour
 
         LocalInstance = this;
 
-        // Пытаемся найти микрофон на этом же объекте
         _microphone = GetComponent<SharedMicrophone>();
 
         StartCoroutine(InitializeWithRetry());
@@ -126,14 +90,11 @@ public class VoiceRecognizer : NetworkBehaviour
 
         float waitedTime = 0f;
 
-        // Ждём пока микрофон будет готов (либо локальный компонент, либо глобальный Instance)
         while (true)
         {
-            // Проверяем локальный компонент
             if (_microphone != null && _microphone.IsRecording)
                 break;
 
-            // Проверяем глобальный Instance (для обратной совместимости)
             if (SharedMicrophone.LocalInstance != null && SharedMicrophone.LocalInstance.IsRecording)
             {
                 _microphone = SharedMicrophone.LocalInstance;
@@ -144,7 +105,7 @@ public class VoiceRecognizer : NetworkBehaviour
 
             if (waitedTime >= _maxWaitTime)
             {
-                Debug.LogError("[VoiceRecognizer] SharedMicrophone не найден или не записывает после ожидания. Добавьте SharedMicrophone на игрока.");
+                Debug.LogError("[VoiceRecognizer] SharedMicrophone не найден или не инициализирован после ожидания.");
                 yield break;
             }
 
@@ -161,14 +122,12 @@ public class VoiceRecognizer : NetworkBehaviour
         if (!Directory.Exists(modelPath))
         {
             Debug.LogError($"[VoiceRecognizer] Модель Vosk не найдена: {modelPath}");
-            Debug.LogError("[VoiceRecognizer] Скачайте модель с https://alphacephei.com/vosk/models");
-            Debug.LogError($"[VoiceRecognizer] и распакуйте в StreamingAssets/{_modelFolder}");
             return;
         }
 
         if (_microphone == null || !_microphone.IsRecording)
         {
-            Debug.LogError("[VoiceRecognizer] SharedMicrophone не найден или не записывает.");
+            Debug.LogError("[VoiceRecognizer] SharedMicrophone не найден или не инициализирован.");
             return;
         }
 
@@ -193,13 +152,11 @@ public class VoiceRecognizer : NetworkBehaviour
         _processThread = new Thread(ProcessAudioThread);
         _processThread.IsBackground = true;
         _processThread.Start();
-
     }
 
     private void Update()
     {
-        // Только для локального игрока
-        if (NetworkClient.active && !isLocalPlayer) return;
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) return;
 
         if (!_isRunning || _recognizer == null) return;
 
@@ -259,7 +216,6 @@ public class VoiceRecognizer : NetworkBehaviour
 
             if (_recognizer.AcceptWaveform(pcmBytes, pcmBytes.Length))
             {
-                // Финальный результат - отправляем слушателям
                 string result = _recognizer.Result();
                 string text = ParseVoskText(result);
                 if (!string.IsNullOrEmpty(text))
@@ -269,14 +225,12 @@ public class VoiceRecognizer : NetworkBehaviour
                         _resultQueue.Enqueue(text);
                     }
                 }
-                // Сбрасываем отслеживание для новой фразы
                 _lastPartialText = "";
                 lock (_lock)
                 {
                     _sentWordsInCurrentPhrase.Clear();
                 }
             }
-            // Убрали обработку PartialResult - теперь не отправляем частичные результаты
         }
     }
 
@@ -296,11 +250,6 @@ public class VoiceRecognizer : NetworkBehaviour
     private static string ParseVoskText(string json)
     {
         return ExtractJsonValue(json, "text");
-    }
-
-    private static string ParseVoskPartial(string json)
-    {
-        return ExtractJsonValue(json, "partial");
     }
 
     private static string ExtractJsonValue(string json, string key)
@@ -335,7 +284,6 @@ public class VoiceRecognizer : NetworkBehaviour
             string trimmed = word.Trim().ToLowerInvariant();
             if (string.IsNullOrEmpty(trimmed)) continue;
 
-            // Проверяем, не было ли это слово уже отправлено в текущей фразе
             if (_sentWordsInCurrentPhrase.Contains(trimmed))
                 continue;
 
@@ -343,7 +291,6 @@ public class VoiceRecognizer : NetworkBehaviour
             NotifyListeners(trimmed);
         }
 
-        // После обработки финального результата очищаем набор
         _sentWordsInCurrentPhrase.Clear();
     }
 
@@ -355,7 +302,6 @@ public class VoiceRecognizer : NetworkBehaviour
             {
                 _listeners[i].OnWordRecognized(word);
                 Debug.Log($"[VoiceWordSender] Отправлено слово: {word}");
-
             }
             catch (Exception e)
             {
@@ -364,16 +310,9 @@ public class VoiceRecognizer : NetworkBehaviour
         }
     }
 
-    public override void OnStopLocalPlayer()
-    {
-        base.OnStopLocalPlayer();
-        CleanupLocal();
-    }
-
     private void OnDisable()
     {
-        // Для синглплеера
-        if (!NetworkClient.active)
+        if (!PhotonNetwork.IsConnected)
         {
             StopAll();
         }
@@ -393,7 +332,7 @@ public class VoiceRecognizer : NetworkBehaviour
         }
     }
 
-    private void StopAll()
+    public void StopAll()
     {
         _isRunning = false;
         _threadRunning = false;

@@ -1,29 +1,23 @@
 using UnityEngine;
-using Mirror;
+using Photon.Pun;
 
 /// <summary>
-/// Компонент для предметов на сцене, которые можно подобрать голосовой командой "Take".
-/// Использует VoiceActivateZoneMB для отображения подсказки и IVoiceWordListener для обработки команды.
-/// При подборе предмет исчезает на всех клиентах и добавляется в инвентарь игрока.
+/// Компонент для предметов на сцене, которые можно подбирать командой "Take".
+/// При подборе предмет удаляется на всех клиентах и добавляется в инвентарь.
 /// </summary>
-[RequireComponent(typeof(NetworkIdentity))]
-public class PickupableItem : NetworkBehaviour, IVoiceWordListener
+[RequireComponent(typeof(PhotonView))]
+public class PickupableItem : MonoBehaviourPun, IVoiceWordListener
 {
     [Header("Voice Zone")]
-    [Tooltip("Ссылка на дочерний объект с VoiceActivateZoneMB")]
     public VoiceActivateZoneMB voiceZone;
     
     [Header("Item Settings")]
-    [Tooltip("Тип предмета, который будет добавлен в инвентарь")]
     [SerializeField] private PickupItemType _itemType = PickupItemType.ExitKey;
-    
-    [Tooltip("Количество предметов при подборе")]
     [SerializeField] private int _count = 1;
 
     private readonly string _pickupKeyword = "Take";
     private VoiceRecognizer _currentRecognizer;
     
-    [SyncVar]
     private bool _isPickedUp = false;
     
     public enum PickupItemType
@@ -43,7 +37,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
         
         voiceZone.SetKeyword("Take");
         
-        // Подписываемся на события зоны
         voiceZone.activate += OnPlayerEnterZone;
         voiceZone.deactivate += OnPlayerExitZone;
     }
@@ -56,7 +49,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
             voiceZone.deactivate -= OnPlayerExitZone;
         }
         
-        // Отписываемся от VoiceRecognizer при уничтожении
         if (_currentRecognizer != null)
         {
             _currentRecognizer.RemoveListener(this);
@@ -68,7 +60,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
     {
         if (_isPickedUp) return;
         
-        // Подписываемся только на локального игрока
         if (recognizer == VoiceRecognizer.LocalInstance)
         {
             _currentRecognizer = recognizer;
@@ -78,14 +69,12 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
     
     private void OnPlayerExitZone(VoiceRecognizer recognizer)
     {
-        // Отписываемся только от локального игрока
         if (recognizer == VoiceRecognizer.LocalInstance && _currentRecognizer == recognizer)
         {
             recognizer.RemoveListener(this);
             _currentRecognizer = null;
             Debug.Log($"[PickupableItem] Player exited pickup zone for {_itemType}");
             
-            // Если предмет уже подобран, уничтожаем зону
             if (_isPickedUp && voiceZone != null)
             {
                 Destroy(voiceZone.gameObject);
@@ -93,23 +82,15 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
         }
     }
     
-    /// <summary>
-    /// Вызывается при распознавании слова.
-    /// </summary>
     public void OnWordRecognized(string word)
     {
         if (_isPickedUp) return;
         if (string.IsNullOrEmpty(word)) return;
         
-        // Проверяем ключевое слово подбора
         if (string.Equals(word, _pickupKeyword, System.StringComparison.OrdinalIgnoreCase))
         {
-            
-            // Добавляем предмет в инвентарь локально
             AddItemToLocalInventory();
-            
-            // Отправляем команду на сервер для удаления объекта
-            CmdPickupItem();
+            photonView.RPC(nameof(RpcOnPickedUp), RpcTarget.All);
         }
     }
     
@@ -121,7 +102,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
             return;
         }
         
-        // Создаём предмет в зависимости от типа
         IInventoryItem item = CreateItem();
         if (item != null)
         {
@@ -145,46 +125,31 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
         }
     }
     
-    /// <summary>
-    /// Команда на сервер для подбора предмета.
-    /// </summary>
-    [Command(requiresAuthority = false)]
-    private void CmdPickupItem(NetworkConnectionToClient sender = null)
-    {
-        if (_isPickedUp)
-        {
-            Debug.Log("[PickupableItem] Item already picked up");
-            return;
-        }
-        
-        _isPickedUp = true;
-
-        OnPickedUpLocally();
-        RpcOnPickedUp();
-        
-        // Уничтожаем объект на сервере (автоматически синхронизируется со всеми клиентами)
-        NetworkServer.Destroy(gameObject);
-    }
-    
-    [ClientRpc]
+    [PunRPC]
     private void RpcOnPickedUp()
     {
+        if (_isPickedUp) return;
+        _isPickedUp = true;
+        
         OnPickedUpLocally();
+        
+        // MasterClient destroys the networked object
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
     
     private void OnPickedUpLocally()
     {
-        // Отписываем слушателя
         if (_currentRecognizer != null)
         {
             _currentRecognizer.RemoveListener(this);
             _currentRecognizer = null;
         }
         
-        // Скрываем UI подсказку
         VoiceHintUI.Hide();
         
-        // Уничтожаем зону активации
         if (voiceZone != null)
         {
             Destroy(voiceZone.gameObject);

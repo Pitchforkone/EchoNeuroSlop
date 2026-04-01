@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Mirror;
+using Photon.Pun;
 
 /// <summary>
 /// First-person controller: CharacterController movement, mouse look, walk/sprint/crouch.
-/// Supports Mirror networking for multiplayer.
+/// Supports Photon PUN 2 networking for multiplayer.
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
-public class FPSController : NetworkBehaviour
+public class FPSController : MonoBehaviourPun
 {
     [Header("Movement")]
     [SerializeField] private float _walkSpeed = 4f;
@@ -63,16 +63,9 @@ public class FPSController : NetworkBehaviour
         _targetHeight = _standHeight;
     }
 
-    public override void OnStartLocalPlayer()
-    {
-        base.OnStartLocalPlayer();
-        SetupLocalPlayer();
-    }
-
     private void OnEnable()
     {
-        // Для синглплеера или локального игрока
-        if (!NetworkClient.active)
+        if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
             SetupLocalPlayer();
         }
@@ -100,8 +93,7 @@ public class FPSController : NetworkBehaviour
 
     private void Start()
     {
-        // Для удалённых игроков отключаем камеру и аудио
-        if (NetworkClient.active && !isLocalPlayer)
+        if (PhotonNetwork.IsConnected && !photonView.IsMine)
         {
             DisableRemotePlayerComponents();
         }
@@ -125,7 +117,7 @@ public class FPSController : NetworkBehaviour
         DisableAction(_sprintAction);
         DisableAction(_crouchAction);
 
-        if (isLocalPlayer || !NetworkClient.active)
+        if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -134,8 +126,7 @@ public class FPSController : NetworkBehaviour
 
     private void Update()
     {
-        // Только локальный игрок управляет своим персонажем
-        if (NetworkClient.active && !isLocalPlayer) return;
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) return;
 
         UpdateGroundCheck();
         UpdateLook();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using Mirror;
+using Photon.Pun;
 
 /// <summary>
 /// Тип ввода для привязки слова.
@@ -32,49 +32,28 @@ public enum MouseButtonType
 [Serializable]
 public class VoiceWordBinding
 {
-    [Tooltip("Тип ввода: клавиатура или мышь")]
     public InputType inputType = InputType.Keyboard;
-
-    [Tooltip("Кнопка клавиатуры для отправки слова")]
     public Key key = Key.V;
-
-    [Tooltip("Кнопка мыши для отправки слова")]
     public MouseButtonType mouseButton = MouseButtonType.Left;
-
-    [Tooltip("Слово, которое будет отправлено слушателям")]
     public string word = "привет";
 }
 
 /// <summary>
-/// Компонент для отправки заранее заданных слов всем слушателям VoiceRecognizer
+/// Компонент для отправки заранее заданных слов через VoiceRecognizer
 /// по нажатию кнопок. Работает только для локального игрока.
-/// 
-/// Использование:
-///   1. Повесьте на префаб игрока.
-///   2. Настройте привязки кнопок к словам в инспекторе (_bindings).
-///   3. Опционально подпишитесь на событие OnWordSent для реакции на отправку.
 /// </summary>
-public class VoiceWordSender : NetworkBehaviour
+public class VoiceWordSender : MonoBehaviourPun
 {
     [Header("Привязки кнопок")]
-    [Tooltip("Список привязок кнопок к словам")]
     [SerializeField] private List<VoiceWordBinding> _bindings = new List<VoiceWordBinding>
     {
         new VoiceWordBinding { inputType = InputType.Keyboard, key = Key.V, word = "привет" }
     };
 
     [Header("События")]
-    [Tooltip("Событие, вызываемое при отправке слова")]
     [SerializeField] private UnityEvent<string> _onWordSent;
 
-    /// <summary>
-    /// Событие, вызываемое при отправке слова. Можно подписаться из кода.
-    /// </summary>
     public UnityEvent<string> OnWordSent => _onWordSent;
-
-    /// <summary>
-    /// Список привязок кнопок к словам.
-    /// </summary>
     public List<VoiceWordBinding> Bindings => _bindings;
 
     private Keyboard _keyboard;
@@ -88,8 +67,7 @@ public class VoiceWordSender : NetworkBehaviour
 
     private void Update()
     {
-        // Только для локального игрока в мультиплеере
-        if (NetworkClient.active && !isLocalPlayer) return;
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) return;
 
         if (_keyboard == null)
         {
@@ -129,9 +107,6 @@ public class VoiceWordSender : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// Получает ButtonControl для указанной кнопки мыши.
-    /// </summary>
     private UnityEngine.InputSystem.Controls.ButtonControl GetMouseButton(MouseButtonType buttonType)
     {
         if (_mouse == null) return null;
@@ -153,10 +128,6 @@ public class VoiceWordSender : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// Отправляет указанное слово всем слушателям VoiceRecognizer.
-    /// </summary>
-    /// <param name="word">Слово для отправки.</param>
     public void SendWord(string word)
     {
         if (string.IsNullOrWhiteSpace(word))
@@ -169,41 +140,30 @@ public class VoiceWordSender : NetworkBehaviour
 
         if (recognizer == null)
         {
-            // Попробуем найти на этом же объекте
             recognizer = GetComponent<VoiceRecognizer>();
         }
 
         if (recognizer == null)
         {
-            Debug.LogWarning("[VoiceWordSender] VoiceRecognizer не найден. Убедитесь, что компонент VoiceRecognizer присутствует на игроке.");
+            Debug.LogWarning("[VoiceWordSender] VoiceRecognizer не найден.");
             return;
         }
 
-        // Используем публичный метод SimulateWord
         recognizer.SimulateWord(word);
 
         _onWordSent?.Invoke(word);
     }
 
-    /// <summary>
-    /// Добавляет новую привязку клавиши клавиатуры к слову.
-    /// </summary>
     public void AddBinding(Key key, string word)
     {
         _bindings.Add(new VoiceWordBinding { inputType = InputType.Keyboard, key = key, word = word });
     }
 
-    /// <summary>
-    /// Добавляет новую привязку кнопки мыши к слову.
-    /// </summary>
     public void AddMouseBinding(MouseButtonType mouseButton, string word)
     {
         _bindings.Add(new VoiceWordBinding { inputType = InputType.Mouse, mouseButton = mouseButton, word = word });
     }
 
-    /// <summary>
-    /// Удаляет привязку по индексу.
-    /// </summary>
     public void RemoveBinding(int index)
     {
         if (index >= 0 && index < _bindings.Count)
@@ -212,9 +172,6 @@ public class VoiceWordSender : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// Очищает все привязки.
-    /// </summary>
     public void ClearBindings()
     {
         _bindings.Clear();

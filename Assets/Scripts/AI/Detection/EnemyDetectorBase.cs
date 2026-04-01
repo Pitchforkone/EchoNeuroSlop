@@ -65,8 +65,8 @@ public abstract class EnemyDetectorBase : MonoBehaviour
     {
         if (_enemyAI == null) return;
         
-        // Проверка только на сервере
-        if (!_enemyAI.isServer) return;
+        // Проверка только на MasterClient
+        if (!_enemyAI.IsMasterClient) return;
 
 
         ProcessCollision(other);

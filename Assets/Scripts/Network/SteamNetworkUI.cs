@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
-using Mirror;
+using Photon.Pun;
 using TMPro;
 using System.Text;
 
@@ -140,7 +140,7 @@ public class SteamNetworkUI : MonoBehaviour
         }
         
         // Check if just connected - hide menu automatically
-        bool isConnected = NetworkClient.isConnected || NetworkServer.active;
+        bool isConnected = PhotonNetwork.InRoom;
         if (isConnected && !_wasConnected)
         {
             // Just connected - hide menu
@@ -296,7 +296,6 @@ public class SteamNetworkUI : MonoBehaviour
         
         foreach (var item in _currentInventory.Items)
         {
-            // Format: "ItemName" - say "keyword" (x3)
             _inventoryStringBuilder.AppendLine($"• {item.DisplayName} - say \"<color=#FFD700>{item.Keyword}</color>\" (x{item.Count})");
         }
         
@@ -337,17 +336,20 @@ public class SteamNetworkUI : MonoBehaviour
         }
 #endif
 
+        bool inRoom = PhotonNetwork.InRoom;
+        bool isMaster = PhotonNetwork.IsMasterClient;
+
         if (hostButton != null)
-            hostButton.interactable = !NetworkClient.isConnected && !NetworkServer.active;
+            hostButton.interactable = !inRoom;
 
         if (leaveButton != null)
-            leaveButton.interactable = NetworkClient.isConnected || NetworkServer.active;
+            leaveButton.interactable = inRoom;
 
         if (inviteButton != null)
-            inviteButton.interactable = NetworkServer.active;
+            inviteButton.interactable = inRoom && isMaster;
 
         if (joinButton != null)
-            joinButton.interactable = !NetworkClient.isConnected && !NetworkServer.active;
+            joinButton.interactable = !inRoom;
     }
 
     private void OnHostClicked()

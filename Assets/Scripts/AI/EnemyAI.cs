@@ -1,17 +1,15 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
-using Mirror;
+using Photon.Pun;
 
 /// <summary>
-/// ������� �� ������ � �������������� �� ����.
-/// ���� ����� � ��������� ����� (����� ����������), ���������������, ����� ����������.
-/// ������������ ������������� �����, ������������ �����������.
-/// ������ AI ����������� ������ �� �������, ������� ���������������� ����� NetworkTransform.
+/// ���� AI �� ������� � ��������������� �� ������.
+/// AI ������ ����������� ������ �� MasterClient, ������� ���������������� ����� PhotonTransformView.
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(NetworkIdentity))]
-public class EnemyAI : NetworkBehaviour
+[RequireComponent(typeof(PhotonView))]
+public class EnemyAI : MonoBehaviourPun, IPunObservable
 {
     private enum EnemyState
     {
@@ -22,50 +20,38 @@ public class EnemyAI : NetworkBehaviour
     }
 
     [Header("Patrol Settings")]
-    [Tooltip("������ ����� ��������������")]
     [SerializeField] private List<PatrolPoint> _patrolPoints = new List<PatrolPoint>();
-
-    [Tooltip("����� �������� �� ���������, ���� � ����� �� �������")]
     [SerializeField] private float _defaultWaitTime = 2f;
-
-    [Tooltip("�������� ������������ ��� ��������������")]
     [SerializeField] private float _patrolSpeed = 3.5f;
 
     [Header("Chase Settings")]
-    [Tooltip("�������� ������������ ��� �������������")]
     [SerializeField] private float _chaseSpeed = 5f;
-
-    [Tooltip("���������, �� ������� ���� �������, ��� ������ ���� �������������")]
     [SerializeField] private float _chaseReachDistance = 1.5f;
-
-    [Tooltip("�������� ���������� ���� � ���������� ����")]
     [SerializeField] private float _pathUpdateInterval = 0.2f;
 
     [Header("Audio")]
-    [Tooltip("Звук при начале преследования игрока")]
     [SerializeField] private AudioClip _chaseStartClip;
-
-    [Tooltip("Громкость звука преследования")]
     [SerializeField] [Range(0f, 1f)] private float _chaseStartVolume = 1f;
 
     [Header("Debug")]
     [SerializeField] private bool _showDebugInfo = true;
 
     [Header("Kill Settings")]
-    [Tooltip("Тег игрока для обнаружения коллизии")]
     [SerializeField] private string _playerTag = "Player";
+
+    [Header("Spawn Points")]
+    [Tooltip("����� ������ ��� ������������ ��������� �������")]
+    [SerializeField] private List<Transform> _spawnPoints = new List<Transform>();
 
     private NavMeshAgent _agent;
     private AudioSource _audioSource;
     
-    [SyncVar]
     private EnemyState _currentState = EnemyState.Idle;
     
     private PatrolPoint _currentTarget;
     private PatrolPoint _previousTarget;
     private float _waitTimer;
 
-    // �������������
     private Vector3 _chaseTargetPosition;
     private Transform _chaseTargetTransform;
     private float _chaseDuration;
@@ -73,18 +59,14 @@ public class EnemyAI : NetworkBehaviour
     private int _currentChasePriority;
     private float _pathUpdateTimer;
 
-    // �������������� ������ ������� ���� ��� �������� (�����������, ��� �������)
-    [SyncVar]
     private int _currentTargetIndex = -1;
 
     /// <summary>
-    /// ������� �������� ����� (��� �������� �������).
+    /// Checks if this client is the MasterClient (server authority).
     /// </summary>
-    public float CurrentSpeed => _agent != null ? _agent.speed : 0f;
+    public bool IsMasterClient => PhotonNetwork.IsMasterClient;
 
-    /// <summary>
-    /// ���� ������ ���������� ����.
-    /// </summary>
+    public float CurrentSpeed => _agent != null ? _agent.speed : 0f;
     public bool IsChasing => _currentState == EnemyState.Chasing;
 
     private void Awake()
@@ -102,52 +84,40 @@ public class EnemyAI : NetworkBehaviour
         _agent.speed = _patrolSpeed;
     }
 
-    public override void OnStartServer()
+    private void Start()
     {
-        base.OnStartServer();
-        
-        if (_patrolPoints.Count == 0)
+        if (PhotonNetwork.IsMasterClient)
         {
-            Debug.LogWarning($"[EnemyAI] No patrol points assigned to {gameObject.name}!", this);
-            return;
+            if (_patrolPoints.Count == 0)
+            {
+                Debug.LogWarning($"[EnemyAI] No patrol points assigned to {gameObject.name}!", this);
+                return;
+            }
+            SelectNextPatrolPoint();
         }
-
-        // �������� �������������� � ��������� �����
-        SelectNextPatrolPoint();
-    }
-
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-        
-        // �� �������� ��������� NavMeshAgent, �.�. ������� ���������������� ����� NetworkTransform
-        if (!isServer)
+        else
         {
+            // �� ��-������ �������� ��������� NavMeshAgent
             _agent.enabled = false;
         }
     }
 
     private void Update()
     {
-        // ������ AI ����������� ������ �� �������
-        if (!isServer) return;
+        if (!PhotonNetwork.IsMasterClient) return;
 
         switch (_currentState)
         {
             case EnemyState.Walking:
                 UpdateWalking();
                 break;
-
             case EnemyState.Waiting:
                 UpdateWaiting();
                 break;
-
             case EnemyState.Chasing:
                 UpdateChasing();
                 break;
-
             case EnemyState.Idle:
-                // ������ �� ������
                 break;
         }
     }
@@ -160,13 +130,11 @@ public class EnemyAI : NetworkBehaviour
             return;
         }
 
-        // ���������, �������� �� �����
         float distanceToTarget = Vector3.Distance(transform.position, _currentTarget.transform.position);
         
         if (distanceToTarget <= _currentTarget.ReachRadius || 
             (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance))
         {
-            // �������� ����� - �������� ��������
             StartWaiting();
         }
     }
@@ -177,7 +145,6 @@ public class EnemyAI : NetworkBehaviour
 
         if (_waitTimer <= 0f)
         {
-            // ����� �������� ������� - ��� � ��������� �����
             SelectNextPatrolPoint();
         }
     }
@@ -186,14 +153,12 @@ public class EnemyAI : NetworkBehaviour
     {
         _chaseTimer -= Time.deltaTime;
 
-        // ����� ������������� �������
         if (_chaseTimer <= 0f)
         {
             EndChase();
             return;
         }
 
-        // ��������� ���� � ���������� ����
         if (_chaseTargetTransform != null)
         {
             _pathUpdateTimer -= Time.deltaTime;
@@ -205,7 +170,6 @@ public class EnemyAI : NetworkBehaviour
             }
         }
 
-        // ���������, �������� �� ����
         float distanceToTarget = Vector3.Distance(transform.position, _chaseTargetPosition);
         if (distanceToTarget <= _chaseReachDistance)
         {
@@ -214,7 +178,6 @@ public class EnemyAI : NetworkBehaviour
                 Debug.Log($"[EnemyAI] {gameObject.name} reached chase target");
             }
 
-            // ���� ���������� Transform - ����������, ����� �����������
             if (_chaseTargetTransform == null)
             {
                 EndChase();
@@ -222,9 +185,10 @@ public class EnemyAI : NetworkBehaviour
         }
     }
 
-    [Server]
     private void StartWaiting()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
         _currentState = EnemyState.Waiting;
         _agent.isStopped = true;
 
@@ -237,9 +201,10 @@ public class EnemyAI : NetworkBehaviour
         }
     }
 
-    [Server]
     private void SelectNextPatrolPoint()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
         if (_patrolPoints.Count == 0)
         {
             _currentState = EnemyState.Idle;
@@ -262,9 +227,6 @@ public class EnemyAI : NetworkBehaviour
         MoveToPatrolPoint(_currentTarget);
     }
 
-    /// <summary>
-    /// ������� ��������� ����� ��������������, �������� ����������.
-    /// </summary>
     private PatrolPoint FindNearestPatrolPoint()
     {
         PatrolPoint nearest = null;
@@ -273,11 +235,7 @@ public class EnemyAI : NetworkBehaviour
         foreach (var point in _patrolPoints)
         {
             if (point == null) continue;
-
-            // ���������� ���������� ����� (����� ���� ����� ������)
             if (point == _previousTarget && _patrolPoints.Count > 1) continue;
-
-            // ���������� ������� �����
             if (point == _currentTarget) continue;
 
             float distance = Vector3.Distance(transform.position, point.transform.position);
@@ -289,7 +247,6 @@ public class EnemyAI : NetworkBehaviour
             }
         }
 
-        // ���� �� ����� (��������, ������ ���������� �����), ���������� �
         if (nearest == null && _previousTarget != null)
         {
             nearest = _previousTarget;
@@ -298,9 +255,9 @@ public class EnemyAI : NetworkBehaviour
         return nearest;
     }
 
-    [Server]
     private void MoveToPatrolPoint(PatrolPoint target)
     {
+        if (!PhotonNetwork.IsMasterClient) return;
         if (target == null) return;
 
         _agent.speed = _patrolSpeed;
@@ -314,13 +271,10 @@ public class EnemyAI : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// ������������� ���� ������������� (��������� �������).
-    /// ���������� �����������.
-    /// </summary>
-    [Server]
     public void SetPursuitTarget(Vector3 position, float duration, int priority)
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
         if (_currentState == EnemyState.Chasing && priority < _currentChasePriority)
         {
             return;
@@ -339,13 +293,9 @@ public class EnemyAI : NetworkBehaviour
         StartChase(position, null, duration, priority);
     }
 
-    /// <summary>
-    /// ������������� ���� ������������� (���������� Transform).
-    /// ���������� �����������.
-    /// </summary>
-    [Server]
     public void SetPursuitTransform(Transform target, float duration, int priority)
     {
+        if (!PhotonNetwork.IsMasterClient) return;
         if (target == null) return;
 
         if (_currentState == EnemyState.Chasing && priority < _currentChasePriority)
@@ -366,13 +316,10 @@ public class EnemyAI : NetworkBehaviour
         StartChase(target.position, target, duration, priority);
     }
 
-    /// <summary>
-    /// ��������� ������ ������������� (��� ����������� ��������).
-    /// </summary>
-    [Server]
     public void RefreshPursuitTarget(Transform target, float duration, int priority)
     {
-        // ������ ���� ��� ���������� ��� ���� ��� ��������� ����
+        if (!PhotonNetwork.IsMasterClient) return;
+
         if (_currentState == EnemyState.Chasing)
         {
             if (_chaseTargetTransform == target || priority >= _currentChasePriority)
@@ -389,7 +336,6 @@ public class EnemyAI : NetworkBehaviour
         }
     }
 
-    [Server]
     private void StartChase(Vector3 position, Transform target, float duration, int priority)
     {
         _currentState = EnemyState.Chasing;
@@ -404,7 +350,7 @@ public class EnemyAI : NetworkBehaviour
         _agent.isStopped = false;
         _agent.SetDestination(position);
 
-        RpcPlayChaseSound();
+        photonView.RPC(nameof(RpcPlayChaseSound), RpcTarget.All);
 
         if (_showDebugInfo)
         {
@@ -413,7 +359,7 @@ public class EnemyAI : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
+    [PunRPC]
     private void RpcPlayChaseSound()
     {
         if (_chaseStartClip != null && _audioSource != null)
@@ -422,7 +368,6 @@ public class EnemyAI : NetworkBehaviour
         }
     }
 
-    [Server]
     private void EndChase()
     {
         _chaseTargetTransform = null;
@@ -433,26 +378,18 @@ public class EnemyAI : NetworkBehaviour
             Debug.Log($"[EnemyAI] {gameObject.name} ended chase, resuming patrol");
         }
 
-        // ������������ � ��������������
         SelectNextPatrolPoint();
     }
 
-    /// <summary>
-    /// ������������� ������������� �������������.
-    /// </summary>
-    [Server]
     public void CancelChase()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
         if (_currentState == EnemyState.Chasing)
         {
             EndChase();
         }
     }
 
-    /// <summary>
-    /// ��������� ����� �������������� � ������.
-    /// </summary>
-    [Server]
     public void AddPatrolPoint(PatrolPoint point)
     {
         if (point != null && !_patrolPoints.Contains(point))
@@ -461,194 +398,101 @@ public class EnemyAI : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// ������� ����� �������������� �� ������.
-    /// </summary>
-    [Server]
     public void RemovePatrolPoint(PatrolPoint point)
     {
         _patrolPoints.Remove(point);
     }
 
-    /// <summary>
-    /// ������������� ��������������.
-    /// </summary>
-    [Server]
     public void StopPatrol()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
         _currentState = EnemyState.Idle;
         _agent.isStopped = true;
     }
 
-    /// <summary>
-    /// ������������ ��������������.
-    /// </summary>
-    [Server]
     public void ResumePatrol()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
         if (_currentState == EnemyState.Idle)
         {
             SelectNextPatrolPoint();
         }
     }
 
-    /// <summary>
-    /// ������� �� ������� ��� ��������� ������� (���� �����).
-    /// </summary>
-    [Command(requiresAuthority = false)]
-    public void CmdStopPatrol()
-    {
-        StopPatrol();
-    }
-
-    /// <summary>
-    /// ������� �� ������� ��� ������������� ������� (���� �����).
-    /// </summary>
-    [Command(requiresAuthority = false)]
-    public void CmdResumePatrol()
-    {
-        ResumePatrol();
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (_patrolPoints == null || _patrolPoints.Count == 0) return;
-
-        // ������ ����� �� ����� � ������ ��������������
-        Gizmos.color = Color.green;
-        foreach (var point in _patrolPoints)
-        {
-            if (point != null)
-            {
-                Gizmos.DrawLine(transform.position, point.transform.position);
-            }
-        }
-
-        // ������ ������� ���� �������
-        if (_currentTarget != null && _currentState != EnemyState.Chasing)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(transform.position, _currentTarget.transform.position);
-            Gizmos.DrawWireSphere(_currentTarget.transform.position, 0.3f);
-        }
-
-        // ������ ���� �������������
-        if (_currentState == EnemyState.Chasing)
-        {
-            Gizmos.color = Color.red;
-            Vector3 targetPos = _chaseTargetTransform != null ? _chaseTargetTransform.position : _chaseTargetPosition;
-            Gizmos.DrawLine(transform.position, targetPos);
-            Gizmos.DrawWireSphere(targetPos, _chaseReachDistance);
-        }
-    }
-
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (!isServer) return;
-        
+        if (!PhotonNetwork.IsMasterClient) return;
         if (hit.gameObject.CompareTag(_playerTag))
-        {
             HandlePlayerCaught(hit.gameObject);
-        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!isServer) return;
-        
+        if (!PhotonNetwork.IsMasterClient) return;
         if (collision.gameObject.CompareTag(_playerTag))
-        {
             HandlePlayerCaught(collision.gameObject);
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isServer) return;
-        
+        if (!PhotonNetwork.IsMasterClient) return;
         if (other.CompareTag(_playerTag))
-        {
             HandlePlayerCaught(other.gameObject);
-        }
     }
 
-    [Server]
     private void HandlePlayerCaught(GameObject playerObject)
     {
-        NetworkIdentity playerIdentity = playerObject.GetComponent<NetworkIdentity>();
-        if (playerIdentity == null)
-        {
-            // Попробуем найти в родителе
-            playerIdentity = playerObject.GetComponentInParent<NetworkIdentity>();
-        }
+        if (!PhotonNetwork.IsMasterClient) return;
 
-        if (playerIdentity != null && playerIdentity.connectionToClient != null)
+        PhotonView playerPV = playerObject.GetComponent<PhotonView>();
+        if (playerPV == null)
+            playerPV = playerObject.GetComponentInParent<PhotonView>();
+
+        if (playerPV != null)
         {
             if (_showDebugInfo)
             {
                 Debug.Log($"[EnemyAI] {gameObject.name} caught player {playerObject.name}, teleporting to start position...");
             }
 
-            TeleportPlayerToStartPosition(playerIdentity);
+            Vector3 startPosition = GetPlayerSpawnPosition();
+            playerPV.RPC(nameof(RpcOnPlayerTeleported), playerPV.Owner, startPosition);
         }
-    }
-
-    [Server]
-    private void TeleportPlayerToStartPosition(NetworkIdentity playerIdentity)
-    {
-        // Получаем позицию спавна
-        Vector3 startPosition = GetPlayerSpawnPosition();
-
-        // Отключаем CharacterController перед телепортацией (он блокирует изменение позиции)
-        CharacterController characterController = playerIdentity.GetComponent<CharacterController>();
-        if (characterController != null)
-        {
-            characterController.enabled = false;
-        }
-
-        // Перемещаем игрока на точку NetworkStartPosition
-        playerIdentity.transform.position = startPosition;
-        playerIdentity.transform.rotation = Quaternion.identity;
-
-        // Включаем CharacterController обратно
-        if (characterController != null)
-        {
-            characterController.enabled = true;
-        }
-
-        // Уведомляем клиента о перемещении и передаём позицию
-        RpcOnPlayerTeleported(playerIdentity.connectionToClient, startPosition);
     }
 
     private Vector3 GetPlayerSpawnPosition()
     {
-        // Используем зарегистрированные точки спавна из NetworkManager
-        if (NetworkManager.startPositions.Count > 0)
+        // Use local spawn points or fallback to CustomNetworkManager
+        if (_spawnPoints.Count > 0)
         {
-            Transform startPos = NetworkManager.startPositions[Random.Range(0, NetworkManager.startPositions.Count)];
+            Transform startPos = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
             if (startPos != null)
-            {
                 return startPos.position;
-            }
         }
 
-        // Fallback - начальная позиция
-        Debug.LogWarning("[EnemyAI] No NetworkStartPosition found!");
+        if (CustomNetworkManager.Instance != null)
+        {
+            return CustomNetworkManager.Instance.GetRandomSpawnPosition();
+        }
+
+        Debug.LogWarning("[EnemyAI] No spawn position found!");
         return new Vector3(0, 1, 0);
     }
 
-    [TargetRpc]
-    private void RpcOnPlayerTeleported(NetworkConnectionToClient target, Vector3 position)
+    [PunRPC]
+    private void RpcOnPlayerTeleported(Vector3 position)
     {
-        // На клиенте тоже нужно телепортировать с отключением CharacterController
         CharacterController characterController = GetComponent<CharacterController>();
         if (characterController == null)
         {
-            // Ищем CharacterController у локального игрока
-            NetworkIdentity localPlayer = NetworkClient.localPlayer;
-            if (localPlayer != null)
+            // Find local player's CharacterController
+            foreach (var pv in FindObjectsOfType<PhotonView>())
             {
-                characterController = localPlayer.GetComponent<CharacterController>();
+                if (pv.IsMine)
+                {
+                    characterController = pv.GetComponent<CharacterController>();
+                    if (characterController != null) break;
+                }
             }
         }
 
@@ -665,4 +509,46 @@ public class EnemyAI : NetworkBehaviour
         }
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext((int)_currentState);
+            stream.SendNext(_currentTargetIndex);
+        }
+        else
+        {
+            _currentState = (EnemyState)(int)stream.ReceiveNext();
+            _currentTargetIndex = (int)stream.ReceiveNext();
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (_patrolPoints == null || _patrolPoints.Count == 0) return;
+
+        Gizmos.color = Color.green;
+        foreach (var point in _patrolPoints)
+        {
+            if (point != null)
+            {
+                Gizmos.DrawLine(transform.position, point.transform.position);
+            }
+        }
+
+        if (_currentTarget != null && _currentState != EnemyState.Chasing)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(transform.position, _currentTarget.transform.position);
+            Gizmos.DrawWireSphere(_currentTarget.transform.position, 0.3f);
+        }
+
+        if (_currentState == EnemyState.Chasing)
+        {
+            Gizmos.color = Color.red;
+            Vector3 targetPos = _chaseTargetTransform != null ? _chaseTargetTransform.position : _chaseTargetPosition;
+            Gizmos.DrawLine(transform.position, targetPos);
+            Gizmos.DrawWireSphere(targetPos, _chaseReachDistance);
+        }
+    }
 }
