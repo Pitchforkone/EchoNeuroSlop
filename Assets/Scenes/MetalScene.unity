@@ -2063,13 +2063,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1952563423855306260, guid: e60492729b52177458f72e01499073ae, type: 3}
+      propertyPath: m_Radius
+      value: 0.53
+      objectReference: {fileID: 0}
     - target: {fileID: 5422896795140715671, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_Name
       value: Ebaka1
       objectReference: {fileID: 0}
     - target: {fileID: 6371723933804787824, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -22.65
+      value: -21.63
       objectReference: {fileID: 0}
     - target: {fileID: 6371723933804787824, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2077,7 +2081,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6371723933804787824, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -13.53
+      value: -2.24
       objectReference: {fileID: 0}
     - target: {fileID: 6371723933804787824, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2107,6 +2111,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7477674949576666711, guid: e60492729b52177458f72e01499073ae, type: 3}
+      propertyPath: '_patrolPoints.Array.data[0]'
+      value: 
+      objectReference: {fileID: 475178116}
+    - target: {fileID: 7477674949576666711, guid: e60492729b52177458f72e01499073ae, type: 3}
+      propertyPath: '_patrolPoints.Array.data[1]'
+      value: 
+      objectReference: {fileID: 71390409}
+    - target: {fileID: 7477674949576666711, guid: e60492729b52177458f72e01499073ae, type: 3}
+      propertyPath: '_patrolPoints.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1997498840}
+    - target: {fileID: 7477674949576666711, guid: e60492729b52177458f72e01499073ae, type: 3}
+      propertyPath: '_patrolPoints.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1636094650}
+    - target: {fileID: 7477674949576666711, guid: e60492729b52177458f72e01499073ae, type: 3}
+      propertyPath: '_patrolPoints.Array.data[4]'
+      value: 
+      objectReference: {fileID: 1205628738}
     - target: {fileID: 8222806252384421232, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: sceneId
       value: 2404960597
