@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using Mirror;
 using TMPro;
-using System.Text;
 
 #if !DISABLESTEAMWORKS
 using Steamworks;
@@ -15,7 +14,6 @@ using Steamworks;
 /// UI controller for Steam network operations.
 /// Handles Host, Leave, Invite, Join and Copy Lobby ID buttons.
 /// Also displays voice hints when player enters voice activation zones.
-/// Also displays inventory items with their voice keywords and counts.
 /// </summary>
 public class SteamNetworkUI : MonoBehaviour
 {
@@ -38,16 +36,8 @@ public class SteamNetworkUI : MonoBehaviour
     public GameObject voiceHintPanel;
     [Tooltip("Text field to display the interaction hint (e.g. 'Press E: Open')")]
     public TextMeshProUGUI voiceHintText;
-    
-    [Header("Inventory UI")]
-    [Tooltip("Panel containing the inventory display (will be shown/hidden based on items)")]
-    public GameObject inventoryPanel;
-    [Tooltip("Text field to display inventory items with keywords and counts")]
-    public TextMeshProUGUI inventoryText;
 
     private SteamLobby steamLobby;
-    private PlayerInventory _currentInventory;
-    private readonly StringBuilder _inventoryStringBuilder = new StringBuilder();
     
     private bool _menuVisible = true;
     private bool _wasConnected = false;
@@ -86,7 +76,6 @@ public class SteamNetworkUI : MonoBehaviour
         {
             eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
         }
-
     }
 
     private void Start()
@@ -107,9 +96,6 @@ public class SteamNetworkUI : MonoBehaviour
 
         // Hide interaction hint by default
         HideInteractHint();
-        
-        // Hide inventory panel by default
-        HideInventoryPanel();
         
         // Show menu at start (before connecting)
         ShowMenu();
@@ -171,9 +157,6 @@ public class SteamNetworkUI : MonoBehaviour
                 Cursor.visible = false;
             }
         }
-        
-        // Check for PlayerInventory and subscribe to changes
-        UpdateInventorySubscription();
     }
 
     /// <summary>
@@ -204,14 +187,11 @@ public class SteamNetworkUI : MonoBehaviour
         }
         else
         {
-            // Fallback: show individual elements if no panel assigned
             SetMenuElementsActive(true);
         }
         
-        // Show cursor
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        
     }
     
     /// <summary>
@@ -227,16 +207,10 @@ public class SteamNetworkUI : MonoBehaviour
         }
         else
         {
-            // Fallback: hide individual elements if no panel assigned
             SetMenuElementsActive(false);
         }
-        
     }
     
-    /// <summary>
-    /// Sets active state for all menu UI elements.
-    /// Used as fallback when menuPanel is not assigned.
-    /// </summary>
     private void SetMenuElementsActive(bool active)
     {
         if (hostButton != null) hostButton.gameObject.SetActive(active);
@@ -247,80 +221,7 @@ public class SteamNetworkUI : MonoBehaviour
         if (lobbyIdInput != null) lobbyIdInput.gameObject.SetActive(active);
     }
     
-    /// <summary>
-    /// Returns true if menu is currently visible.
-    /// </summary>
     public bool IsMenuVisible => _menuVisible;
-
-    private void UpdateInventorySubscription()
-    {
-        var inventory = PlayerInventory.LocalInstance;
-        
-        // If inventory changed, update subscription
-        if (inventory != _currentInventory)
-        {
-            // Unsubscribe from old inventory
-            if (_currentInventory != null)
-            {
-                _currentInventory.OnInventoryChanged -= RefreshInventoryDisplay;
-            }
-            
-            _currentInventory = inventory;
-            
-            // Subscribe to new inventory
-            if (_currentInventory != null)
-            {
-                _currentInventory.OnInventoryChanged += RefreshInventoryDisplay;
-                RefreshInventoryDisplay();
-            }
-            else
-            {
-                HideInventoryPanel();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Refreshes the inventory display UI.
-    /// </summary>
-    public void RefreshInventoryDisplay()
-    {
-        if (_currentInventory == null || _currentInventory.ItemCount == 0)
-        {
-            HideInventoryPanel();
-            return;
-        }
-        
-        _inventoryStringBuilder.Clear();
-        _inventoryStringBuilder.AppendLine("<b>Inventory:</b>");
-        
-        foreach (var item in _currentInventory.Items)
-        {
-            // Format: "ItemName" - say "keyword" (x3)
-            _inventoryStringBuilder.AppendLine($"• {item.DisplayName} - say \"<color=#FFD700>{item.Keyword}</color>\" (x{item.Count})");
-        }
-        
-        if (inventoryText != null)
-        {
-            inventoryText.text = _inventoryStringBuilder.ToString();
-        }
-        
-        if (inventoryPanel != null)
-        {
-            inventoryPanel.SetActive(true);
-        }
-    }
-    
-    /// <summary>
-    /// Hides the inventory panel.
-    /// </summary>
-    public void HideInventoryPanel()
-    {
-        if (inventoryPanel != null)
-        {
-            inventoryPanel.SetActive(false);
-        }
-    }
 
     private void UpdateUI()
     {
@@ -352,7 +253,6 @@ public class SteamNetworkUI : MonoBehaviour
 
     private void OnHostClicked()
     {
-        
         if (steamLobby == null)
         {
             steamLobby = FindObjectOfType<SteamLobby>();
@@ -407,14 +307,9 @@ public class SteamNetworkUI : MonoBehaviour
 #endif
     }
 
-    /// <summary>
-    /// Finds all LightDestroy objects in the scene and destroys them.
-    /// Called when hosting or joining a game.
-    /// </summary>
     private void DestroyAllLights()
     {
         LightDestroy[] lights = FindObjectsOfType<LightDestroy>();
-        
         foreach (LightDestroy light in lights)
         {
             if (light != null)
@@ -440,7 +335,6 @@ public class SteamNetworkUI : MonoBehaviour
         {
             voiceHintText.text = $"Press E: \"{hintText}\"";
         }
-        
     }
     
     /// <summary>
@@ -466,15 +360,5 @@ public class SteamNetworkUI : MonoBehaviour
             Debug.Log($"[SteamNetworkUI] Lobby ID copied: {lobbyId}");
         }
 #endif
-    }
-    
-    private void OnDestroy()
-    {
-        // Unsubscribe from inventory
-        if (_currentInventory != null)
-        {
-            _currentInventory.OnInventoryChanged -= RefreshInventoryDisplay;
-            _currentInventory = null;
-        }
     }
 }

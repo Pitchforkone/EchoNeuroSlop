@@ -1722,8 +1722,8 @@ GameObject:
   - component: {fileID: 3197984882741860398}
   - component: {fileID: -3202100927381645994}
   - component: {fileID: 7031025114909970746}
-  - component: {fileID: 225519994861259866}
   - component: {fileID: 3786400658133194640}
+  - component: {fileID: 8069621933771253387}
   m_Layer: 0
   m_Name: MaleCharacterPolyart
   m_TagString: Player
@@ -1853,8 +1853,6 @@ MonoBehaviour:
   _sampleWindow: 128
   _minVolumeChangeStep: 0.02
   _echoIntervalWhenLoud: 0.2
-  _micSampleRate: 16000
-  _micBufferLength: 1
   _activeEchoCooldown: 0.5
 --- !u!114 &3576364529826974797
 MonoBehaviour:
@@ -2020,8 +2018,6 @@ MonoBehaviour:
   _barMaxWidth: 200
   _barHeight: 20
   _bottomOffset: 50
-  _micSampleRate: 16000
-  _micBufferLength: 1
 --- !u!114 &3197984882741860398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2082,26 +2078,6 @@ MonoBehaviour:
   _speakingColor: {r: 0.2, g: 1, b: 0.3, a: 1}
   _mutedColor: {r: 1, g: 0.3, b: 0.3, a: 0.6}
   _idleColor: {r: 1, g: 1, b: 1, a: 0.3}
---- !u!114 &225519994861259866
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5352958571798197664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8b32c18ef1bafc43a7c3ad9bef92ea1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VoiceCommandInput
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _bindings:
-  - inputType: 0
-    key: 36
-    mouseButton: 0
-    word: fire
 --- !u!114 &3786400658133194640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2119,6 +2095,29 @@ MonoBehaviour:
   syncInterval: 0
   _sampleRate: 16000
   _bufferLengthSec: 1
+--- !u!114 &8069621933771253387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5352958571798197664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba29ee16fe9b545499a4de9dbf620cfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
+  slotSize: 80
+  slotSpacing: 10
+  bottomOffset: 40
+  normalSlotColor: {r: 0.15, g: 0.15, b: 0.15, a: 0.8}
+  selectedSlotColor: {r: 0.3, g: 0.3, b: 0.1, a: 0.9}
+  normalBorderColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  selectedBorderColor: {r: 1, g: 0.85, b: 0, a: 1}
+  emptyTextColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  itemTextColor: {r: 1, g: 1, b: 1, a: 1}
+  countTextColor: {r: 1, g: 0.85, b: 0, a: 1}
+  keyHintColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
 --- !u!1 &5691243874327788079
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,21 +8,22 @@ using UnityEngine;
 [Serializable]
 public abstract class BaseInventoryItem : IInventoryItem
 {
-    [SerializeField] protected string _keyword;
     [SerializeField] protected string _displayName;
     [SerializeField] protected int _count = 1;
+    [SerializeField] protected int _maxStack = 99;
     
     protected PlayerInventory _inventory;
     
-    public string Keyword => _keyword;
     public string DisplayName => _displayName;
     public int Count => _count;
+    public int MaxStack => _maxStack;
+    public virtual bool CanUseManually => true;
     
-    protected BaseInventoryItem(string keyword, string displayName, int count = 1)
+    protected BaseInventoryItem(string displayName, int count = 1, int maxStack = 99)
     {
-        _keyword = keyword.ToLowerInvariant();
         _displayName = displayName;
         _count = Mathf.Max(1, count);
+        _maxStack = Mathf.Max(1, maxStack);
     }
     
     public virtual bool Use()
@@ -35,11 +36,24 @@ public abstract class BaseInventoryItem : IInventoryItem
         return true;
     }
     
-    public void AddCount(int amount)
+    /// <summary>
+    /// Добавить количество к предмету с учётом MaxStack.
+    /// </summary>
+    /// <returns>Количество, которое не поместилось (overflow).</returns>
+    public int AddCount(int amount)
     {
-        if (amount > 0)
+        if (amount <= 0) return 0;
+        
+        int space = _maxStack - _count;
+        if (amount <= space)
         {
             _count += amount;
+            return 0;
+        }
+        else
+        {
+            _count = _maxStack;
+            return amount - space;
         }
     }
     

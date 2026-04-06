@@ -3,7 +3,6 @@ using UnityEngine;
 
 /// <summary>
 /// Ёлемент инвентар€ "ќчки ночного видени€".
-/// »спользуетс€ дл€ активации ночного видени€ голосовой командой "glasses".
 /// </summary>
 [Serializable]
 public class NightVisionItem : BaseInventoryItem
@@ -14,15 +13,13 @@ public class NightVisionItem : BaseInventoryItem
     /// </summary>
     public static event Action<int> OnNightVisionUsed;
     
-    public NightVisionItem(int count = 1) : base("glasses", "Night Vision Goggles", count)
+    public NightVisionItem(int count = 1) : base("Night Vision Goggles", count, 3)
     {
     }
     
     protected override void OnUse()
     {
         Debug.Log($"[NightVisionItem] Night Vision activated! Remaining: {_count}");
-        
-        // ”ведомл€ем подписчиков (NightVisionController)
         OnNightVisionUsed?.Invoke(_count);
     }
     

@@ -3,7 +3,6 @@ using UnityEngine;
 
 /// <summary>
 /// Ёлемент инвентар€ "Ёхо-граната".
-/// »спользуетс€ дл€ броска гранаты голосовой командой "grenade".
 /// </summary>
 [Serializable]
 public class GrenadeItem : BaseInventoryItem
@@ -14,15 +13,13 @@ public class GrenadeItem : BaseInventoryItem
     /// </summary>
     public static event Action<int> OnGrenadeUsed;
     
-    public GrenadeItem(int count = 1) : base("grenade", "Echo Grenade", count)
+    public GrenadeItem(int count = 1) : base("Echo Grenade", count, 5)
     {
     }
     
     protected override void OnUse()
     {
         Debug.Log($"[GrenadeItem] Grenade used! Remaining: {_count}");
-        
-        // ”ведомл€ем подписчиков (VoiceGrenadeThrow)
         OnGrenadeUsed?.Invoke(_count);
     }
     
