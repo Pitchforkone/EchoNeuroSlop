@@ -33,10 +33,10 @@ public class SteamNetworkUI : MonoBehaviour
     [Tooltip("Parent panel containing all menu buttons (will be toggled with ESC)")]
     public GameObject menuPanel;
     
-    [Header("Voice Hint UI")]
-    [Tooltip("Panel containing the voice hint (will be shown/hidden)")]
+    [Header("Interaction Hint UI")]
+    [Tooltip("Panel containing the interaction hint (will be shown/hidden)")]
     public GameObject voiceHintPanel;
-    [Tooltip("Text field to display the voice hint (e.g. 'Speak: Open')")]
+    [Tooltip("Text field to display the interaction hint (e.g. 'Press E: Open')")]
     public TextMeshProUGUI voiceHintText;
     
     [Header("Inventory UI")]
@@ -105,8 +105,8 @@ public class SteamNetworkUI : MonoBehaviour
         SetupButton(joinButton, "Join", OnJoinClicked);
         SetupButton(copyLobbyIdButton, "CopyLobbyId", CopyLobbyId);
 
-        // Hide voice hint by default
-        HideVoiceHint();
+        // Hide interaction hint by default
+        HideInteractHint();
         
         // Hide inventory panel by default
         HideInventoryPanel();
@@ -425,11 +425,11 @@ public class SteamNetworkUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Shows the voice hint UI with the specified keyword.
-    /// Called when player enters a VoiceActivateZone.
+    /// Shows the interaction hint UI with the specified text.
+    /// Called when player enters an InteractZone.
     /// </summary>
-    /// <param name="keyword">The keyword to display.</param>
-    public void ShowVoiceHint(string keyword)
+    /// <param name="hintText">The hint text to display.</param>
+    public void ShowInteractHint(string hintText)
     {
         if (voiceHintPanel != null)
         {
@@ -438,16 +438,16 @@ public class SteamNetworkUI : MonoBehaviour
         
         if (voiceHintText != null)
         {
-            voiceHintText.text = $"Speak: \"{keyword}\"";
+            voiceHintText.text = $"Press E: \"{hintText}\"";
         }
         
     }
     
     /// <summary>
-    /// Hides the voice hint UI.
-    /// Called when player exits a VoiceActivateZone.
+    /// Hides the interaction hint UI.
+    /// Called when player exits an InteractZone.
     /// </summary>
-    public void HideVoiceHint()
+    public void HideInteractHint()
     {
         if (voiceHintPanel != null)
         {

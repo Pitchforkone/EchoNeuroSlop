@@ -2,43 +2,42 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Static helper class that displays voice hint when player enters a VoiceActivateZone.
+/// Static helper that displays interaction hint when player enters an InteractZone.
 /// Works with SteamNetworkUI to show/hide the hint panel.
 /// </summary>
-public static class VoiceHintUI
+public static class InteractHintUI
 {
     private static SteamNetworkUI _cachedUI;
-    
+
     /// <summary>
-    /// Shows the voice hint with the specified keyword.
-    /// Finds and uses SteamNetworkUI to display the hint.
+    /// Shows the interaction hint with the specified text.
     /// </summary>
-    /// <param name="keyword">The keyword to display.</param>
-    public static void Show(string keyword)
+    /// <param name="hintText">The hint text to display.</param>
+    public static void Show(string hintText)
     {
         var ui = GetUI();
         if (ui != null)
         {
-            ui.ShowVoiceHint(keyword);
+            ui.ShowInteractHint(hintText);
         }
         else
         {
-            Debug.LogWarning("[VoiceHintUI] No SteamNetworkUI found. Make sure it exists in the scene.");
+            Debug.LogWarning("[InteractHintUI] No SteamNetworkUI found. Make sure it exists in the scene.");
         }
     }
-    
+
     /// <summary>
-    /// Hides the voice hint.
+    /// Hides the interaction hint.
     /// </summary>
     public static void Hide()
     {
         var ui = GetUI();
         if (ui != null)
         {
-            ui.HideVoiceHint();
+            ui.HideInteractHint();
         }
     }
-    
+
     private static SteamNetworkUI GetUI()
     {
         if (_cachedUI == null)
@@ -47,7 +46,7 @@ public static class VoiceHintUI
         }
         return _cachedUI;
     }
-    
+
     /// <summary>
     /// Clears the cached UI reference. Call this when changing scenes.
     /// </summary>

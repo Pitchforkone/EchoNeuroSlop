@@ -1,73 +1,34 @@
-using Mirror;
-using System;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
-public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
+public class DoorActivateZoneMB : NetworkBehaviour
 {
-    public VoiceActivateZoneMB activateZoneMB;
-    private List<VoiceRecognizer> listPlayer = new();
+    public InteractZone interactZone;
     
     [SyncVar]
     private bool isOpened = false;
     
-    public string KeyWord = "Open";
+    public string HintText = "Open";
     
     public void Start()
     {
-        activateZoneMB.SetKeyword(KeyWord);
-        activateZoneMB.activate += OnActivate;
-        activateZoneMB.deactivate += OnDeactivate;
+        interactZone.SetHintText(HintText);
+        interactZone.interact += OnInteract;
     }
     
-    public void OnActivate(VoiceRecognizer voice)
+    private void OnDestroy()
     {
-        if (isOpened) return;
-        
-        voice.AddListener(this);
-        listPlayer.Add(voice);
-    }
-    
-    public void OnDeactivate(VoiceRecognizer voice)
-    {
-        voice.RemoveListener(this);
-        listPlayer.Remove(voice);
-        
-        if (isOpened)
+        if (interactZone != null)
         {
-            Destroy(activateZoneMB.gameObject);
+            interactZone.interact -= OnInteract;
         }
     }
 
-    public void OnWordRecognized(string word)
+    private void OnInteract()
     {
         if (isOpened) return;
-        
-        // Special handling for "Key" keyword - requires key item in inventory
-        if (string.Equals(KeyWord, "Key", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(word, KeyWord, StringComparison.OrdinalIgnoreCase))
-        {
-            // Check if player has a key in inventory
-            if (PlayerInventory.LocalInstance == null)
-            {
-                return;
-            }
-            
-            var keyItem = PlayerInventory.LocalInstance.FindItemByKeyword("key");
-            if (keyItem != null)
-            {
-                // Use the key (removes it from inventory if count becomes 0)
-                PlayerInventory.LocalInstance.UseItem(keyItem);
-                CmdOpenDoor();
-            }
-            return;
-        }
-        
-        // Normal keyword handling (no inventory check required)
-        if (string.Equals(word, KeyWord, StringComparison.OrdinalIgnoreCase))
-        {
-            CmdOpenDoor();
-        }
+        CmdOpenDoor();
     }
     
     [Command(requiresAuthority = false)]
@@ -87,15 +48,13 @@ public class DoorActivateZoneMB : NetworkBehaviour, IVoiceWordListener
     
     private void OpenDoorLocally()
     {
-        listPlayer.ForEach(voice => voice.RemoveListener(this));
-        listPlayer.Clear();
         GetComponent<Animator>().SetBool("Open", true);
         
-        VoiceHintUI.Hide();
+        InteractHintUI.Hide();
         
-        if (activateZoneMB != null)
+        if (interactZone != null)
         {
-            Destroy(activateZoneMB.gameObject);
+            Destroy(interactZone.gameObject);
         }
     }
 }

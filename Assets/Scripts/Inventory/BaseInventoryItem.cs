@@ -56,27 +56,6 @@ public abstract class BaseInventoryItem : IInventoryItem
     }
     
     /// <summary>
-    /// Вызывается из IVoiceWordListener когда распознано слово.
-    /// Проверяет совпадение с ключевым словом и использует предмет.
-    /// </summary>
-    public void OnWordRecognized(string word)
-    {
-        if (string.IsNullOrEmpty(word)) return;
-        
-        // Проверяем совпадение с ключевым словом
-        if (word.ToLowerInvariant() == _keyword)
-        {
-            Debug.Log($"[{_displayName}] Voice command recognized: '{word}'");
-            
-            // Используем предмет через инвентарь
-            if (_inventory != null)
-            {
-                _inventory.UseItem(this);
-            }
-        }
-    }
-    
-    /// <summary>
     /// Переопределите для выполнения действия при использовании предмета.
     /// </summary>
     protected abstract void OnUse();

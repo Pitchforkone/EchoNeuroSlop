@@ -1714,9 +1714,6 @@ GameObject:
   - component: {fileID: 3041070447401841839}
   - component: {fileID: 3576364529826974797}
   - component: {fileID: 7021459169495784740}
-  - component: {fileID: 7876292797413018065}
-  - component: {fileID: 5189132292821907914}
-  - component: {fileID: 2471959565224076409}
   - component: {fileID: 8978603411901622347}
   - component: {fileID: 5966580597830866941}
   - component: {fileID: 3316404524834953763}
@@ -1725,6 +1722,8 @@ GameObject:
   - component: {fileID: 3197984882741860398}
   - component: {fileID: -3202100927381645994}
   - component: {fileID: 7031025114909970746}
+  - component: {fileID: 225519994861259866}
+  - component: {fileID: 3786400658133194640}
   m_Layer: 0
   m_Name: MaleCharacterPolyart
   m_TagString: Player
@@ -1854,6 +1853,8 @@ MonoBehaviour:
   _sampleWindow: 128
   _minVolumeChangeStep: 0.02
   _echoIntervalWhenLoud: 0.2
+  _micSampleRate: 16000
+  _micBufferLength: 1
   _activeEchoCooldown: 0.5
 --- !u!114 &3576364529826974797
 MonoBehaviour:
@@ -1906,80 +1907,6 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &7876292797413018065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5352958571798197664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1138cca0a4cfcc46932a8877e41a403, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VoiceKeywordDetector
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _modelFolder: vosk-model
-  _maxWaitTime: 5
-  _checkInterval: 0.1
---- !u!114 &5189132292821907914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5352958571798197664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 916a6726732e44dc864131d4bfda02f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SharedMicrophone
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _sampleRate: 16000
-  _bufferLengthSec: 1
---- !u!114 &2471959565224076409
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5352958571798197664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2d3c267ae394a9488d2c11a4eebf2a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VoiceWordSender
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _bindings:
-  - inputType: 0
-    key: 26
-    mouseButton: 0
-    word: Light
-  - inputType: 0
-    key: 29
-    mouseButton: 0
-    word: Open
-  - inputType: 0
-    key: 41
-    mouseButton: 1
-    word: AllLight
-  - inputType: 0
-    key: 34
-    mouseButton: 1
-    word: Take
-  - inputType: 0
-    key: 25
-    mouseButton: 1
-    word: Key
-  _onWordSent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &8978603411901622347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2093,6 +2020,8 @@ MonoBehaviour:
   _barMaxWidth: 200
   _barHeight: 20
   _bottomOffset: 50
+  _micSampleRate: 16000
+  _micBufferLength: 1
 --- !u!114 &3197984882741860398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2127,12 +2056,12 @@ MonoBehaviour:
   syncInterval: 0
   _pushToTalk: 0
   _pttKey: 34
-  _vadThreshold: 0.01
-  _vadHoldTime: 0.3
-  _chunkMs: 40
   _playbackVolume: 1
-  _minDistance: 1
-  _maxDistance: 30
+  _channelName: GameVoice
+  _use3DPositional: 1
+  _audibleDistance: 30
+  _conversationalDistance: 5
+  _audioFadeIntensity: 1
 --- !u!114 &7031025114909970746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2153,6 +2082,43 @@ MonoBehaviour:
   _speakingColor: {r: 0.2, g: 1, b: 0.3, a: 1}
   _mutedColor: {r: 1, g: 0.3, b: 0.3, a: 0.6}
   _idleColor: {r: 1, g: 1, b: 1, a: 0.3}
+--- !u!114 &225519994861259866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5352958571798197664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8b32c18ef1bafc43a7c3ad9bef92ea1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceCommandInput
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _bindings:
+  - inputType: 0
+    key: 36
+    mouseButton: 0
+    word: fire
+--- !u!114 &3786400658133194640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5352958571798197664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 916a6726732e44dc864131d4bfda02f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SharedMicrophone
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _sampleRate: 16000
+  _bufferLengthSec: 1
 --- !u!1 &5691243874327788079
 GameObject:
   m_ObjectHideFlags: 0

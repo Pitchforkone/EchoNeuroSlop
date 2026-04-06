@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8638590919811322602}
   - component: {fileID: 4478741928522702745}
-  - component: {fileID: 3590074299220696229}
+  - component: {fileID: 3642348692680883124}
   m_Layer: 0
   m_Name: ActivateZone
   m_TagString: Untagged
@@ -54,7 +54,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3590074299220696229
+--- !u!114 &3642348692680883124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,9 +63,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1262050151984407711}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4aad0132bac947f4e939c339184632b1, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c5a82604eac10a4b940e5717401f04b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VoiceActivateZoneMB
+  m_EditorClassIdentifier: Assembly-CSharp::InteractZone
 --- !u!1 &2517482383106084410
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,7 +490,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  activateZoneMB: {fileID: 3590074299220696229}
+  interactZone: {fileID: 3642348692680883124}
+  HintText: Open
 --- !u!114 &2567077764904645531
 MonoBehaviour:
   m_ObjectHideFlags: 0

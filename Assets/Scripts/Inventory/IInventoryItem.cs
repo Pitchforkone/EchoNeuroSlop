@@ -2,12 +2,12 @@ using UnityEngine;
 
 /// <summary>
 /// Интерфейс для предметов инвентаря.
-/// Каждый предмет имеет ключевое слово для активации голосом и количество использований.
+/// Каждый предмет имеет ключевое слово для отображения и возможность использования.
 /// </summary>
-public interface IInventoryItem : IVoiceWordListener
+public interface IInventoryItem
 {
     /// <summary>
-    /// Ключевое слово для активации предмета голосом.
+    /// Ключевое слово для отображения предмета.
     /// </summary>
     string Keyword { get; }
     
@@ -17,7 +17,7 @@ public interface IInventoryItem : IVoiceWordListener
     string DisplayName { get; }
     
     /// <summary>
-    /// Текущее количество использований предмета.
+    /// Текущее количество экземпляров предмета.
     /// </summary>
     int Count { get; }
     
@@ -28,7 +28,7 @@ public interface IInventoryItem : IVoiceWordListener
     bool Use();
     
     /// <summary>
-    /// Добавить использования к предмету.
+    /// Добавить количество к предмету.
     /// </summary>
     /// <param name="amount">Количество для добавления.</param>
     void AddCount(int amount);

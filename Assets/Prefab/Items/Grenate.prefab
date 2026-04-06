@@ -148,7 +148,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  voiceZone: {fileID: 9195445992204809969}
+  interactZone: {fileID: 9195445992204809969}
   _itemType: 1
   _count: 1
 --- !u!114 &905351060836265248
@@ -248,6 +248,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9009468133994867709}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4aad0132bac947f4e939c339184632b1, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c5a82604eac10a4b940e5717401f04b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VoiceActivateZoneMB

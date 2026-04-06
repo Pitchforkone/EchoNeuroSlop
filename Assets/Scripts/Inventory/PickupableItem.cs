@@ -2,16 +2,16 @@ using UnityEngine;
 using Mirror;
 
 /// <summary>
-/// Компонент для предметов на сцене, которые можно подобрать голосовой командой "Take".
-/// Использует VoiceActivateZoneMB для отображения подсказки и IVoiceWordListener для обработки команды.
-/// При подборе предмет исчезает на всех клиентах и добавляется в инвентарь игрока.
+/// Компонент для предметов на сцене, которые можно подобрать нажатием E.
+/// Использует InteractZone для определения близости игрока.
+/// При нажатии E предмет добавляется в инвентарь и уничтожается на сервере.
 /// </summary>
 [RequireComponent(typeof(NetworkIdentity))]
-public class PickupableItem : NetworkBehaviour, IVoiceWordListener
+public class PickupableItem : NetworkBehaviour, IInteractable
 {
-    [Header("Voice Zone")]
-    [Tooltip("Ссылка на дочерний объект с VoiceActivateZoneMB")]
-    public VoiceActivateZoneMB voiceZone;
+    [Header("Interact Zone")]
+    [Tooltip("Ссылка на дочерний объект с InteractZone")]
+    public InteractZone interactZone;
     
     [Header("Item Settings")]
     [Tooltip("Тип предмета, который будет добавлен в инвентарь")]
@@ -20,9 +20,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
     [Tooltip("Количество предметов при подборе")]
     [SerializeField] private int _count = 1;
 
-    private readonly string _pickupKeyword = "Take";
-    private VoiceRecognizer _currentRecognizer;
-    
     [SyncVar]
     private bool _isPickedUp = false;
     
@@ -35,82 +32,36 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
     
     private void Start()
     {
-        if (voiceZone == null)
+        if (interactZone == null)
         {
-            Debug.LogError("[PickupableItem] VoiceActivateZoneMB not assigned!");
+            Debug.LogError("[PickupableItem] InteractZone not assigned!");
             return;
         }
         
-        voiceZone.SetKeyword("Take");
-        
-        // Подписываемся на события зоны
-        voiceZone.activate += OnPlayerEnterZone;
-        voiceZone.deactivate += OnPlayerExitZone;
+        interactZone.SetHintText("Take");
+        interactZone.interact += OnInteract;
     }
     
     private void OnDestroy()
     {
-        if (voiceZone != null)
+        if (interactZone != null)
         {
-            voiceZone.activate -= OnPlayerEnterZone;
-            voiceZone.deactivate -= OnPlayerExitZone;
-        }
-        
-        // Отписываемся от VoiceRecognizer при уничтожении
-        if (_currentRecognizer != null)
-        {
-            _currentRecognizer.RemoveListener(this);
-            _currentRecognizer = null;
+            interactZone.interact -= OnInteract;
         }
     }
-    
-    private void OnPlayerEnterZone(VoiceRecognizer recognizer)
-    {
-        if (_isPickedUp) return;
-        
-        // Подписываемся только на локального игрока
-        if (recognizer == VoiceRecognizer.LocalInstance)
-        {
-            _currentRecognizer = recognizer;
-            recognizer.AddListener(this);
-        }
-    }
-    
-    private void OnPlayerExitZone(VoiceRecognizer recognizer)
-    {
-        // Отписываемся только от локального игрока
-        if (recognizer == VoiceRecognizer.LocalInstance && _currentRecognizer == recognizer)
-        {
-            recognizer.RemoveListener(this);
-            _currentRecognizer = null;
-            Debug.Log($"[PickupableItem] Player exited pickup zone for {_itemType}");
-            
-            // Если предмет уже подобран, уничтожаем зону
-            if (_isPickedUp && voiceZone != null)
-            {
-                Destroy(voiceZone.gameObject);
-            }
-        }
-    }
-    
+
     /// <summary>
-    /// Вызывается при распознавании слова.
+    /// Вызывается при нажатии E в зоне.
     /// </summary>
-    public void OnWordRecognized(string word)
+    public void OnInteract()
     {
         if (_isPickedUp) return;
-        if (string.IsNullOrEmpty(word)) return;
         
-        // Проверяем ключевое слово подбора
-        if (string.Equals(word, _pickupKeyword, System.StringComparison.OrdinalIgnoreCase))
-        {
-            
-            // Добавляем предмет в инвентарь локально
-            AddItemToLocalInventory();
-            
-            // Отправляем команду на сервер для удаления объекта
-            CmdPickupItem();
-        }
+        // Добавляем предмет в инвентарь локально
+        AddItemToLocalInventory();
+        
+        // Отправляем команду на сервер для удаления объекта
+        CmdPickupItem();
     }
     
     private void AddItemToLocalInventory()
@@ -121,7 +72,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
             return;
         }
         
-        // Создаём предмет в зависимости от типа
         IInventoryItem item = CreateItem();
         if (item != null)
         {
@@ -145,9 +95,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
         }
     }
     
-    /// <summary>
-    /// Команда на сервер для подбора предмета.
-    /// </summary>
     [Command(requiresAuthority = false)]
     private void CmdPickupItem(NetworkConnectionToClient sender = null)
     {
@@ -162,7 +109,6 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
         OnPickedUpLocally();
         RpcOnPickedUp();
         
-        // Уничтожаем объект на сервере (автоматически синхронизируется со всеми клиентами)
         NetworkServer.Destroy(gameObject);
     }
     
@@ -174,20 +120,11 @@ public class PickupableItem : NetworkBehaviour, IVoiceWordListener
     
     private void OnPickedUpLocally()
     {
-        // Отписываем слушателя
-        if (_currentRecognizer != null)
-        {
-            _currentRecognizer.RemoveListener(this);
-            _currentRecognizer = null;
-        }
+        InteractHintUI.Hide();
         
-        // Скрываем UI подсказку
-        VoiceHintUI.Hide();
-        
-        // Уничтожаем зону активации
-        if (voiceZone != null)
+        if (interactZone != null)
         {
-            Destroy(voiceZone.gameObject);
+            Destroy(interactZone.gameObject);
         }
     }
 }

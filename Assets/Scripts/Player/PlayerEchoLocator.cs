@@ -114,7 +114,7 @@ public class PlayerEchoLocator : NetworkBehaviour
             _lastVolume = volume;
             _lastEchoTime = Time.time;
         }
-        // Если громкость выше порога, но шаг не пройден - срабатываем раз в N секунд
+        // Если громкость выше порога, но шаг не пройден - срабатыем раз в N секунд
         else if (volume > _volumeThreshold && Time.time - _lastEchoTime >= _echoIntervalWhenLoud)
         {
             TriggerActiveEchoFromMicrophone();
