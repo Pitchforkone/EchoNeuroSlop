@@ -2705,6 +2705,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Room
       objectReference: {fileID: 0}
+    - target: {fileID: 1593942449961350108, guid: 752fc30b2f0c3ec428177d734da26a66, type: 3}
+      propertyPath: _interactZone
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2617311469996824048, guid: 752fc30b2f0c3ec428177d734da26a66, type: 3}
       propertyPath: sceneId
       value: 4173308164
@@ -2761,7 +2765,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5195365049767282550, guid: 752fc30b2f0c3ec428177d734da26a66, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -3152,6 +3157,14 @@ PrefabInstance:
     - target: {fileID: 4841042030344807081, guid: 537a6cd1bd3a9534fbb0c6b38dd6ab4c, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -268.34662
+      objectReference: {fileID: 0}
+    - target: {fileID: 7248107746317416709, guid: 537a6cd1bd3a9534fbb0c6b38dd6ab4c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.20703125
+      objectReference: {fileID: 0}
+    - target: {fileID: 7248107746317416709, guid: 537a6cd1bd3a9534fbb0c6b38dd6ab4c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.08294678
       objectReference: {fileID: 0}
     - target: {fileID: 7648768857834544784, guid: 537a6cd1bd3a9534fbb0c6b38dd6ab4c, type: 3}
       propertyPath: m_Name

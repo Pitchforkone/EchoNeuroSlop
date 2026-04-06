@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4321c15d43b44484ba79c83518556cda, type: 3}
   m_Name: GranadeDetecter
   m_EditorClassIdentifier: Assembly-CSharp::EchoPreset
-  _echoType: 3
+  _echoType: 4
   _speed: 20
   _maxRadius: 30
   _color: {r: 0.3726415, g: 0.6863208, b: 1, a: 1}

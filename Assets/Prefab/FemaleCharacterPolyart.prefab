@@ -340,9 +340,7 @@ GameObject:
   - component: {fileID: 4074869836490145215}
   - component: {fileID: 949326207717980869}
   - component: {fileID: 2659663604339706835}
-  - component: {fileID: 1047603364015603507}
   - component: {fileID: 7317519633154668711}
-  - component: {fileID: 7189193110703407271}
   - component: {fileID: 6684415423285264150}
   - component: {fileID: 4479078188640199227}
   - component: {fileID: 6997378490930793043}
@@ -532,24 +530,6 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &1047603364015603507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328023254706044480}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1138cca0a4cfcc46932a8877e41a403, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VoiceKeywordDetector
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _modelFolder: vosk-model
-  _maxWaitTime: 5
-  _checkInterval: 0.1
 --- !u!114 &7317519633154668711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,45 +547,6 @@ MonoBehaviour:
   syncInterval: 0
   _sampleRate: 16000
   _bufferLengthSec: 1
---- !u!114 &7189193110703407271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328023254706044480}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2d3c267ae394a9488d2c11a4eebf2a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VoiceWordSender
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _bindings:
-  - inputType: 0
-    key: 26
-    mouseButton: 0
-    word: Light
-  - inputType: 0
-    key: 29
-    mouseButton: 0
-    word: Open
-  - inputType: 0
-    key: 41
-    mouseButton: 1
-    word: AllLight
-  - inputType: 0
-    key: 34
-    mouseButton: 1
-    word: Take
-  - inputType: 0
-    key: 25
-    mouseButton: 1
-    word: Key
-  _onWordSent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &6684415423285264150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -753,12 +694,12 @@ MonoBehaviour:
   syncInterval: 0
   _pushToTalk: 0
   _pttKey: 34
-  _vadThreshold: 0.01
-  _vadHoldTime: 0.3
-  _chunkMs: 40
   _playbackVolume: 1
-  _minDistance: 1
-  _maxDistance: 30
+  _channelName: GameVoice
+  _use3DPositional: 1
+  _audibleDistance: 30
+  _conversationalDistance: 5
+  _audioFadeIntensity: 1
 --- !u!114 &5779030132285097525
 MonoBehaviour:
   m_ObjectHideFlags: 0
