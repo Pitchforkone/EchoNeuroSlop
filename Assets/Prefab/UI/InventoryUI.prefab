@@ -35,10 +35,10 @@ RectTransform:
   - {fileID: 1479634323344419576}
   m_Father: {fileID: 7809517274852554766}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 713, y: -506.52325}
-  m_SizeDelta: {x: -2366.5913, y: -1253.9371}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -567, y: 213.47675}
+  m_SizeDelta: {x: 193.40869, y: 186.06287}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5492272604664665118
 CanvasRenderer:
@@ -72,9 +72,6 @@ MonoBehaviour:
   emptyNameColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
   filledNameColor: {r: 1, g: 1, b: 1, a: 1}
   countColor: {r: 1, g: 0.84, b: 0, a: 1}
-  keywordColor: {r: 1, g: 0.84, b: 0, a: 0.7}
-  normalKeyHintColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
-  selectedKeyHintColor: {r: 1, g: 0.84, b: 0, a: 1}
 --- !u!1 &1955382378768066815
 GameObject:
   m_ObjectHideFlags: 0
@@ -580,10 +577,10 @@ RectTransform:
   - {fileID: 1586476875705911650}
   m_Father: {fileID: 7809517274852554766}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1011.56934, y: -506.52325}
-  m_SizeDelta: {x: -2366.5913, y: -1253.9371}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -268.43066, y: 213.47675}
+  m_SizeDelta: {x: 193.40869, y: 186.06287}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1444866729057051484
 CanvasRenderer:
@@ -617,9 +614,6 @@ MonoBehaviour:
   emptyNameColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
   filledNameColor: {r: 1, g: 1, b: 1, a: 1}
   countColor: {r: 1, g: 0.84, b: 0, a: 1}
-  keywordColor: {r: 1, g: 0.84, b: 0, a: 0.7}
-  normalKeyHintColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
-  selectedKeyHintColor: {r: 1, g: 0.84, b: 0, a: 1}
 --- !u!1 &5074362155022339128
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,10 +1347,10 @@ RectTransform:
   - {fileID: 4495715368199333720}
   m_Father: {fileID: 7809517274852554766}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 439, y: -506.52325}
-  m_SizeDelta: {x: -2366.5913, y: -1253.9371}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -841, y: 213.47675}
+  m_SizeDelta: {x: 193.40869, y: 186.06287}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7988307707379309035
 CanvasRenderer:
@@ -1390,6 +1384,3 @@ MonoBehaviour:
   emptyNameColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
   filledNameColor: {r: 1, g: 1, b: 1, a: 1}
   countColor: {r: 1, g: 0.84, b: 0, a: 1}
-  keywordColor: {r: 1, g: 0.84, b: 0, a: 0.7}
-  normalKeyHintColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
-  selectedKeyHintColor: {r: 1, g: 0.84, b: 0, a: 1}
