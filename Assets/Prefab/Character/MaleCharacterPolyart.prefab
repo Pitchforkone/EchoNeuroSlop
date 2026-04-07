@@ -861,7 +861,7 @@ Transform:
   m_Children:
   - {fileID: 3606662575687051508}
   m_Father: {fileID: 2082477930936650460}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 9.5907914e-15, y: 180, z: -55.424076}
 --- !u!1 &3535583540089501483
 GameObject:
   m_ObjectHideFlags: 0
@@ -958,7 +958,7 @@ Transform:
   m_Children:
   - {fileID: 8025770729303403084}
   m_Father: {fileID: 7517969456916051927}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &3734350751567761457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1022,7 +1022,7 @@ Transform:
   m_Children:
   - {fileID: 4597521189709829527}
   m_Father: {fileID: 1867891055556171973}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &3825023103083271692
 GameObject:
   m_ObjectHideFlags: 0
@@ -1085,7 +1085,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3606662575687051508}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.9535146}
 --- !u!1 &3956543324353144732
 GameObject:
   m_ObjectHideFlags: 0
@@ -1741,8 +1741,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5453581448146344707}
   - {fileID: 2036583721014499647}
@@ -2107,17 +2107,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba29ee16fe9b545499a4de9dbf620cfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
-  slotSize: 80
-  slotSpacing: 10
-  bottomOffset: 40
-  normalSlotColor: {r: 0.15, g: 0.15, b: 0.15, a: 0.8}
-  selectedSlotColor: {r: 0.3, g: 0.3, b: 0.1, a: 0.9}
+  background: {fileID: 0}
+  border: {fileID: 0}
+  itemNameText: {fileID: 0}
+  countText: {fileID: 0}
+  usePressHint: {fileID: 0}
+  normalBgColor: {r: 0.12, g: 0.12, b: 0.12, a: 0.85}
+  selectedBgColor: {r: 0.25, g: 0.22, b: 0.08, a: 0.9}
   normalBorderColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   selectedBorderColor: {r: 1, g: 0.85, b: 0, a: 1}
-  emptyTextColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
-  itemTextColor: {r: 1, g: 1, b: 1, a: 1}
-  countTextColor: {r: 1, g: 0.85, b: 0, a: 1}
-  keyHintColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+  emptyNameColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
+  filledNameColor: {r: 1, g: 1, b: 1, a: 1}
+  countColor: {r: 1, g: 0.84, b: 0, a: 1}
 --- !u!1 &5691243874327788079
 GameObject:
   m_ObjectHideFlags: 0
@@ -2180,7 +2181,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2082477930936650460}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 4.7730093, y: -90, z: 0}
 --- !u!1 &5969660952732422881
 GameObject:
   m_ObjectHideFlags: 0
@@ -2211,7 +2212,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5520827298064400198}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -2.1964989, y: 11.782453, z: 10.889299}
 --- !u!1 &6034632639760669006
 GameObject:
   m_ObjectHideFlags: 0
@@ -2441,7 +2442,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1849329857167241720}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.021678925, y: -167.81618, z: 170.69844}
 --- !u!1 &6776651574091632497
 GameObject:
   m_ObjectHideFlags: 0
@@ -2976,7 +2977,7 @@ Transform:
   m_Children:
   - {fileID: 6096115641610148428}
   m_Father: {fileID: 8715508464901095395}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -10.982105}
 --- !u!1 &8625773108461827912
 GameObject:
   m_ObjectHideFlags: 0
@@ -3213,6 +3214,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shield08Polyart
       objectReference: {fileID: 0}
+    - target: {fileID: 2495695665250258272, guid: f86f26a978127384b85b71f1235c8ef2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3020135586385696730, guid: f86f26a978127384b85b71f1235c8ef2, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -3278,6 +3283,10 @@ PrefabInstance:
     - target: {fileID: 8218668140323578366, guid: f0aae4c8b38e02e48a4124483b105340, type: 3}
       propertyPath: m_Name
       value: OHS03Polyart
+      objectReference: {fileID: 0}
+    - target: {fileID: 8218668140323578366, guid: f0aae4c8b38e02e48a4124483b105340, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8738464927208897348, guid: f0aae4c8b38e02e48a4124483b105340, type: 3}
       propertyPath: m_RootOrder
