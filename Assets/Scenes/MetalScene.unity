@@ -2063,10 +2063,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1952563423855306260, guid: e60492729b52177458f72e01499073ae, type: 3}
-      propertyPath: m_Radius
-      value: 0.53
-      objectReference: {fileID: 0}
     - target: {fileID: 5422896795140715671, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_Name
       value: Ebaka1
@@ -2110,6 +2106,10 @@ PrefabInstance:
     - target: {fileID: 6371723933804787824, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7140993443480142996, guid: e60492729b52177458f72e01499073ae, type: 3}
+      propertyPath: _footstepVolume
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 7477674949576666711, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: '_patrolPoints.Array.data[0]'

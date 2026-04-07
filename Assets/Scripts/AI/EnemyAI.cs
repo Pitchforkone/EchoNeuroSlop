@@ -47,6 +47,7 @@ public class EnemyAI : NetworkBehaviour
 
     [Tooltip("Громкость звука преследования")]
     [SerializeField] [Range(0f, 1f)] private float _chaseStartVolume = 1f;
+    private Animator _animator;
 
     [Header("Debug")]
     [SerializeField] private bool _showDebugInfo = true;
@@ -57,7 +58,7 @@ public class EnemyAI : NetworkBehaviour
 
     private NavMeshAgent _agent;
     private AudioSource _audioSource;
-    
+
     [SyncVar]
     private EnemyState _currentState = EnemyState.Idle;
     
@@ -87,6 +88,10 @@ public class EnemyAI : NetworkBehaviour
     /// </summary>
     public bool IsChasing => _currentState == EnemyState.Chasing;
 
+    // Хэши параметров аниматора для оптимизации
+    private static readonly int IdleHash = Animator.StringToHash("Idle");
+    private static readonly int WalkHash = Animator.StringToHash("Walk");
+
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -100,6 +105,19 @@ public class EnemyAI : NetworkBehaviour
         }
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = _patrolSpeed;
+
+        if (_animator == null)
+        {
+            _animator = GetComponent<Animator>();
+        }
+    }
+
+    private void UpdateAnimatorState(bool isMoving)
+    {
+        if (_animator == null) return;
+
+        _animator.SetBool(IdleHash, !isMoving);
+        _animator.SetBool(WalkHash, isMoving);
     }
 
     public override void OnStartServer()
@@ -112,7 +130,6 @@ public class EnemyAI : NetworkBehaviour
             return;
         }
 
-        // �������� �������������� � ��������� �����
         SelectNextPatrolPoint();
     }
 
@@ -120,7 +137,6 @@ public class EnemyAI : NetworkBehaviour
     {
         base.OnStartClient();
         
-        // �� �������� ��������� NavMeshAgent, �.�. ������� ���������������� ����� NetworkTransform
         if (!isServer)
         {
             _agent.enabled = false;
@@ -129,7 +145,6 @@ public class EnemyAI : NetworkBehaviour
 
     private void Update()
     {
-        // ������ AI ����������� ������ �� �������
         if (!isServer) return;
 
         switch (_currentState)
@@ -147,7 +162,6 @@ public class EnemyAI : NetworkBehaviour
                 break;
 
             case EnemyState.Idle:
-                // ������ �� ������
                 break;
         }
     }
@@ -160,13 +174,11 @@ public class EnemyAI : NetworkBehaviour
             return;
         }
 
-        // ���������, �������� �� �����
         float distanceToTarget = Vector3.Distance(transform.position, _currentTarget.transform.position);
         
         if (distanceToTarget <= _currentTarget.ReachRadius || 
             (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance))
         {
-            // �������� ����� - �������� ��������
             StartWaiting();
         }
     }
@@ -177,7 +189,6 @@ public class EnemyAI : NetworkBehaviour
 
         if (_waitTimer <= 0f)
         {
-            // ����� �������� ������� - ��� � ��������� �����
             SelectNextPatrolPoint();
         }
     }
@@ -186,14 +197,12 @@ public class EnemyAI : NetworkBehaviour
     {
         _chaseTimer -= Time.deltaTime;
 
-        // ����� ������������� �������
         if (_chaseTimer <= 0f)
         {
             EndChase();
             return;
         }
 
-        // ��������� ���� � ���������� ����
         if (_chaseTargetTransform != null)
         {
             _pathUpdateTimer -= Time.deltaTime;
@@ -205,7 +214,6 @@ public class EnemyAI : NetworkBehaviour
             }
         }
 
-        // ���������, �������� �� ����
         float distanceToTarget = Vector3.Distance(transform.position, _chaseTargetPosition);
         if (distanceToTarget <= _chaseReachDistance)
         {
@@ -214,7 +222,6 @@ public class EnemyAI : NetworkBehaviour
                 Debug.Log($"[EnemyAI] {gameObject.name} reached chase target");
             }
 
-            // ���� ���������� Transform - ����������, ����� �����������
             if (_chaseTargetTransform == null)
             {
                 EndChase();
@@ -227,6 +234,7 @@ public class EnemyAI : NetworkBehaviour
     {
         _currentState = EnemyState.Waiting;
         _agent.isStopped = true;
+        _animator.SetTrigger(WalkHash);// Враг стоит
 
         float waitTime = _currentTarget != null ? _currentTarget.WaitTime : _defaultWaitTime;
         _waitTimer = waitTime;
@@ -243,6 +251,7 @@ public class EnemyAI : NetworkBehaviour
         if (_patrolPoints.Count == 0)
         {
             _currentState = EnemyState.Idle;
+            _animator.SetTrigger(IdleHash);// Враг стоит
             return;
         }
 
@@ -252,6 +261,7 @@ public class EnemyAI : NetworkBehaviour
         {
             Debug.LogWarning($"[EnemyAI] {gameObject.name} couldn't find next patrol point!", this);
             _currentState = EnemyState.Idle;
+            _animator.SetTrigger(IdleHash);
             return;
         }
 
@@ -262,9 +272,6 @@ public class EnemyAI : NetworkBehaviour
         MoveToPatrolPoint(_currentTarget);
     }
 
-    /// <summary>
-    /// ������� ��������� ����� ��������������, �������� ����������.
-    /// </summary>
     private PatrolPoint FindNearestPatrolPoint()
     {
         PatrolPoint nearest = null;
@@ -274,10 +281,8 @@ public class EnemyAI : NetworkBehaviour
         {
             if (point == null) continue;
 
-            // ���������� ���������� ����� (����� ���� ����� ������)
             if (point == _previousTarget && _patrolPoints.Count > 1) continue;
 
-            // ���������� ������� �����
             if (point == _currentTarget) continue;
 
             float distance = Vector3.Distance(transform.position, point.transform.position);
@@ -289,7 +294,6 @@ public class EnemyAI : NetworkBehaviour
             }
         }
 
-        // ���� �� ����� (��������, ������ ���������� �����), ���������� �
         if (nearest == null && _previousTarget != null)
         {
             nearest = _previousTarget;
@@ -307,17 +311,13 @@ public class EnemyAI : NetworkBehaviour
         _agent.isStopped = false;
         _agent.SetDestination(target.transform.position);
         _currentState = EnemyState.Walking;
+        _animator.SetTrigger(WalkHash); // Враг идёт
 
         if (_showDebugInfo)
         {
             Debug.Log($"[EnemyAI] {gameObject.name} moving to {target.name}");
         }
     }
-
-    /// <summary>
-    /// ������������� ���� ������������� (��������� �������).
-    /// ���������� �����������.
-    /// </summary>
     [Server]
     public void SetPursuitTarget(Vector3 position, float duration, int priority)
     {
@@ -403,6 +403,7 @@ public class EnemyAI : NetworkBehaviour
         _agent.speed = _chaseSpeed;
         _agent.isStopped = false;
         _agent.SetDestination(position);
+        _animator.SetTrigger(WalkHash);
 
         RpcPlayChaseSound();
 
@@ -478,6 +479,7 @@ public class EnemyAI : NetworkBehaviour
     {
         _currentState = EnemyState.Idle;
         _agent.isStopped = true;
+        _animator.SetTrigger(IdleHash); // Враг стоит
     }
 
     /// <summary>
