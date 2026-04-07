@@ -421,7 +421,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyEchoDetector
   _pursuitDuration: 5
   _priority: 10
-  _showDebugInfo: 1
+  _showDebugInfo: 0
   _detectableEchoType: 4
   _detectAllTypes: 0
   _minIntensity: 0
@@ -776,7 +776,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPlayerDetector
   _pursuitDuration: 2
   _priority: 10
-  _showDebugInfo: 1
+  _showDebugInfo: 0
   _trackPlayerPosition: 1
   _playerLayer:
     serializedVersion: 2
@@ -1531,7 +1531,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e22a6c3ccaf8c0447a2f2bfe4c0b901b, type: 3}
   - {fileID: 8300000, guid: 754280181ac9185428a7ebb00f579c3c, type: 3}
   - {fileID: 8300000, guid: 7af3b8f507f6733429b190af877ba528, type: 3}
-  _footstepVolume: 0.15
+  _footstepVolume: 0.01
   _pitchVariation: 0.1
 --- !u!82 &6431516061253910735
 AudioSource:
@@ -1699,7 +1699,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyEchoDetector
   _pursuitDuration: 5
   _priority: 9
-  _showDebugInfo: 1
+  _showDebugInfo: 0
   _detectableEchoType: 1
   _detectAllTypes: 0
   _minIntensity: 0

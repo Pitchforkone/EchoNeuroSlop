@@ -77,20 +77,4 @@ public class EnemyPlayerDetector : EnemyDetectorBase
             _enemyAI.RefreshPursuitTarget(player.transform, _pursuitDuration, _priority);
         }
     }
-
-    protected override void OnDrawGizmosSelected()
-    {
-        base.OnDrawGizmosSelected();
-
-        // ÷вет дл€ детектора игрока - красный
-        var col = GetComponent<Collider>();
-        if (col == null) return;
-
-        Gizmos.color = new Color(1f, 0f, 0f, 0.3f);
-
-        if (col is SphereCollider sphere)
-        {
-            Gizmos.DrawSphere(transform.position + sphere.center, sphere.radius * transform.lossyScale.x);
-        }
-    }
 }

@@ -16,8 +16,6 @@ public abstract class EnemyDetectorBase : MonoBehaviour
     [Tooltip("ѕриоритет этого детектора (выше = важнее)")]
     [SerializeField] protected int _priority = 0;
 
-    [Header("Debug")]
-    [SerializeField] protected bool _showDebugInfo = true;
 
     protected EnemyAI _enemyAI;
     protected Collider _collider;
@@ -98,11 +96,6 @@ public abstract class EnemyDetectorBase : MonoBehaviour
     protected void NotifyTransformDetected(Transform target, float duration, int priority)
     {
         if (_enemyAI == null) return;
-
-        if (_showDebugInfo)
-        {
-            Debug.Log($"[{GetType().Name}] {_enemyAI.gameObject.name} detected transform {target.name}, calling SetPursuitTransform");
-        }
 
         _enemyAI.SetPursuitTransform(target, duration, priority);
     }

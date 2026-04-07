@@ -43,20 +43,4 @@ public class EnemyEchoDetector : EnemyDetectorBase
         // Проверяем совпадение типа
         return _detectableEchoType == echoType;
     }
-
-    protected override void OnDrawGizmosSelected()
-    {
-        base.OnDrawGizmosSelected();
-
-        // Цвет для эхо-детектора - голубой
-        var col = GetComponent<Collider>();
-        if (col == null) return;
-
-        Gizmos.color = new Color(0f, 0.8f, 1f, 0.3f);
-
-        if (col is SphereCollider sphere)
-        {
-            Gizmos.DrawSphere(transform.position + sphere.center, sphere.radius * transform.lossyScale.x);
-        }
-    }
 }
