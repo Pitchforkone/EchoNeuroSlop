@@ -1920,7 +1920,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyEchoAccumulatorDetector
   _pursuitDuration: 5
   _priority: 8
-  _ignoredEchoTypes: 
+  _ignoredEchoTypes: 0300000002000000
   _echoValue: 1
   _decayRate: 1
   _activationThreshold: 5
