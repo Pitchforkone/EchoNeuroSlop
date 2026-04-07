@@ -1985,7 +1985,7 @@ MonoBehaviour:
   _screamInterval: 0.5
   _detectionRadius: 2.5
   _cooldownDuration: 3
-  _screamClip: {fileID: 8300000, guid: cbbf6261ba84fbd4bb705f39d418e2af, type: 3}
+  _screamClip: {fileID: 8300000, guid: eee8c9798e6962f4ba52db6535ff258d, type: 3}
   _volume: 0.5
   _loopAudio: 0
 --- !u!82 &5983826106787743626
@@ -1999,7 +1999,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: cbbf6261ba84fbd4bb705f39d418e2af, type: 3}
+  m_Resource: {fileID: 8300000, guid: eee8c9798e6962f4ba52db6535ff258d, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
   m_Pitch: 1
