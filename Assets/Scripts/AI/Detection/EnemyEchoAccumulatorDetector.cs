@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Детектор эхо-волн с накоплением.
 /// Суммирует количество эхо в области, имеет скорость убывания шкалы.
 /// При превышении порога начинает преследование последней позиции эхо.
+/// При достижении точки эхо враг останавливается на время, затем возвращается к патрулированию.
 /// </summary>
 public class EnemyEchoAccumulatorDetector : EnemyDetectorBase
 {
@@ -21,6 +23,13 @@ public class EnemyEchoAccumulatorDetector : EnemyDetectorBase
     [Tooltip("Пороговое значение для начала преследования")]
     [SerializeField] private float _activationThreshold = 3f;
 
+    [Header("Arrival Settings")]
+    [Tooltip("Расстояние, на котором считается что враг достиг точки эхо")]
+    [SerializeField] private float _arrivalDistance = 1.5f;
+
+    [Tooltip("Время ожидания после достижения точки эхо (секунды)")]
+    [SerializeField] private float _waitTimeOnArrival = 3f;
+
     // Текущее значение шкалы накопления
     [SerializeField] private float _currentAccumulation = 0f;
 
@@ -29,6 +38,12 @@ public class EnemyEchoAccumulatorDetector : EnemyDetectorBase
 
     // Флаг активного преследования
     private bool _isPursuing = false;
+
+    // Флаг ожидания на месте
+    private bool _isWaiting = false;
+
+    // Таймер ожидания
+    private float _waitTimer = 0f;
 
     // HashSet для быстрой проверки игнорируемых типов
     private HashSet<EchoType> _ignoredTypesSet;
@@ -43,6 +58,11 @@ public class EnemyEchoAccumulatorDetector : EnemyDetectorBase
     /// </summary>
     public bool IsPursuing => _isPursuing;
 
+    /// <summary>
+    /// Ожидает ли враг на месте.
+    /// </summary>
+    public bool IsWaiting => _isWaiting;
+
     protected override void Awake()
     {
         base.Awake();
@@ -56,6 +76,22 @@ public class EnemyEchoAccumulatorDetector : EnemyDetectorBase
         if (_enemyAI == null) return;
         if (!_enemyAI.isServer) return;
 
+        // Обработка состояния ожидания
+        if (_isWaiting)
+        {
+            _waitTimer -= Time.deltaTime;
+
+            if (_waitTimer <= 0f)
+            {
+                // Время ожидания истекло - возвращаемся к патрулированию
+                _isWaiting = false;
+                _isPursuing = false;
+                _currentAccumulation = 0f;
+                _enemyAI.ResumePatrol();
+            }
+            return;
+        }
+
         // Уменьшаем шкалу со временем
         if (_currentAccumulation > 0)
         {
@@ -66,10 +102,20 @@ public class EnemyEchoAccumulatorDetector : EnemyDetectorBase
         // Проверяем состояние преследования
         if (_isPursuing)
         {
+            // Проверяем, достиг ли враг точки эхо
+            float distanceToTarget = Vector3.Distance(_enemyAI.transform.position, _lastEchoPosition);
+            if (distanceToTarget <= _arrivalDistance)
+            {
+                // Враг достиг точки - останавливаем и начинаем ожидание
+                StartWaiting();
+                return;
+            }
+
             // Если шкала упала до минимума - прекращаем преследование
             if (_currentAccumulation <= 0)
             {
                 _isPursuing = false;
+                _enemyAI.ResumePatrol();
             }
             else
             {
@@ -79,8 +125,21 @@ public class EnemyEchoAccumulatorDetector : EnemyDetectorBase
         }
     }
 
+    /// <summary>
+    /// Начинает состояние ожидания на месте.
+    /// </summary>
+    private void StartWaiting()
+    {
+        _isWaiting = true;
+        _waitTimer = _waitTimeOnArrival;
+        _enemyAI.StopPatrol();
+    }
+
     protected override void ProcessCollision(Collider other)
     {
+        // Если ожидаем - не обрабатываем новые эхо
+        if (_isWaiting) return;
+
         // Проверяем, что это EchoCollider
         var echoCollider = other.GetComponent<EchoCollider>();
         if (echoCollider == null) return;
@@ -122,6 +181,8 @@ public class EnemyEchoAccumulatorDetector : EnemyDetectorBase
     {
         _currentAccumulation = 0;
         _isPursuing = false;
+        _isWaiting = false;
+        _waitTimer = 0f;
     }
 
     /// <summary>

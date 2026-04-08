@@ -1981,7 +1981,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e896d2afe3ef7d4e90099d147f210f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrapDoll
-  _screamPreset: {fileID: 11400000, guid: a2a872ec4970641438efac88a444b9e9, type: 2}
+  _screamPreset: {fileID: 11400000, guid: 3d8099365907ad741ac9fc7a595023b3, type: 2}
   _screamInterval: 0.5
   _detectionRadius: 2.5
   _cooldownDuration: 3

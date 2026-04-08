@@ -26,5 +26,6 @@ public enum EchoType
     /// <summary>
     /// Grenade or explosive echo.
     /// </summary>
-    Grenade = 4
+    Grenade = 4, 
+    Accumulator = 5
 }
