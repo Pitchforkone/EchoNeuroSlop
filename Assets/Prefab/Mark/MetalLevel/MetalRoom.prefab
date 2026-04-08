@@ -4347,6 +4347,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8069536422937435245}
     m_Modifications:
+    - target: {fileID: 1555097332880519071, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
+      objectReference: {fileID: 0}
     - target: {fileID: 7702090082146702544, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.7499967
@@ -4905,6 +4909,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8069536422937435245}
     m_Modifications:
+    - target: {fileID: 1555097332880519071, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
+      objectReference: {fileID: 0}
     - target: {fileID: 7702090082146702544, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -19.250017
@@ -6949,6 +6957,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8069536422937435245}
     m_Modifications:
+    - target: {fileID: 392044717690584, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1555097332880519071, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
+      objectReference: {fileID: 0}
     - target: {fileID: 7702090082146702544, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.25
@@ -7437,6 +7453,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8069536422937435245}
     m_Modifications:
+    - target: {fileID: 1555097332880519071, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
+      objectReference: {fileID: 0}
     - target: {fileID: 7702090082146702544, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.749988

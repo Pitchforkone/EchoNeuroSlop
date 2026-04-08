@@ -1708,6 +1708,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e53caf4476efe37419527c83289668b3, type: 3}
+--- !u!95 &1695422647 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6234175603587850867, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+  m_PrefabInstance: {fileID: 813169094113463899}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1844799227
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1954,12 +1959,64 @@ PrefabInstance:
       propertyPath: m_NavMeshData
       value: 
       objectReference: {fileID: 23800000, guid: 3346c011ce3dd6241a7b3b14eaa58a40, type: 2}
+    - target: {fileID: 1483172046578271637, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 4048121140
+      objectReference: {fileID: 0}
+    - target: {fileID: 1863780383249251978, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 1877153859
+      objectReference: {fileID: 0}
+    - target: {fileID: 3044501426795102588, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 3980000064
+      objectReference: {fileID: 0}
+    - target: {fileID: 3395288205093467970, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 2781702012
+      objectReference: {fileID: 0}
+    - target: {fileID: 3557048538334038394, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329401460577464933, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4855616414103308586, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 719873498
+      objectReference: {fileID: 0}
     - target: {fileID: 5220660985875863347, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: m_Name
       value: MetalRoom
       objectReference: {fileID: 0}
     - target: {fileID: 5220660985875863347, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632505715165819445, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 2623000233
+      objectReference: {fileID: 0}
+    - target: {fileID: 5794442176557648909, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6140586887630502451, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234175603587850867, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6266522761289361517, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1695422647}
+    - target: {fileID: 6508590196335865807, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: openCondition
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8069536422937435245, guid: fd109a5a2b903044c9754e414a545344, type: 3}
@@ -2001,6 +2058,14 @@ PrefabInstance:
     - target: {fileID: 8069536422937435245, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8712680614413876221, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 2186362038
+      objectReference: {fileID: 0}
+    - target: {fileID: 9058965995321003459, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 3196717235
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
