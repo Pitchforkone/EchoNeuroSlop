@@ -11,7 +11,8 @@ public abstract class BaseInventoryItem : IInventoryItem
     [SerializeField] protected string _displayName;
     [SerializeField] protected int _count = 1;
     [SerializeField] protected int _maxStack = 99;
-    
+    [SerializeField] protected bool _persistent;
+
     protected PlayerInventory _inventory;
     
     public string DisplayName => _displayName;
@@ -19,20 +20,23 @@ public abstract class BaseInventoryItem : IInventoryItem
     public int MaxStack => _maxStack;
     public virtual bool CanUseManually => true;
     
-    protected BaseInventoryItem(string displayName, int count = 1, int maxStack = 99)
+    protected BaseInventoryItem(string displayName, int count = 1, int maxStack = 99, bool persistent = false)
     {
         _displayName = displayName;
         _count = Mathf.Max(1, count);
         _maxStack = Mathf.Max(1, maxStack);
+        _persistent = persistent;
     }
     
     public virtual bool Use()
     {
         if (_count <= 0) return false;
-        
-        _count--;
+
+        if (!_persistent)
+            _count--;
+
         OnUse();
-        
+
         return true;
     }
     

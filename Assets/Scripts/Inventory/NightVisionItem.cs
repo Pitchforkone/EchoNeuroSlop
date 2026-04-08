@@ -13,7 +13,7 @@ public class NightVisionItem : BaseInventoryItem
     /// </summary>
     public static event Action<int> OnNightVisionUsed;
     
-    public NightVisionItem(int count = 1) : base("Night Vision Goggles", count, 3)
+    public NightVisionItem(int maxStack = 3, bool persistent = false) : base("Night Vision Goggles", 1, maxStack, persistent)
     {
     }
     

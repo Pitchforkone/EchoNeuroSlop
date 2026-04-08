@@ -16,9 +16,12 @@ public class PickupableItem : NetworkBehaviour, IInteractable
     [Header("Item Settings")]
     [Tooltip("Тип предмета, который будет добавлен в инвентарь")]
     [SerializeField] private PickupItemType _itemType = PickupItemType.ExitKey;
-    
-    [Tooltip("Количество предметов при подборе")]
-    [SerializeField] private int _count = 1;
+
+    [Tooltip("Максимальное количество предметов в одном стаке")]
+    [SerializeField] private int _maxStack = 1;
+
+    [Tooltip("Предмет не пропадает после использования")]
+    [SerializeField] private bool _persistent = false;
 
     [SyncVar]
     private bool _isPickedUp = false;
@@ -27,7 +30,8 @@ public class PickupableItem : NetworkBehaviour, IInteractable
     {
         ExitKey,
         Grenade,
-        NightVision
+        NightVision,
+        Screwdriver
     }
     
     private void Start()
@@ -84,11 +88,13 @@ public class PickupableItem : NetworkBehaviour, IInteractable
         switch (_itemType)
         {
             case PickupItemType.ExitKey:
-                return new ExitKeyItem(_count);
+                return new ExitKeyItem(_maxStack, _persistent);
             case PickupItemType.Grenade:
-                return new GrenadeItem(_count);
+                return new GrenadeItem(_maxStack, _persistent);
             case PickupItemType.NightVision:
-                return new NightVisionItem(_count);
+                return new NightVisionItem(_maxStack, _persistent);
+            case PickupItemType.Screwdriver:
+                return new ScrewdriverItem(_maxStack, _persistent);
             default:
                 Debug.LogError($"[PickupableItem] Unknown item type: {_itemType}");
                 return null;

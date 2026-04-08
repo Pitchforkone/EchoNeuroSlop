@@ -7,7 +7,7 @@ public class ExitKeyItem : BaseInventoryItem
 {
     public override bool CanUseManually => false;
     
-    public ExitKeyItem(int count = 1) : base("Exit Key", count, 1)
+    public ExitKeyItem(int maxStack = 1, bool persistent = false) : base("Exit Key", 1, maxStack, persistent)
     {
     }
     

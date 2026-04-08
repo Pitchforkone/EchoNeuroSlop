@@ -150,7 +150,8 @@ MonoBehaviour:
   syncInterval: 0
   interactZone: {fileID: 9195445992204809969}
   _itemType: 1
-  _count: 1
+  _maxStack: 1
+  _persistent: 1
 --- !u!114 &905351060836265248
 MonoBehaviour:
   m_ObjectHideFlags: 0

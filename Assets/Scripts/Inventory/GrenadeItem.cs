@@ -13,7 +13,7 @@ public class GrenadeItem : BaseInventoryItem
     /// </summary>
     public static event Action<int> OnGrenadeUsed;
     
-    public GrenadeItem(int count = 1) : base("Echo Grenade", count, 5)
+    public GrenadeItem(int maxStack = 5, bool persistent = false) : base("Echo Grenade", 1, maxStack, persistent)
     {
     }
     
