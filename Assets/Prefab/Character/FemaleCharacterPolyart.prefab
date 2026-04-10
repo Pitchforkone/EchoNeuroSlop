@@ -765,6 +765,11 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _crouchHeight: 0.5
   _crouchRadius: 0.25
+  _tunnelLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _groundCheckDistance: 5
+  _cameraTransform: {fileID: 0}
   _crouchCameraTarget: {fileID: 7056965240886702383}
   _crouchGizmoColor: {r: 0, g: 1, b: 0, a: 0.5}
 --- !u!1 &1647417302430462415
@@ -827,7 +832,7 @@ Transform:
   m_GameObject: {fileID: 1674593074944010721}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0.2}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1361,6 +1366,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 96033447648613040}
+  - component: {fileID: 4426832916675325386}
   m_Layer: 0
   m_Name: head
   m_TagString: Untagged
@@ -1391,6 +1397,18 @@ Transform:
   - {fileID: 2076318344954032347}
   m_Father: {fileID: 2497375937314374564}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4426832916675325386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3428215237380422824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerHead
 --- !u!1 &3485177827392777326
 GameObject:
   m_ObjectHideFlags: 0
@@ -3187,7 +3205,7 @@ Transform:
   m_GameObject: {fileID: 8580598296369640660}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.055670545, z: 0, w: 0.9984492}
-  m_LocalPosition: {x: -0.16, y: 0.449, z: 1.153}
+  m_LocalPosition: {x: 0, y: 0.621, z: 0}
   m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
   m_ConstrainProportionsScale: 0
   m_Children: []

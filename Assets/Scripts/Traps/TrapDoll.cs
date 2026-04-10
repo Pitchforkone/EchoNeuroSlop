@@ -1,12 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using TMPro.EditorUtilities;
 
-/// <summary>
-/// Кукла-ловушка. При входе игрока в зону начинает кричать (издавать эхо).
-/// При выходе игрока запускает таймер, по истечении которого перестаёт кричать.
-/// </summary>
 [RequireComponent(typeof(SphereCollider))]
 [RequireComponent(typeof(AudioSource))]
 public class TrapDoll : MonoBehaviour

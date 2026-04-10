@@ -2136,8 +2136,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7e9a96eddb47b4fb25289f40fbe8f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCrouch
+  _animator: {fileID: 0}
   _crouchHeight: 0.5
   _crouchRadius: 0.25
+  _tunnelLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _groundCheckDistance: 5
+  _cameraTransform: {fileID: 0}
   _crouchCameraTarget: {fileID: 433853168516895207}
   _crouchGizmoColor: {r: 0, g: 1, b: 0, a: 0.5}
 --- !u!1 &5691243874327788079
@@ -2684,7 +2690,7 @@ Transform:
   m_GameObject: {fileID: 7517311169146395254}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.055670545, z: -0, w: 0.9984492}
-  m_LocalPosition: {x: -0.16, y: 0.449, z: 1.1530001}
+  m_LocalPosition: {x: -0.003, y: 0.637, z: 0.028}
   m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3039,6 +3045,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6445421283168033104}
+  - component: {fileID: 6325162557568523527}
   m_Layer: 0
   m_Name: head
   m_TagString: Untagged
@@ -3069,6 +3076,18 @@ Transform:
   - {fileID: 4969442776363268923}
   m_Father: {fileID: 8831531684167190596}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6325162557568523527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8625773108461827912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerHead
 --- !u!1 &8691560968678127187
 GameObject:
   m_ObjectHideFlags: 0

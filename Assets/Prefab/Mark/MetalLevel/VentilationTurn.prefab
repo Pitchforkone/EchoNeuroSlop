@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8392203644620582741}
   - component: {fileID: 8094161032184979814}
   - component: {fileID: 8318852902732287368}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: VentilationTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -5,17 +5,26 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// Component responsible for crouch input handling.
 /// Sets animator "IsSit" parameter and adjusts CharacterController based on Left Ctrl key state.
+/// Prevents standing up when standing on Tunnel layer.
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
 public class PlayerCrouch : MonoBehaviour
 {
-    private Animator _animator;
+    [Header("Animation")]
+    [SerializeField] private Animator _animator;
 
     [Header("Crouch Settings")]
     [SerializeField] private float _crouchHeight = 1.2f;
     [SerializeField] private float _crouchRadius = 0.4f;
+
+    [Header("Stand Check")]
+    [Tooltip("Layer that prevents standing up when player is on it")]
+    [SerializeField] private LayerMask _tunnelLayer;
+    [Tooltip("Distance to check for ground below player")]
+    [SerializeField] private float _groundCheckDistance = 0.3f;
+
     [Header("Camera")]
-    private Transform _cameraTransform;
+    [SerializeField] private Transform _cameraTransform;
     [Tooltip("Target position for camera when crouching")]
     [SerializeField] private Transform _crouchCameraTarget;
 
@@ -27,8 +36,14 @@ public class PlayerCrouch : MonoBehaviour
     private float _standRadius;
     private Vector3 _standCameraLocalPosition;
     private bool _isCrouching;
+    private bool _wantsToCrouch;
 
     private readonly int _isSitHash = Animator.StringToHash("IsSit");
+
+    /// <summary>
+    /// Returns true if the player is currently crouching.
+    /// </summary>
+    public bool IsCrouching => _isCrouching;
 
     private void Awake()
     {
@@ -50,7 +65,14 @@ public class PlayerCrouch : MonoBehaviour
         }
 
         // Save standing camera local position
-        if (_cameraTransform = GetComponentInChildren<Camera>().transform)
+        if (_cameraTransform == null)
+        {
+            var cam = GetComponentInChildren<Camera>();
+            if (cam != null)
+                _cameraTransform = cam.transform;
+        }
+
+        if (_cameraTransform != null)
         {
             _standCameraLocalPosition = _cameraTransform.localPosition;
             Debug.Log($"[PlayerCrouch] Saved camera position: {_standCameraLocalPosition}");
@@ -61,14 +83,53 @@ public class PlayerCrouch : MonoBehaviour
     {
         if (_controller == null) return;
 
-        bool crouchPressed = Keyboard.current != null && Keyboard.current.leftCtrlKey.isPressed;
+        _wantsToCrouch = Keyboard.current != null && Keyboard.current.leftCtrlKey.isPressed;
 
-        if (crouchPressed != _isCrouching)
+        // Determine actual crouch state
+        bool shouldCrouch;
+
+        if (_wantsToCrouch)
         {
-            _isCrouching = crouchPressed;
+            // Player wants to crouch - always allow
+            shouldCrouch = true;
+        }
+        else if (_isCrouching)
+        {
+            // Player wants to stand up - check if allowed
+            shouldCrouch = !CanStandUp();
+        }
+        else
+        {
+            shouldCrouch = false;
+        }
+
+        if (shouldCrouch != _isCrouching)
+        {
+            _isCrouching = shouldCrouch;
             ApplyCrouchState(_isCrouching);
             Debug.Log($"[PlayerCrouch] Crouch state changed: {_isCrouching}, height={_controller.height}");
         }
+    }
+
+    /// <summary>
+    /// Checks if player can stand up.
+    /// Returns false if standing on Tunnel layer.
+    /// </summary>
+    private bool CanStandUp()
+    {
+        if (_controller == null) return true;
+
+        // Raycast down to check what layer we're standing on
+        Vector3 rayOrigin = transform.position + Vector3.up * 0.1f;
+
+        if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, _groundCheckDistance, _tunnelLayer, QueryTriggerInteraction.Ignore))
+        {
+            // Standing on tunnel layer - cannot stand up
+            Debug.Log($"[PlayerCrouch] Cannot stand up - on tunnel: {hit.collider.name}");
+            return false;
+        }
+
+        return true;
     }
 
     private void ApplyCrouchState(bool crouching)
@@ -99,12 +160,10 @@ public class PlayerCrouch : MonoBehaviour
         {
             if (crouching && _crouchCameraTarget != null)
             {
-                // Move camera to crouch target position (use local position relative to player)
                 _cameraTransform.localPosition = _crouchCameraTarget.localPosition;
             }
-            else
+            else if (!crouching)
             {
-                // Return camera to standing position
                 _cameraTransform.localPosition = _standCameraLocalPosition;
             }
         }
@@ -112,34 +171,32 @@ public class PlayerCrouch : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        // Draw crouch CharacterController preview matching exactly how Unity draws it
+        // Draw crouch CharacterController preview
         Gizmos.color = _crouchGizmoColor;
 
-        // Get current scale
         Vector3 scale = transform.lossyScale;
         float scaledRadius = _crouchRadius * Mathf.Max(scale.x, scale.z);
         float scaledHeight = _crouchHeight * scale.y;
 
-        // CharacterController center is in local space, convert to world
         Vector3 worldCenter = transform.TransformPoint(new Vector3(0f, _crouchHeight / 2f, 0f));
 
-        // Calculate capsule body (the cylindrical part between two hemispheres)
-        // Height includes the two hemispheres, so body height = height - 2 * radius
         float bodyHeight = Mathf.Max(0f, scaledHeight - scaledRadius * 2f);
         float halfBodyHeight = bodyHeight / 2f;
 
-        // Sphere centers
         Vector3 topSphere = worldCenter + Vector3.up * halfBodyHeight;
         Vector3 bottomSphere = worldCenter - Vector3.up * halfBodyHeight;
 
-        // Draw the two hemispheres
         Gizmos.DrawWireSphere(topSphere, scaledRadius);
         Gizmos.DrawWireSphere(bottomSphere, scaledRadius);
 
-        // Draw vertical lines connecting the spheres
         Gizmos.DrawLine(topSphere + Vector3.forward * scaledRadius, bottomSphere + Vector3.forward * scaledRadius);
         Gizmos.DrawLine(topSphere - Vector3.forward * scaledRadius, bottomSphere - Vector3.forward * scaledRadius);
         Gizmos.DrawLine(topSphere + Vector3.right * scaledRadius, bottomSphere + Vector3.right * scaledRadius);
         Gizmos.DrawLine(topSphere - Vector3.right * scaledRadius, bottomSphere - Vector3.right * scaledRadius);
+
+        // Draw ground check ray
+        Gizmos.color = Color.yellow;
+        Vector3 rayOrigin = transform.position + Vector3.up * 0.1f;
+        Gizmos.DrawLine(rayOrigin, rayOrigin + Vector3.down * _groundCheckDistance);
     }
 }

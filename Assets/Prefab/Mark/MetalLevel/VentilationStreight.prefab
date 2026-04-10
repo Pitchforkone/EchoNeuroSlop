@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7644382754441236454}
   - component: {fileID: 7287797756176527430}
   - component: {fileID: 4316879495621636899}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: VentilationStreight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
