@@ -175,7 +175,7 @@ public class PlayerController : NetworkBehaviour
         UpdateGroundCheck();
         UpdateLook();
         UpdateMovement();
-        UpdateCrouch();
+        // UpdateCrouch(); // Crouch handling moved to PlayerCrouch component
     }
 
     private void UpdateGroundCheck()

@@ -350,6 +350,7 @@ GameObject:
   - component: {fileID: 338499047180996576}
   - component: {fileID: 5779030132285097525}
   - component: {fileID: -6268855095956539348}
+  - component: {fileID: 763722693640436913}
   m_Layer: 0
   m_Name: FemaleCharacterPolyart
   m_TagString: Player
@@ -376,6 +377,7 @@ Transform:
   - {fileID: 2543817264938174768}
   - {fileID: 2539411107751456622}
   - {fileID: 4832202170798228837}
+  - {fileID: 7056965240886702383}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &2211126460430936001
@@ -748,6 +750,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &763722693640436913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328023254706044480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b7e9a96eddb47b4fb25289f40fbe8f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCrouch
+  _animator: {fileID: 0}
+  _crouchHeight: 0.5
+  _crouchRadius: 0.25
+  _crouchCameraTarget: {fileID: 7056965240886702383}
+  _crouchGizmoColor: {r: 0, g: 1, b: 0, a: 0.5}
 --- !u!1 &1647417302430462415
 GameObject:
   m_ObjectHideFlags: 0
@@ -3142,6 +3161,37 @@ Transform:
   m_Children:
   - {fileID: 7650175305333236500}
   m_Father: {fileID: 4954491537264083260}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8580598296369640660
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7056965240886702383}
+  m_Layer: 0
+  m_Name: CameraPositionCrouch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7056965240886702383
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8580598296369640660}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.055670545, z: 0, w: 0.9984492}
+  m_LocalPosition: {x: -0.16, y: 0.449, z: 1.153}
+  m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1812072891626710266}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8719342777038755062
 GameObject:
