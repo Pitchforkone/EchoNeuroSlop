@@ -2,10 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Mirror;
 
-/// <summary>
-/// First-person controller for multiplayer with Mirror.
-/// CharacterController movement, mouse look, walk/sprint/crouch.
-/// </summary>
+
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : NetworkBehaviour
 {

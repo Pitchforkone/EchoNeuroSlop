@@ -1120,34 +1120,6 @@ PrefabInstance:
       propertyPath: sceneId
       value: 3997748846
       objectReference: {fileID: 0}
-    - target: {fileID: 1170371407639411982, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1170371407639411982, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1170371407639411982, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1170371407639411982, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.49274585
-      objectReference: {fileID: 0}
-    - target: {fileID: 1170371407639411982, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.8701733
-      objectReference: {fileID: 0}
-    - target: {fileID: 1170371407639411982, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 239.04199
-      objectReference: {fileID: 0}
-    - target: {fileID: 1170371407639411982, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2904402587320137685, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 3177760561
@@ -1167,6 +1139,10 @@ PrefabInstance:
     - target: {fileID: 4104142547525298664, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 4014139186
+      objectReference: {fileID: 0}
+    - target: {fileID: 4731667101943405592, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 1178036955
       objectReference: {fileID: 0}
     - target: {fileID: 4855616414103308586, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
@@ -1237,8 +1213,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 1170371407639411983, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd109a5a2b903044c9754e414a545344, type: 3}

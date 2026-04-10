@@ -10,10 +10,8 @@ using Mirror;
 /// </summary>
 public class PlayerEchoLocator : NetworkBehaviour
 {
-    [Header("Presets")]
-    [SerializeField] private EchoPreset _activePingPreset;
-    [SerializeField] private EchoPreset _footstepPreset;
-    [SerializeField] private EchoPreset _sprintFootstepPreset;
+    [Header("Config")]
+    static private EchoLocatorConfig _config;
 
     [Header("Input")]
     [SerializeField] private InputActionAsset _inputActions;
@@ -41,6 +39,8 @@ public class PlayerEchoLocator : NetworkBehaviour
         _playerController = GetComponent<PlayerController>();
         _fpsController = GetComponent<FPSController>();
         _microphone = GetComponent<SharedMicrophone>();
+        if(_config == null) 
+            _config = Resources.Load<EchoLocatorConfig>("EchoLocatorConfig");
     }
 
     public override void OnStartLocalPlayer()
@@ -179,9 +179,9 @@ public class PlayerEchoLocator : NetworkBehaviour
     {
         // Только локальный игрок может активировать эхо
         if (NetworkClient.active && !isLocalPlayer) return;
-        if (_activePingPreset == null || EchoManager.Instance == null) return;
+        if (_config == null || _config.ActivePingPreset == null || EchoManager.Instance == null) return;
 
-        EchoManager.Instance.SpawnEcho(transform.position, _activePingPreset);
+        EchoManager.Instance.SpawnEcho(transform.position, _config.ActivePingPreset);
     }
 
     private void TriggerActiveEchoFromMicrophone()
@@ -189,9 +189,9 @@ public class PlayerEchoLocator : NetworkBehaviour
         // Только локальный игрок может активировать эхо
         if (NetworkClient.active && !isLocalPlayer) return;
 
-        if (_activePingPreset == null || EchoManager.Instance == null) return;
+        if (_config == null || _config.ActivePingPreset == null || EchoManager.Instance == null) return;
 
-        EchoManager.Instance.SpawnEcho(transform.position, _activePingPreset);
+        EchoManager.Instance.SpawnEcho(transform.position, _config.ActivePingPreset);
     }
 
     private void OnFootstep(Vector3 position, bool isSprinting)
@@ -206,7 +206,9 @@ public class PlayerEchoLocator : NetworkBehaviour
                           (_fpsController != null && _fpsController.IsCrouching);
         if (isCrouching) return;
 
-        var preset = isSprinting && _sprintFootstepPreset != null ? _sprintFootstepPreset : _footstepPreset;
+        if (_config == null) return;
+
+        var preset = isSprinting && _config.SprintFootstepPreset != null ? _config.SprintFootstepPreset : _config.FootstepPreset;
         if (preset == null) return;
 
         EchoManager.Instance.SpawnEcho(position, preset);
