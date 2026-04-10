@@ -23,6 +23,9 @@ public class PickupableItem : NetworkBehaviour, IInteractable
     [Tooltip("Предмет не пропадает после использования")]
     [SerializeField] private bool _persistent = false;
 
+    [Tooltip("Цвет ключа (только для RoomKey)")]
+    [SerializeField] private KeyColor _keyColor = KeyColor.Red;
+
     [SyncVar]
     private bool _isPickedUp = false;
     
@@ -31,7 +34,8 @@ public class PickupableItem : NetworkBehaviour, IInteractable
         ExitKey,
         Grenade,
         NightVision,
-        Screwdriver
+        Screwdriver,
+        RoomKey
     }
     
     private void Start()
@@ -95,6 +99,8 @@ public class PickupableItem : NetworkBehaviour, IInteractable
                 return new NightVisionItem(_maxStack, _persistent);
             case PickupItemType.Screwdriver:
                 return new ScrewdriverItem(_maxStack, _persistent);
+            case PickupItemType.RoomKey:
+                return new RoomKeyItem(_keyColor, _maxStack, _persistent);
             default:
                 Debug.LogError($"[PickupableItem] Unknown item type: {_itemType}");
                 return null;

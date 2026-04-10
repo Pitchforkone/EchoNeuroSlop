@@ -5,7 +5,18 @@ using UnityEngine;
 public enum DoorOpenCondition
 {
     None,
-    RequiresExitKey
+    RequiresExitKey,
+    RequiresRoomKey
+}
+
+public enum KeyColor
+{
+    Red,
+    Blue,
+    Green,
+    Yellow,
+    Orange,
+    Purple
 }
 
 public class DoorActivateZoneMB : NetworkBehaviour
@@ -18,7 +29,10 @@ public class DoorActivateZoneMB : NetworkBehaviour
     public string HintText = "Open";
 
     public DoorOpenCondition openCondition = DoorOpenCondition.None;
-    
+
+    [Tooltip("Цвет ключа, необходимого для открытия двери (только для RequiresRoomKey)")]
+    public KeyColor requiredKeyColor = KeyColor.Red;
+
     public void Start()
     {
         interactZone.SetHintText(HintText);
@@ -57,6 +71,19 @@ public class DoorActivateZoneMB : NetworkBehaviour
                 }
 
                 Debug.Log("[DoorActivateZoneMB] Requires Exit Key to open");
+                return false;
+
+            case DoorOpenCondition.RequiresRoomKey:
+                var inv = PlayerInventory.LocalInstance;
+                if (inv == null) return false;
+
+                for (int i = 0; i < PlayerInventory.SlotCount; i++)
+                {
+                    if (inv.GetSlot(i) is RoomKeyItem roomKey && roomKey.KeyColor == requiredKeyColor)
+                        return true;
+                }
+
+                Debug.Log($"[DoorActivateZoneMB] Requires {requiredKeyColor} Key to open");
                 return false;
 
             case DoorOpenCondition.None:
