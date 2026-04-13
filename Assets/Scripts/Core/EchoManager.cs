@@ -46,8 +46,8 @@ public class EchoManager : MonoBehaviour
         public float StartTime;
         public float Speed;
         public float MaxRadius;
-        public float Intensity;
         public Color Color;
+        public AnimationCurve IntensityCurve;
         public float Lifetime;
         public Light PointLight;
         public EchoType EchoType;
@@ -84,9 +84,10 @@ public class EchoManager : MonoBehaviour
     /// <summary>
     /// Called when echo is received from network.
     /// </summary>
-    private void OnNetworkEchoReceived(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType)
+    private void OnNetworkEchoReceived(Vector3 position, float speed, float maxRadius, float peakIntensity, Color color, float lifetime, EchoType echoType)
     {
-        SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime, echoType);
+        var curve = CreateDefaultCurve(peakIntensity, lifetime);
+        SpawnEchoLocal(position, speed, maxRadius, color, curve, lifetime, echoType);
     }
 
     /// <summary>
@@ -95,13 +96,24 @@ public class EchoManager : MonoBehaviour
     public void SpawnEcho(Vector3 position, EchoPreset preset)
     {
         if (preset == null) return;
-        SpawnEcho(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime, preset.EchoType);
+        SpawnEcho(position, preset.Speed, preset.MaxRadius, preset.PeakIntensity, preset.Color, preset.Lifetime, preset.EchoType, preset.IntensityCurve);
+    }
+
+    /// <summary>
+    /// Spawn echo with preset + scaling (for "final echo" etc.).
+    /// </summary>
+    public void SpawnEcho(Vector3 position, EchoPreset preset, float radiusScale, float intensityScale, float timeScale)
+    {
+        if (preset == null) return;
+        var scaledCurve = ScaleCurve(preset.IntensityCurve, intensityScale, timeScale);
+        float lifetime = preset.Lifetime * timeScale;
+        SpawnEcho(position, preset.Speed, preset.MaxRadius * radiusScale, preset.PeakIntensity * intensityScale, preset.Color, lifetime, preset.EchoType, scaledCurve);
     }
 
     /// <summary>
     /// Spawn echo with explicit parameters. Networked version.
     /// </summary>
-    public void SpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType = EchoType.Default)
+    public void SpawnEcho(Vector3 position, float speed, float maxRadius, float peakIntensity, Color color, float lifetime, EchoType echoType = EchoType.Default, AnimationCurve intensityCurve = null)
     {
         // Если мы в сети
         if (NetworkClient.active)
@@ -110,22 +122,24 @@ public class EchoManager : MonoBehaviour
             var helper = EchoNetworkHelper.Instance;
             if (helper != null)
             {
-                helper.RequestSpawnEcho(position, speed, maxRadius, intensity, color, lifetime, echoType);
+                helper.RequestSpawnEcho(position, speed, maxRadius, peakIntensity, color, lifetime, echoType);
             }
             else
             {
                 // Если helper не найден, спавним локально
-                SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime, echoType);
+                var curve = intensityCurve ?? CreateDefaultCurve(peakIntensity, lifetime);
+                SpawnEchoLocal(position, speed, maxRadius, color, curve, lifetime, echoType);
             }
         }
         else
         {
-            // Синглплеер - просто спавним локально
-            SpawnEchoLocal(position, speed, maxRadius, intensity, color, lifetime, echoType);
+            // Синглплеер — используем кривую напрямую
+            var curve = intensityCurve ?? CreateDefaultCurve(peakIntensity, lifetime);
+            SpawnEchoLocal(position, speed, maxRadius, color, curve, lifetime, echoType);
         }
     }
 
-    private void SpawnAmbientEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType = EchoType.Default)
+    private void SpawnAmbientEchoLocal(Vector3 position, float speed, float maxRadius, Color color, AnimationCurve intensityCurve, float lifetime, EchoType echoType = EchoType.Default)
     {
         int slot = FindFreeAmbientSlot();
         if (slot < 0) return;
@@ -136,7 +150,7 @@ public class EchoManager : MonoBehaviour
         var light = go.AddComponent<Light>();
         light.type = LightType.Point;
         light.color = color;
-        light.intensity = intensity;
+        light.intensity = 0f;
         light.range = 0.1f;
         light.shadows = LightShadows.None;
 
@@ -151,8 +165,8 @@ public class EchoManager : MonoBehaviour
             StartTime = Time.time,
             Speed = speed,
             MaxRadius = maxRadius,
-            Intensity = intensity,
             Color = color,
+            IntensityCurve = intensityCurve,
             Lifetime = lifetime,
             PointLight = light,
             EchoType = echoType
@@ -167,19 +181,23 @@ public class EchoManager : MonoBehaviour
     public void SpawnAmbientEcho(Vector3 position, EchoPreset preset)
     {
         if (preset == null) return;
-        SpawnAmbientEchoLocal(position, preset.Speed, preset.MaxRadius, preset.Intensity, preset.Color, preset.Lifetime, preset.EchoType);
+        SpawnAmbientEchoLocal(position, preset.Speed, preset.MaxRadius, preset.Color, preset.IntensityCurve, preset.Lifetime, preset.EchoType);
     }
 
     /// <summary>
     /// Creates the Point Light locally.
     /// </summary>
-    private void SpawnEchoLocal(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType = EchoType.Default)
+    private void SpawnEchoLocal(Vector3 position, float speed, float maxRadius, Color color, AnimationCurve intensityCurve, float lifetime, EchoType echoType = EchoType.Default)
     {
         int slot = FindFreeSlot();
         if (slot < 0) return;
 
-        // Notify listeners (enemy AI)
-        OnEchoSpawned?.Invoke(position, intensity);
+        // Notify listeners (enemy AI) — pass peak intensity from curve
+        float peak = 0f;
+        if (intensityCurve != null)
+            foreach (var key in intensityCurve.keys)
+                if (key.value > peak) peak = key.value;
+        OnEchoSpawned?.Invoke(position, peak);
 
         var go = new GameObject("EchoLight");
         go.transform.position = position;
@@ -187,7 +205,7 @@ public class EchoManager : MonoBehaviour
         var light = go.AddComponent<Light>();
         light.type = LightType.Point;
         light.color = color;
-        light.intensity = intensity;
+        light.intensity = 0f;
         light.range = 0.1f;
         light.shadows = LightShadows.None;
 
@@ -202,8 +220,8 @@ public class EchoManager : MonoBehaviour
             StartTime = Time.time,
             Speed = speed,
             MaxRadius = maxRadius,
-            Intensity = intensity,
             Color = color,
+            IntensityCurve = intensityCurve,
             Lifetime = lifetime,
             PointLight = light,
             EchoType = echoType
@@ -237,16 +255,13 @@ public class EchoManager : MonoBehaviour
                 continue;
             }
 
-            float t = elapsed / inst.Lifetime;
             float currentRadius = Mathf.Min(inst.Speed * elapsed, inst.MaxRadius);
-
-            float fade = 1f - t;
-            fade *= fade;
+            float intensity = inst.IntensityCurve != null ? inst.IntensityCurve.Evaluate(elapsed) : 0f;
 
             if (inst.PointLight != null)
             {
                 inst.PointLight.range = currentRadius;
-                inst.PointLight.intensity = inst.Intensity * fade;
+                inst.PointLight.intensity = intensity;
             }
         }
     }
@@ -287,13 +302,11 @@ public class EchoManager : MonoBehaviour
 
             float elapsed = time - inst.StartTime;
             float currentRadius = Mathf.Min(inst.Speed * elapsed, inst.MaxRadius);
-            float t = elapsed / inst.Lifetime;
-            float fade = 1f - t;
-            fade *= fade;
+            float intensity = inst.IntensityCurve != null ? inst.IntensityCurve.Evaluate(elapsed) : 0f;
 
             _shaderPositions[count] = new Vector4(inst.Position.x, inst.Position.y, inst.Position.z, 0f);
             _shaderRadii[count] = currentRadius;
-            _shaderColors[count] = new Vector4(inst.Color.r, inst.Color.g, inst.Color.b, fade * inst.Intensity);
+            _shaderColors[count] = new Vector4(inst.Color.r, inst.Color.g, inst.Color.b, intensity);
 
             count++;
         }
@@ -378,5 +391,32 @@ public class EchoManager : MonoBehaviour
             Gizmos.color = new Color(inst.Color.r, inst.Color.g, inst.Color.b, 0.3f);
             Gizmos.DrawWireSphere(inst.Position, radius);
         }
+    }
+
+    private static AnimationCurve CreateDefaultCurve(float peakIntensity, float lifetime)
+    {
+        return new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(lifetime * 0.05f, peakIntensity),
+            new Keyframe(lifetime * 0.25f, peakIntensity),
+            new Keyframe(lifetime, 0f)
+        );
+    }
+
+    private static AnimationCurve ScaleCurve(AnimationCurve source, float intensityScale, float timeScale)
+    {
+        if (source == null) return null;
+        var keys = source.keys;
+        var newKeys = new Keyframe[keys.Length];
+        for (int i = 0; i < keys.Length; i++)
+        {
+            newKeys[i] = new Keyframe(
+                keys[i].time * timeScale,
+                keys[i].value * intensityScale,
+                keys[i].inTangent * (intensityScale / timeScale),
+                keys[i].outTangent * (intensityScale / timeScale)
+            );
+        }
+        return new AnimationCurve(newKeys);
     }
 }

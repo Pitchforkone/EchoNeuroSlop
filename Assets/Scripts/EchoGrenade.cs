@@ -86,11 +86,8 @@ public class EchoGrenade : MonoBehaviour
         // ��������� ��������� �������
         EchoManager.Instance.SpawnEcho(
             transform.position,
-            _echoPreset.Speed,
-            _echoPreset.MaxRadius * 1.5f,
-            _echoPreset.Intensity * 2f,
-            _echoPreset.Color,
-            _echoPreset.Lifetime * 1.5f
+            _echoPreset,
+            1.5f, 2f, 1.5f
         );
     }
 }

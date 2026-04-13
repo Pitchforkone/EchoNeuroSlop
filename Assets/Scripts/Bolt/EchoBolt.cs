@@ -3,34 +3,34 @@ using Mirror;
 using System.Collections;
 
 /// <summary>
-/// Компонент болта, который создаёт эхо при столкновении с объектами.
-/// Уничтожается после определённого количества столкновений.
-/// Синхронизируется по сети для всех игроков.
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 /// </summary>
 public class EchoBolt : NetworkBehaviour
 {
-    [Header("Настройки эхо")]
-    [Tooltip("Пресет эхо для болта")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private EchoPreset _echoPresetLocal;
 
-    [Header("Настройки коллизий")]
-    [Tooltip("Максимальное количество столкновений до уничтожения")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SyncVar]
     private int _maxCollisions = 3;
 
     [SyncVar]
     private int _currentCollisions;
 
-    [Header("Время жизни")]
-    [Tooltip("Максимальное время жизни болта (секунды)")]
+    [Header("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)")]
     [SyncVar]
     private float _maxLifetime = 10f;
 
     [SyncVar]
     private float _spawnTime;
 
-    [Header("Настройки позиции эхо")]
-    [Tooltip("Минимальная высота над точкой столкновения для спавна эхо")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ")]
     [SerializeField] private float _minEchoHeight = 0.3f;
 
     private EchoPreset _echoPreset;
@@ -38,18 +38,18 @@ public class EchoBolt : NetworkBehaviour
     private bool _isReady;
     private bool _isServerInstance;
     
-    // Позиция в предыдущем кадре
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     private Vector3 _previousPosition;
     private bool _hasPreviousPosition;
     
-    // Сохранённые параметры броска для отложенного применения
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private Vector3 _pendingVelocity;
     private Vector3 _pendingAngularVelocity;
     private bool _hasPendingForce;
 
     /// <summary>
-    /// Инициализирует болт с заданными параметрами.
-    /// Вызывается на сервере после спавна.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     [Server]
     public void Initialize(EchoPreset echoPreset, int maxCollisions, float maxLifetime, Vector3 velocity, Vector3 angularVelocity)
@@ -62,25 +62,25 @@ public class EchoBolt : NetworkBehaviour
         _spawnTime = Time.time;
         _isServerInstance = true;
         
-        // Сохраняем параметры броска
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         _pendingVelocity = velocity;
         _pendingAngularVelocity = angularVelocity;
         _hasPendingForce = true;
         
-        // Инициализируем предыдущую позицию
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         _previousPosition = transform.position;
         _hasPreviousPosition = true;
         
-        // Запускаем отложенную активацию
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         StartCoroutine(DelayedActivation());
     }
 
     private IEnumerator DelayedActivation()
     {
-        // Ждём конец кадра чтобы Spawn полностью завершился
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Spawn пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         yield return new WaitForEndOfFrame();
         
-        // Теперь применяем физику
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (_rigidbody != null && _hasPendingForce)
         {
             _rigidbody.isKinematic = false;
@@ -96,7 +96,7 @@ public class EchoBolt : NetworkBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         
-        // Сразу делаем кинематическим
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (_rigidbody != null)
         {
             _rigidbody.isKinematic = true;
@@ -112,7 +112,7 @@ public class EchoBolt : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
-        // Инициализируем пресет на клиенте из сериализованного поля
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         if (_echoPresetLocal != null)
         {
             _echoPreset = _echoPresetLocal;
@@ -121,10 +121,10 @@ public class EchoBolt : NetworkBehaviour
 
     private void Update()
     {
-        // Проверяем готовность перед любыми действиями
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (!_isReady || !_isServerInstance) return;
 
-        // Проверка времени жизни (только на сервере)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
         if (Time.time - _spawnTime >= _maxLifetime)
         {
             NetworkServer.Destroy(gameObject);
@@ -133,7 +133,7 @@ public class EchoBolt : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        // Сохраняем позицию для следующего кадра (только на сервере)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
         if (_isReady && _isServerInstance)
         {
             _previousPosition = transform.position;
@@ -143,43 +143,43 @@ public class EchoBolt : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // Проверяем готовность
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (!_isReady || !_isServerInstance) return;
 
-        // Определяем позицию для спавна эхо
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
         Vector3 echoPosition = GetEchoSpawnPosition(collision);
         
-        // Создаём эхо
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
         SpawnEchoAtCollision(echoPosition);
 
         _currentCollisions++;
 
         if (_currentCollisions >= _maxCollisions)
         {
-            // Финальное эхо перед уничтожением
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             SpawnFinalEcho(echoPosition);
             NetworkServer.Destroy(gameObject);
         }
     }
 
     /// <summary>
-    /// Определяет позицию для спавна эхо.
-    /// Использует предыдущую позицию если коллизия с полом (нормаль направлена вверх).
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ).
     /// </summary>
     private Vector3 GetEchoSpawnPosition(Collision collision)
     {
         Vector3 contactPoint = collision.contacts[0].point;
         Vector3 contactNormal = collision.contacts[0].normal;
         
-        // Проверяем, это коллизия с полом (нормаль направлена вверх)?
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)?
         bool isFloorCollision = Vector3.Dot(contactNormal, Vector3.up) > 0.7f;
         
         if (isFloorCollision && _hasPreviousPosition)
         {
-            // Используем предыдущую позицию, но не ниже минимальной высоты над точкой контакта
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             Vector3 echoPos = _previousPosition;
             
-            // Убеждаемся что эхо не ниже минимальной высоты
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             if (echoPos.y < contactPoint.y + _minEchoHeight)
             {
                 echoPos.y = contactPoint.y + _minEchoHeight;
@@ -188,12 +188,12 @@ public class EchoBolt : NetworkBehaviour
             return echoPos;
         }
         
-        // Для стен и потолков используем точку контакта со смещением по нормали
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         return contactPoint + contactNormal * 0.1f;
     }
 
     /// <summary>
-    /// Создаёт эхо в точке столкновения.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     private void SpawnEchoAtCollision(Vector3 position)
     {
@@ -203,7 +203,7 @@ public class EchoBolt : NetworkBehaviour
     }
 
     /// <summary>
-    /// Создаёт финальное усиленное эхо перед уничтожением.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     private void SpawnFinalEcho(Vector3 position)
     {
@@ -211,11 +211,8 @@ public class EchoBolt : NetworkBehaviour
 
         EchoManager.Instance.SpawnEcho(
             position,
-            _echoPreset.Speed,
-            _echoPreset.MaxRadius * 1.5f,
-            _echoPreset.Intensity * 2f,
-            _echoPreset.Color,
-            _echoPreset.Lifetime * 1.5f
+            _echoPreset,
+            1.5f, 2f, 1.5f
         );
     }
 }
