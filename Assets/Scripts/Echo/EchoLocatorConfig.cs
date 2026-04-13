@@ -17,7 +17,12 @@ public class EchoLocatorConfig : ScriptableObject
     [Tooltip("Preset for sprint footstep echo")]
     [SerializeField] private EchoPreset _sprintFootstepPreset;
 
+    [Header("Audio")]
+    [Tooltip("Footstep sounds (played randomly)")]
+    [SerializeField] private AudioClip[] _footstepSounds;
+
     public EchoPreset ActivePingPreset => _activePingPreset;
     public EchoPreset FootstepPreset => _footstepPreset;
     public EchoPreset SprintFootstepPreset => _sprintFootstepPreset;
+    public AudioClip[] FootstepSounds => _footstepSounds;
 }
