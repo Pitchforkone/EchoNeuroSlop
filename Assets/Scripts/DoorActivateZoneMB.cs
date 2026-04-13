@@ -35,16 +35,62 @@ public class DoorActivateZoneMB : NetworkBehaviour
 
     public void Start()
     {
-        interactZone.SetHintText(HintText);
+        interactZone.SetDynamicHintProvider(GetDynamicHintText);
         interactZone.interact += OnInteract;
     }
-    
+
     private void OnDestroy()
     {
         if (interactZone != null)
         {
             interactZone.interact -= OnInteract;
         }
+    }
+
+    private string GetDynamicHintText()
+    {
+        switch (openCondition)
+        {
+            case DoorOpenCondition.RequiresExitKey:
+                if (HasExitKey())
+                    return "Press E to open";
+                return "Requires an Exit Key to open";
+
+            case DoorOpenCondition.RequiresRoomKey:
+                if (HasRoomKey(requiredKeyColor))
+                    return "Press E to open";
+                return $"Requires a {requiredKeyColor} Key to open";
+
+            case DoorOpenCondition.None:
+            default:
+                return HintText;
+        }
+    }
+
+    private bool HasExitKey()
+    {
+        var inventory = PlayerInventory.LocalInstance;
+        if (inventory == null) return false;
+
+        for (int i = 0; i < PlayerInventory.SlotCount; i++)
+        {
+            if (inventory.GetSlot(i) is ExitKeyItem)
+                return true;
+        }
+        return false;
+    }
+
+    private bool HasRoomKey(KeyColor color)
+    {
+        var inventory = PlayerInventory.LocalInstance;
+        if (inventory == null) return false;
+
+        for (int i = 0; i < PlayerInventory.SlotCount; i++)
+        {
+            if (inventory.GetSlot(i) is RoomKeyItem roomKey && roomKey.KeyColor == color)
+                return true;
+        }
+        return false;
     }
 
     private void OnInteract()
@@ -61,30 +107,20 @@ public class DoorActivateZoneMB : NetworkBehaviour
         switch (openCondition)
         {
             case DoorOpenCondition.RequiresExitKey:
-                var inventory = PlayerInventory.LocalInstance;
-                if (inventory == null) return false;
-
-                for (int i = 0; i < PlayerInventory.SlotCount; i++)
+                if (!HasExitKey())
                 {
-                    if (inventory.GetSlot(i) is ExitKeyItem)
-                        return true;
+                    Debug.Log("[DoorActivateZoneMB] Requires Exit Key to open");
+                    return false;
                 }
-
-                Debug.Log("[DoorActivateZoneMB] Requires Exit Key to open");
-                return false;
+                return true;
 
             case DoorOpenCondition.RequiresRoomKey:
-                var inv = PlayerInventory.LocalInstance;
-                if (inv == null) return false;
-
-                for (int i = 0; i < PlayerInventory.SlotCount; i++)
+                if (!HasRoomKey(requiredKeyColor))
                 {
-                    if (inv.GetSlot(i) is RoomKeyItem roomKey && roomKey.KeyColor == requiredKeyColor)
-                        return true;
+                    Debug.Log($"[DoorActivateZoneMB] Requires {requiredKeyColor} Key to open");
+                    return false;
                 }
-
-                Debug.Log($"[DoorActivateZoneMB] Requires {requiredKeyColor} Key to open");
-                return false;
+                return true;
 
             case DoorOpenCondition.None:
             default:
