@@ -1266,6 +1266,10 @@ PrefabInstance:
       propertyPath: sceneId
       value: 2171759437
       objectReference: {fileID: 0}
+    - target: {fileID: 373324133288093271, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: 20e0b5ca4f22cb74faa851714e722738, type: 2}
     - target: {fileID: 417876692990489128, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 3997748846
@@ -1273,6 +1277,10 @@ PrefabInstance:
     - target: {fileID: 1520527753613296566, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 2457921723
+      objectReference: {fileID: 0}
+    - target: {fileID: 1816870824973295256, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 1141911988
       objectReference: {fileID: 0}
     - target: {fileID: 2368048331511155246, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
@@ -1314,6 +1322,10 @@ PrefabInstance:
       propertyPath: sceneId
       value: 4014139186
       objectReference: {fileID: 0}
+    - target: {fileID: 4106128403937286070, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 4273431882
+      objectReference: {fileID: 0}
     - target: {fileID: 4520587429891044365, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.779
@@ -1353,6 +1365,10 @@ PrefabInstance:
     - target: {fileID: 5632505715165819445, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 2623000233
+      objectReference: {fileID: 0}
+    - target: {fileID: 5638561156867323353, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: sceneId
+      value: 4077698183
       objectReference: {fileID: 0}
     - target: {fileID: 5732820183729223146, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
@@ -1446,7 +1462,20 @@ PrefabInstance:
       propertyPath: sceneId
       value: 788732781
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 9175428425401039726, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: m_VoxelSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9175428425401039726, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9175428425401039726, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+      propertyPath: m_LayerMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 9175428425401039726, guid: fd109a5a2b903044c9754e414a545344, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
