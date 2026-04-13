@@ -59,7 +59,7 @@ public class EnemyAI : NetworkBehaviour
     private NavMeshAgent _agent;
     private AudioSource _audioSource;
 
-    [SyncVar]
+    [SyncVar(hook = nameof(OnStateChanged))]
     private EnemyState _currentState = EnemyState.Idle;
     
     private PatrolPoint _currentTarget;
@@ -91,6 +91,37 @@ public class EnemyAI : NetworkBehaviour
     // Хэши параметров аниматора для оптимизации
     private static readonly int IdleHash = Animator.StringToHash("Idle");
     private static readonly int WalkHash = Animator.StringToHash("Walk");
+
+    /// <summary>
+    /// Hook вызывается при изменении состояния на всех клиентах.
+    /// </summary>
+    private void OnStateChanged(EnemyState oldState, EnemyState newState)
+    {
+        UpdateAnimationState(newState);
+    }
+
+    /// <summary>
+    /// Обновляет анимацию в зависимости от текущего состояния.
+    /// </summary>
+    private void UpdateAnimationState(EnemyState state)
+    {
+        if (_animator == null) return;
+
+        switch (state)
+        {
+            case EnemyState.Idle:
+            case EnemyState.Waiting:
+                _animator.ResetTrigger(WalkHash);
+                _animator.SetTrigger(IdleHash);
+                break;
+
+            case EnemyState.Walking:
+            case EnemyState.Chasing:
+                _animator.ResetTrigger(IdleHash);
+                _animator.SetTrigger(WalkHash);
+                break;
+        }
+    }
 
     private void Awake()
     {
@@ -226,8 +257,6 @@ public class EnemyAI : NetworkBehaviour
     {
         _currentState = EnemyState.Waiting;
         _agent.isStopped = true;
-        _animator.ResetTrigger(WalkHash);
-        _animator.SetTrigger(IdleHash); // Враг стоит
 
         float waitTime = _currentTarget != null ? _currentTarget.WaitTime : _defaultWaitTime;
         _waitTimer = waitTime;
@@ -244,8 +273,6 @@ public class EnemyAI : NetworkBehaviour
         if (_patrolPoints.Count == 0)
         {
             _currentState = EnemyState.Idle;
-            _animator.ResetTrigger(WalkHash);
-            _animator.SetTrigger(IdleHash); // Враг стоит
             return;
         }
 
@@ -255,8 +282,6 @@ public class EnemyAI : NetworkBehaviour
         {
             Debug.LogWarning($"[EnemyAI] {gameObject.name} couldn't find next patrol point!", this);
             _currentState = EnemyState.Idle;
-            _animator.ResetTrigger(WalkHash);
-            _animator.SetTrigger(IdleHash);
             return;
         }
 
@@ -306,8 +331,6 @@ public class EnemyAI : NetworkBehaviour
         _agent.isStopped = false;
         _agent.SetDestination(target.transform.position);
         _currentState = EnemyState.Walking;
-        _animator.ResetTrigger(IdleHash);
-        _animator.SetTrigger(WalkHash); // Враг идёт
 
         if (_showDebugInfo)
         {
@@ -399,8 +422,6 @@ public class EnemyAI : NetworkBehaviour
         _agent.speed = _chaseSpeed;
         _agent.isStopped = false;
         _agent.SetDestination(position);
-        _animator.ResetTrigger(IdleHash);
-        _animator.SetTrigger(WalkHash);
 
         RpcPlayChaseSound();
 
@@ -476,8 +497,6 @@ public class EnemyAI : NetworkBehaviour
     {
         _currentState = EnemyState.Idle;
         _agent.isStopped = true;
-        _animator.ResetTrigger(WalkHash);
-        _animator.SetTrigger(IdleHash); // Враг стоит
     }
 
     /// <summary>
