@@ -1,36 +1,34 @@
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class PlayerWalkEcho : MonoBehaviour
 {
     [Header("Foot Transforms")]
-    [Tooltip("Трансформа левой ноги (опционально, если не задана - используется позиция объекта)")]
     [SerializeField] private Transform _leftFoot;
-
-    [Tooltip("Трансформа правой ноги (опционально, если не задана - используется позиция объекта)")]
     [SerializeField] private Transform _rightFoot;
-
-    [Header("Ground Offset")]
-    [Tooltip("Смещение по Y для позиции эхо (обычно 0 или чуть от уровня земли)")]
-    [SerializeField] private float _groundOffset = 0.05f;
+    private float _groundOffset = 0.05f;
 
     [Header("Audio Settings")]
-    [Tooltip("Громкость звука шагов")]
-    [Range(0f, 1f)]
+    [UnityEngine.Range(0f, 1f)]
     [SerializeField] private float _footstepVolume = 0.5f;
 
-    [Tooltip("Вариация случайного питча звука для естественности")]
-    [Range(0f, 0.5f)]
+    [UnityEngine.Range(0f, 0.5f)]
     [SerializeField] private float _pitchVariation = 0.1f;
-
-    [Header("Sprint Detection")]
-    [Tooltip("Использовать пресет спринта при беге (требуется FPSController или PlayerController)")]
-    [SerializeField] private bool _useSprintPreset = true;
 
     private AudioSource _audioSource;
     private static EchoLocatorConfig _config;
     private FPSController _fpsController;
     private PlayerController _playerController;
+    private PlayerCrouch _playerCrouch;
+
+    private List<TypeOfStep> _stepTypes = new() { TypeOfStep.Default };
+    private TypeOfStep _currentTypeOfStep = TypeOfStep.Default;
+
+    public bool IsRunning => IsSprinting();
+    public bool IsCrouching => _playerCrouch != null && _playerCrouch.IsCrouching;
 
     private void Awake()
     {
@@ -52,22 +50,17 @@ public class PlayerWalkEcho : MonoBehaviour
 
         _fpsController = GetComponent<FPSController>();
         _playerController = GetComponent<PlayerController>();
+        _playerCrouch = GetComponent<PlayerCrouch>();
     }
 
     /// <summary>
     /// Получает текущий пресет эхо в зависимости от состояния игрока.
     /// </summary>
-    private EchoPreset GetCurrentPreset()
+    private EchoTypeStep GetCurrentPreset()
     {
         if (_config == null)
             return null;
-
-        if (_useSprintPreset && IsSprinting())
-        {
-            return _config.SprintFootstepPreset ?? _config.FootstepPreset;
-        }
-
-        return _config.FootstepPreset;
+        return _config.GetPresetForStep(_currentTypeOfStep, IsRunning, IsCrouching);
     }
 
     /// <summary>
@@ -104,18 +97,9 @@ public class PlayerWalkEcho : MonoBehaviour
         EmitFootstepEcho(_rightFoot);
     }
 
-    /// <summary>
-    /// Универсальный метод для вызова через Animation Event.
-    /// Используется когда нет конкретной ноги (или для обобщённого шага).
-    /// </summary>
-    public void EmitFootstepEcho()
-    {
-        EmitFootstepEcho(null);
-    }
-
     private void EmitFootstepEcho(Transform footTransform)
     {
-        EchoPreset preset = GetCurrentPreset();
+        EchoTypeStep preset = GetCurrentPreset();
 
         if (preset == null)
         {
@@ -144,14 +128,14 @@ public class PlayerWalkEcho : MonoBehaviour
             echoPosition.y += _groundOffset;
         }
 
-        EchoManager.Instance.SpawnEcho(echoPosition, preset);
+        EchoManager.Instance.SpawnEcho(echoPosition, preset.echoPreset);
 
-        PlayFootstepSound();
+        PlayFootstepSound(preset);
     }
 
-    private void PlayFootstepSound()
+    private void PlayFootstepSound(EchoTypeStep preset)
     {
-        if (_config == null || _config.FootstepSounds == null || _config.FootstepSounds.Length == 0)
+        if (_config == null || preset.FootstepSounds == null || preset.FootstepSounds.Length == 0)
             return;
 
         // Проверяем и восстанавливаем AudioSource если нужно
@@ -169,7 +153,7 @@ public class PlayerWalkEcho : MonoBehaviour
         }
 
         // Выбираем случайный звук
-        AudioClip clip = _config.FootstepSounds[Random.Range(0, _config.FootstepSounds.Length)];
+        AudioClip clip = preset.FootstepSounds[Random.Range(0, preset.FootstepSounds.Length)];
 
         if (clip == null)
             return;
@@ -177,5 +161,15 @@ public class PlayerWalkEcho : MonoBehaviour
         // Устанавливаем pitch с вариацией (всегда от базового значения 1)
         _audioSource.pitch = 1f + Random.Range(-_pitchVariation, _pitchVariation);
         _audioSource.PlayOneShot(clip, _footstepVolume);
+    }
+    public void SetTypeOfStep(TypeOfStep typeOfStep)
+    {
+        _stepTypes.Add(typeOfStep);
+        _currentTypeOfStep = _stepTypes.Max();
+    }
+    public void RemoveTypeOfStep(TypeOfStep typeOfStep)
+    {
+        _stepTypes.Remove(typeOfStep);
+        _currentTypeOfStep = _stepTypes.Count > 0 ? _stepTypes.Max() : TypeOfStep.Default;
     }
 }

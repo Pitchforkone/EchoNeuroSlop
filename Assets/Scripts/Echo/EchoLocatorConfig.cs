@@ -1,3 +1,7 @@
+using Mirror;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 using UnityEngine;
 
 /// <summary>
@@ -9,20 +13,30 @@ public class EchoLocatorConfig : ScriptableObject
 {
     [Header("Presets")]
     [Tooltip("Preset for active ping echo (LMB or loud sound)")]
-    [SerializeField] private EchoPreset _activePingPreset;
-
-    [Tooltip("Preset for normal footstep echo")]
-    [SerializeField] private EchoPreset _footstepPreset;
-
-    [Tooltip("Preset for sprint footstep echo")]
-    [SerializeField] private EchoPreset _sprintFootstepPreset;
-
-    [Header("Audio")]
-    [Tooltip("Footstep sounds (played randomly)")]
-    [SerializeField] private AudioClip[] _footstepSounds;
-
-    public EchoPreset ActivePingPreset => _activePingPreset;
-    public EchoPreset FootstepPreset => _footstepPreset;
-    public EchoPreset SprintFootstepPreset => _sprintFootstepPreset;
-    public AudioClip[] FootstepSounds => _footstepSounds;
+    [SerializeField] public EchoPreset _activePingPreset;
+    public List<EchoTypeStep> _echoTypeSteps;
+    public EchoTypeStep GetPresetForStep(TypeOfStep typeOfStep, bool IsRunning, bool IsCrouching)
+    {
+        foreach (var echoTypeStep in _echoTypeSteps)
+        {
+            if (echoTypeStep.ValidationType(typeOfStep, IsRunning, IsCrouching))
+            {
+                return echoTypeStep;
+            }
+        }
+        return _echoTypeSteps.FirstOrDefault(x => x.typeOfStep == typeOfStep);
+    }
+}
+[System.Serializable]
+public class EchoTypeStep
+{
+    public TypeOfStep typeOfStep;
+    public EchoPreset echoPreset;
+    public AudioClip[] FootstepSounds;
+    public bool IsRunning;
+    public bool IsCrouching;
+    public bool ValidationType(TypeOfStep typeOfStep, bool IsRunning, bool IsCrouching)
+    {
+        return this.typeOfStep == typeOfStep && this.IsRunning == IsRunning && this.IsCrouching == IsCrouching;
+    }
 }

@@ -162,9 +162,9 @@ public class PlayerEchoLocator : NetworkBehaviour
     {
         // Только локальный игрок может активировать эхо
         if (NetworkClient.active && !isLocalPlayer) return;
-        if (_config == null || _config.ActivePingPreset == null || EchoManager.Instance == null) return;
+        if (_config == null || _config._activePingPreset == null || EchoManager.Instance == null) return;
 
-        EchoManager.Instance.SpawnEcho(transform.position, _config.ActivePingPreset);
+        EchoManager.Instance.SpawnEcho(transform.position, _config._activePingPreset);
     }
 
     private void TriggerActiveEchoFromMicrophone()
@@ -172,8 +172,8 @@ public class PlayerEchoLocator : NetworkBehaviour
         // Только локальный игрок может активировать эхо
         if (NetworkClient.active && !isLocalPlayer) return;
 
-        if (_config == null || _config.ActivePingPreset == null || EchoManager.Instance == null) return;
+        if (_config == null || _config._activePingPreset == null || EchoManager.Instance == null) return;
 
-        EchoManager.Instance.SpawnEcho(transform.position, _config.ActivePingPreset);
+        EchoManager.Instance.SpawnEcho(transform.position, _config._activePingPreset);
     }
 }

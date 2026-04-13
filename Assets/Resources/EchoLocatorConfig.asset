@@ -13,9 +13,34 @@ MonoBehaviour:
   m_Name: EchoLocatorConfig
   m_EditorClassIdentifier: Assembly-CSharp::EchoLocatorConfig
   _activePingPreset: {fileID: 11400000, guid: 12e0be7247debd846aaf326a244db954, type: 2}
-  _footstepPreset: {fileID: 11400000, guid: 683c2018a67346744952b916909b3ea6, type: 2}
-  _sprintFootstepPreset: {fileID: 11400000, guid: b92a908d377cc57448434c1d15577079, type: 2}
-  _footstepSounds:
-  - {fileID: 8300000, guid: fcc772c8f600bd04da3233c0437b8380, type: 3}
-  - {fileID: 8300000, guid: d8d0df5d5ab69d7428f2c78a239eb04b, type: 3}
-  - {fileID: 8300000, guid: 99429926551e21643908e7829b0f00d2, type: 3}
+  _echoTypeSteps:
+  - typeOfStep: 0
+    echoPreset: {fileID: 11400000, guid: 683c2018a67346744952b916909b3ea6, type: 2}
+    FootstepSounds:
+    - {fileID: 8300000, guid: fcc772c8f600bd04da3233c0437b8380, type: 3}
+    - {fileID: 8300000, guid: d8d0df5d5ab69d7428f2c78a239eb04b, type: 3}
+    - {fileID: 8300000, guid: 99429926551e21643908e7829b0f00d2, type: 3}
+    IsRunning: 0
+    IsCrouching: 0
+  - typeOfStep: 0
+    echoPreset: {fileID: 11400000, guid: eee89faaed9f74a4991e0c8f039cc417, type: 2}
+    FootstepSounds:
+    - {fileID: 8300000, guid: fcc772c8f600bd04da3233c0437b8380, type: 3}
+    - {fileID: 8300000, guid: d8d0df5d5ab69d7428f2c78a239eb04b, type: 3}
+    - {fileID: 8300000, guid: 99429926551e21643908e7829b0f00d2, type: 3}
+    IsRunning: 1
+    IsCrouching: 0
+  - typeOfStep: 1
+    echoPreset: {fileID: 11400000, guid: 12e0be7247debd846aaf326a244db954, type: 2}
+    FootstepSounds:
+    - {fileID: 8300000, guid: d3de4b01bbe68f4409d181c552c501db, type: 3}
+    - {fileID: 8300000, guid: c3769a4905c44a4459bcbbee71b0d5ac, type: 3}
+    IsRunning: 0
+    IsCrouching: 0
+  - typeOfStep: 1
+    echoPreset: {fileID: 11400000, guid: eee89faaed9f74a4991e0c8f039cc417, type: 2}
+    FootstepSounds:
+    - {fileID: 8300000, guid: d3de4b01bbe68f4409d181c552c501db, type: 3}
+    - {fileID: 8300000, guid: c3769a4905c44a4459bcbbee71b0d5ac, type: 3}
+    IsRunning: 1
+    IsCrouching: 0
