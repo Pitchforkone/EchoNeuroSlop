@@ -23,7 +23,7 @@ MonoBehaviour:
     IsRunning: 0
     IsCrouching: 0
   - typeOfStep: 0
-    echoPreset: {fileID: 11400000, guid: eee89faaed9f74a4991e0c8f039cc417, type: 2}
+    echoPreset: {fileID: 11400000, guid: 12e0be7247debd846aaf326a244db954, type: 2}
     FootstepSounds:
     - {fileID: 8300000, guid: fcc772c8f600bd04da3233c0437b8380, type: 3}
     - {fileID: 8300000, guid: d8d0df5d5ab69d7428f2c78a239eb04b, type: 3}
@@ -38,7 +38,7 @@ MonoBehaviour:
     IsRunning: 0
     IsCrouching: 0
   - typeOfStep: 1
-    echoPreset: {fileID: 11400000, guid: eee89faaed9f74a4991e0c8f039cc417, type: 2}
+    echoPreset: {fileID: 11400000, guid: a98edd023319243458fc4a8e302fc26f, type: 2}
     FootstepSounds:
     - {fileID: 8300000, guid: d3de4b01bbe68f4409d181c552c501db, type: 3}
     - {fileID: 8300000, guid: c3769a4905c44a4459bcbbee71b0d5ac, type: 3}

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4321c15d43b44484ba79c83518556cda, type: 3}
-  m_Name: ActivePingULTRA
+  m_Name: ActivePingUltra
   m_EditorClassIdentifier: Assembly-CSharp::EchoPreset
   _echoType: 1
-  _speed: 30
-  _maxRadius: 50
+  _speed: 35
+  _maxRadius: 35
   _color: {r: 0.6, g: 0.8, b: 1, a: 1}
-  _intensity: 30
-  _lifetimeOverride: 2
+  _intensity: 20
+  _lifetimeOverride: 0
