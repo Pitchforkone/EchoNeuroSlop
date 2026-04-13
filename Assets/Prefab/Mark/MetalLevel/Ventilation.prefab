@@ -54,7 +54,7 @@ MonoBehaviour:
   exitZone1: {fileID: 185949331010953040}
   exitPoint2: {fileID: 5067054505575334307}
   exitZone2: {fileID: 8371990042269695295}
-  ejectForce: 5
+  ejectForce: 1
   consumeScrewdriver: 0
 --- !u!114 &6835991704056147155
 MonoBehaviour:

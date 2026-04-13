@@ -42,10 +42,15 @@ public class PickupableItem : NetworkBehaviour, IInteractable
     {
         if (interactZone == null)
         {
-            Debug.LogError("[PickupableItem] InteractZone not assigned!");
+            interactZone = GetComponentInChildren<InteractZone>();
+        }
+
+        if (interactZone == null)
+        {
+            Debug.LogError("[PickupableItem] InteractZone not assigned and not found in children!");
             return;
         }
-        
+
         interactZone.SetHintText("Take");
         interactZone.interact += OnInteract;
     }

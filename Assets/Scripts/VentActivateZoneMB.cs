@@ -136,9 +136,9 @@ public class VentActivateZoneMB : NetworkBehaviour
         {
             Destroy(exitPoint1.gameObject);
         }
-        if (exitPoint1 != null)
+        if (exitPoint2 != null)
         {
-            Destroy(exitZone2.gameObject);
+            Destroy(exitPoint2.gameObject);
         }
     }
 
