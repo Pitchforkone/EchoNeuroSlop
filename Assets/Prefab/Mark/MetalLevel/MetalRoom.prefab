@@ -1186,7 +1186,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 3346c011ce3dd6241a7b3b14eaa58a40, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 20e0b5ca4f22cb74faa851714e722738, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &5276429127895494579
 GameObject:
@@ -1780,7 +1780,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7306675124700823329}
-  - component: {fileID: 9175428425401039726}
   m_Layer: 0
   m_Name: MetalRoom
   m_TagString: Untagged
@@ -1812,38 +1811,6 @@ Transform:
   - {fileID: 1626915231470646186}
   m_Father: {fileID: 8069536422937435245}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &9175428425401039726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7866195610910287713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
-  m_SerializedVersion: 0
-  m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 127
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_GenerateLinks: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 9dbdf25cf980fc245be398955d5d0a78, type: 2}
-  m_BuildHeightMesh: 0
 --- !u!1 &7952149853135038453
 GameObject:
   m_ObjectHideFlags: 0
@@ -12578,7 +12545,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1713641756920953265, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.727
+      value: 0.779
       objectReference: {fileID: 0}
     - target: {fileID: 1713641756920953265, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
       propertyPath: m_LocalPosition.z
@@ -12594,7 +12561,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1713641756920953265, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7071068
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1713641756920953265, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
       propertyPath: m_LocalRotation.z
@@ -12602,7 +12569,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1713641756920953265, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -90
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 6835991704056147155, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
       propertyPath: _assetId
@@ -12671,6 +12638,18 @@ PrefabInstance:
     - target: {fileID: 7137325032416612678, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
       propertyPath: m_Name
       value: Ventilation (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 9045686849598724462, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9045686849598724462, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9045686849598724462, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9156774999214237181, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
       propertyPath: _assetId
