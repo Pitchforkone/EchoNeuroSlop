@@ -1,4 +1,5 @@
 using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +16,9 @@ public class InteractZone : MonoBehaviour
     [Header("Interaction Settings")]
     [Tooltip("Подсказка, отображаемая при входе игрока в зону")]
     private string hintText = "Interact";
+
+    /// <summary>Функция для динамического получения текста подсказки.</summary>
+    private Func<string> _dynamicHintProvider;
 
     /// <summary>Вызывается когда игрок входит в зону.</summary>
     public Action activate;
@@ -35,6 +39,23 @@ public class InteractZone : MonoBehaviour
     public void SetHintText(string newHint)
     {
         hintText = newHint;
+        _dynamicHintProvider = null;
+    }
+
+    /// <summary>
+    /// Sets a dynamic hint provider that will be called each time the hint is shown.
+    /// </summary>
+    /// <param name="hintProvider">Function that returns the hint text.</param>
+    public void SetDynamicHintProvider(Func<string> hintProvider)
+    {
+        _dynamicHintProvider = hintProvider;
+    }
+
+    private string GetCurrentHintText()
+    {
+        if (_dynamicHintProvider != null)
+            return _dynamicHintProvider();
+        return hintText;
     }
 
     private void Update()
@@ -53,7 +74,7 @@ public class InteractZone : MonoBehaviour
 
         _playerInside = true;
         activate?.Invoke();
-        InteractHintUI.Show(hintText);
+        InteractHintUI.Show(GetCurrentHintText());
     }
 
     public void OnTriggerExit(Collider other)

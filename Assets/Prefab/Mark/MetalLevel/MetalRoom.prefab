@@ -5733,6 +5733,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: VentilationEnter (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 2505882784576963998, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
+      objectReference: {fileID: 0}
     - target: {fileID: 4370191639807245245, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.227
@@ -6108,6 +6112,10 @@ PrefabInstance:
     - target: {fileID: 1982712469922111936, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2505882784576963998, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
       objectReference: {fileID: 0}
     - target: {fileID: 4370191639807245245, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8264,6 +8272,10 @@ PrefabInstance:
     - target: {fileID: 1982712469922111936, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_Name
       value: VentilationEnter (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2505882784576963998, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
       objectReference: {fileID: 0}
     - target: {fileID: 4370191639807245245, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14098,6 +14110,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2505882784576963998, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
+      objectReference: {fileID: 0}
     - target: {fileID: 4370191639807245245, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -17.511
@@ -16673,6 +16689,10 @@ PrefabInstance:
     - target: {fileID: 1982712469922111936, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_Name
       value: VentilationEnter (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2505882784576963998, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
       objectReference: {fileID: 0}
     - target: {fileID: 4370191639807245245, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19910,6 +19930,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2505882784576963998, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
+      objectReference: {fileID: 0}
     - target: {fileID: 4370191639807245245, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.002
@@ -20199,6 +20223,10 @@ PrefabInstance:
     - target: {fileID: 1982712469922111936, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_Name
       value: VentilationEnter (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2505882784576963998, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
       objectReference: {fileID: 0}
     - target: {fileID: 4370191639807245245, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -21375,6 +21403,10 @@ PrefabInstance:
     - target: {fileID: 1982712469922111936, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2505882784576963998, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
       objectReference: {fileID: 0}
     - target: {fileID: 4370191639807245245, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -24215,6 +24247,10 @@ PrefabInstance:
     - target: {fileID: 1982712469922111936, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2505882784576963998, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
+      propertyPath: _assetId
+      value: 3360264265
       objectReference: {fileID: 0}
     - target: {fileID: 4370191639807245245, guid: e22583ce9e8b6274cb80fe05e49199b4, type: 3}
       propertyPath: m_LocalPosition.x

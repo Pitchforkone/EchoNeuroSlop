@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -8,6 +9,16 @@ using UnityEngine.UI;
 public static class InteractHintUI
 {
     private static SteamNetworkUI _cachedUI;
+    private static string _currentHintText;
+
+    /// <summary>
+    /// Gets or sets the current hint text.
+    /// </summary>
+    public static string CurrentHintText
+    {
+        get => _currentHintText;
+        set => _currentHintText = value;
+    }
 
     /// <summary>
     /// Shows the interaction hint with the specified text.
@@ -15,6 +26,7 @@ public static class InteractHintUI
     /// <param name="hintText">The hint text to display.</param>
     public static void Show(string hintText)
     {
+        _currentHintText = hintText;
         var ui = GetUI();
         if (ui != null)
         {
@@ -24,6 +36,15 @@ public static class InteractHintUI
         {
             Debug.LogWarning("[InteractHintUI] No SteamNetworkUI found. Make sure it exists in the scene.");
         }
+    }
+
+    /// <summary>
+    /// Sets the hint text and displays it.
+    /// </summary>
+    /// <param name="text">The hint text to set and display.</param>
+    public static void SetHintText(string text)
+    {
+        Show(text);
     }
 
     /// <summary>
@@ -48,10 +69,11 @@ public static class InteractHintUI
     }
 
     /// <summary>
-    /// Clears the cached UI reference. Call this when changing scenes.
+    /// Clears the cached UI reference and hint text. Call this when changing scenes.
     /// </summary>
     public static void ClearCache()
     {
         _cachedUI = null;
+        _currentHintText = null;
     }
 }
