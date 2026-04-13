@@ -10,8 +10,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerCrouch : MonoBehaviour
 {
-    [Header("Animation")]
-    [SerializeField] private Animator _animator;
+    private Animator _animator;
 
     [Header("Crouch Settings")]
     [SerializeField] private float _crouchHeight = 1.2f;
@@ -24,7 +23,7 @@ public class PlayerCrouch : MonoBehaviour
     [SerializeField] private float _groundCheckDistance = 0.3f;
 
     [Header("Camera")]
-    [SerializeField] private Transform _cameraTransform;
+    private Transform _cameraTransform;
     [Tooltip("Target position for camera when crouching")]
     [SerializeField] private Transform _crouchCameraTarget;
 

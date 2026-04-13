@@ -5,7 +5,6 @@ using Mirror;
 /// <summary>
 /// Player echo locator for multiplayer with Mirror.
 /// Active echo: LMB (Attack action) with cooldown or loud sound into microphone.
-/// Passive echo: footstep events from PlayerController.
 /// Использует SharedMicrophone для доступа к микрофону (на том же игроке или LocalInstance).
 /// </summary>
 public class PlayerEchoLocator : NetworkBehaviour
@@ -25,8 +24,6 @@ public class PlayerEchoLocator : NetworkBehaviour
     [Header("Active Echo Cooldown")]
     [SerializeField] private float _activeEchoCooldown = 0.5f;
 
-    private PlayerController _playerController;
-    private FPSController _fpsController;
     private InputAction _echoAction;
     private SharedMicrophone _microphone;
 
@@ -36,8 +33,6 @@ public class PlayerEchoLocator : NetworkBehaviour
 
     private void Awake()
     {
-        _playerController = GetComponent<PlayerController>();
-        _fpsController = GetComponent<FPSController>();
         _microphone = GetComponent<SharedMicrophone>();
         if(_config == null) 
             _config = Resources.Load<EchoLocatorConfig>("EchoLocatorConfig");
@@ -56,12 +51,6 @@ public class PlayerEchoLocator : NetworkBehaviour
         {
             SetupInput();
         }
-
-        if (_playerController != null)
-            _playerController.OnFootstep += OnFootstep;
-
-        if (_fpsController != null)
-            _fpsController.OnFootstep += OnFootstep;
     }
 
     private void SetupInput()
@@ -153,12 +142,6 @@ public class PlayerEchoLocator : NetworkBehaviour
             _echoAction.performed -= OnEchoPerformed;
             _echoAction.Disable();
         }
-
-        if (_playerController != null)
-            _playerController.OnFootstep -= OnFootstep;
-
-        if (_fpsController != null)
-            _fpsController.OnFootstep -= OnFootstep;
     }
 
     private void OnEchoPerformed(InputAction.CallbackContext ctx)
@@ -179,9 +162,9 @@ public class PlayerEchoLocator : NetworkBehaviour
     {
         // Только локальный игрок может активировать эхо
         if (NetworkClient.active && !isLocalPlayer) return;
-        if (_config == null || _config.ActivePingPreset == null || EchoManager.Instance == null) return;
+        if (_config == null || _config._activePingPreset == null || EchoManager.Instance == null) return;
 
-        EchoManager.Instance.SpawnEcho(transform.position, _config.ActivePingPreset);
+        EchoManager.Instance.SpawnEcho(transform.position, _config._activePingPreset);
     }
 
     private void TriggerActiveEchoFromMicrophone()
@@ -189,28 +172,8 @@ public class PlayerEchoLocator : NetworkBehaviour
         // Только локальный игрок может активировать эхо
         if (NetworkClient.active && !isLocalPlayer) return;
 
-        if (_config == null || _config.ActivePingPreset == null || EchoManager.Instance == null) return;
+        if (_config == null || _config._activePingPreset == null || EchoManager.Instance == null) return;
 
-        EchoManager.Instance.SpawnEcho(transform.position, _config.ActivePingPreset);
-    }
-
-    private void OnFootstep(Vector3 position, bool isSprinting)
-    {
-        // Только локальный игрок генерирует эхо от шагов
-        if (NetworkClient.active && !isLocalPlayer) return;
-
-        if (EchoManager.Instance == null) return;
-
-        // Crouching = silent, no passive echo
-        bool isCrouching = (_playerController != null && _playerController.IsCrouching) ||
-                          (_fpsController != null && _fpsController.IsCrouching);
-        if (isCrouching) return;
-
-        if (_config == null) return;
-
-        var preset = isSprinting && _config.SprintFootstepPreset != null ? _config.SprintFootstepPreset : _config.FootstepPreset;
-        if (preset == null) return;
-
-        EchoManager.Instance.SpawnEcho(position, preset);
+        EchoManager.Instance.SpawnEcho(transform.position, _config._activePingPreset);
     }
 }

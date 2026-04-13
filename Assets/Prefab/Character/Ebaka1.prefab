@@ -1631,9 +1631,9 @@ MonoBehaviour:
   _rightFoot: {fileID: 2201999799136085020}
   _groundOffset: 0.05
   _footstepSounds:
-  - {fileID: 8300000, guid: e22a6c3ccaf8c0447a2f2bfe4c0b901b, type: 3}
-  - {fileID: 8300000, guid: 754280181ac9185428a7ebb00f579c3c, type: 3}
-  - {fileID: 8300000, guid: 7af3b8f507f6733429b190af877ba528, type: 3}
+  - {fileID: 8300000, guid: fcc772c8f600bd04da3233c0437b8380, type: 3}
+  - {fileID: 8300000, guid: d8d0df5d5ab69d7428f2c78a239eb04b, type: 3}
+  - {fileID: 8300000, guid: 99429926551e21643908e7829b0f00d2, type: 3}
   _footstepVolume: 0.01
   _pitchVariation: 0.1
 --- !u!82 &6431516061253910735
