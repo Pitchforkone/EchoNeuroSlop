@@ -448,7 +448,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6371723933804787824, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -37.852043
+      value: -37.87
       objectReference: {fileID: 0}
     - target: {fileID: 6371723933804787824, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_LocalPosition.y
@@ -456,7 +456,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6371723933804787824, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -14.557219
+      value: -12.22
       objectReference: {fileID: 0}
     - target: {fileID: 6371723933804787824, guid: e60492729b52177458f72e01499073ae, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1173,10 +1173,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 164881101611607754, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 3889134993
-      objectReference: {fileID: 0}
     - target: {fileID: 367708903594875561, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 2171759437
@@ -1185,17 +1181,13 @@ PrefabInstance:
       propertyPath: sceneId
       value: 3997748846
       objectReference: {fileID: 0}
-    - target: {fileID: 1520527753613296566, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+    - target: {fileID: 913690231084015716, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
-      value: 2457921723
+      value: 1606186577
       objectReference: {fileID: 0}
     - target: {fileID: 1816870824973295256, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 1141911988
-      objectReference: {fileID: 0}
-    - target: {fileID: 2368048331511155246, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 2852262333
       objectReference: {fileID: 0}
     - target: {fileID: 2904402587320137685, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
@@ -1209,33 +1201,17 @@ PrefabInstance:
       propertyPath: sceneId
       value: 3980000064
       objectReference: {fileID: 0}
-    - target: {fileID: 3126538596958421432, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 1837854143
-      objectReference: {fileID: 0}
     - target: {fileID: 3395288205093467970, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 2781702012
-      objectReference: {fileID: 0}
-    - target: {fileID: 3970118701644115511, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 3726256689
       objectReference: {fileID: 0}
     - target: {fileID: 3979363914073188833, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 337793193
       objectReference: {fileID: 0}
-    - target: {fileID: 3991095385649546796, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: m_Radius
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4104142547525298664, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 4014139186
-      objectReference: {fileID: 0}
-    - target: {fileID: 4106128403937286070, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 4273431882
       objectReference: {fileID: 0}
     - target: {fileID: 4731667101943405592, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
@@ -1245,41 +1221,25 @@ PrefabInstance:
       propertyPath: sceneId
       value: 719873498
       objectReference: {fileID: 0}
-    - target: {fileID: 4880321162088610177, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 1955743541
-      objectReference: {fileID: 0}
     - target: {fileID: 5220660985875863347, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: m_Name
       value: MetalRoom
-      objectReference: {fileID: 0}
-    - target: {fileID: 5497470890653838326, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 3415877096
       objectReference: {fileID: 0}
     - target: {fileID: 5632505715165819445, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 2623000233
       objectReference: {fileID: 0}
-    - target: {fileID: 5638561156867323353, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 4077698183
-      objectReference: {fileID: 0}
     - target: {fileID: 5732820183729223146, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 1115786324
-      objectReference: {fileID: 0}
-    - target: {fileID: 6225989065005295681, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 3583588638
       objectReference: {fileID: 0}
     - target: {fileID: 6647758482297045482, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
       value: 4253588206
       objectReference: {fileID: 0}
-    - target: {fileID: 6707991395163656718, guid: fd109a5a2b903044c9754e414a545344, type: 3}
+    - target: {fileID: 7402605233662259352, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
-      value: 4031197047
+      value: 3162730644
       objectReference: {fileID: 0}
     - target: {fileID: 7586982258365735412, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
@@ -1324,10 +1284,6 @@ PrefabInstance:
     - target: {fileID: 8069536422937435245, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8541730977659661942, guid: fd109a5a2b903044c9754e414a545344, type: 3}
-      propertyPath: sceneId
-      value: 215647936
       objectReference: {fileID: 0}
     - target: {fileID: 8622735728755106159, guid: fd109a5a2b903044c9754e414a545344, type: 3}
       propertyPath: sceneId
