@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using Mirror;
+using System.Linq;
 
 /// <summary>
 /// ������� �� ������ � �������������� �� ����.
@@ -141,6 +142,7 @@ public class EnemyAI : NetworkBehaviour
         {
             _animator = GetComponent<Animator>();
         }
+        _patrolPoints = FindObjectsOfType<PatrolPoint>().ToList();
     }
 
     public override void OnStartServer()
