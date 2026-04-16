@@ -34,31 +34,31 @@ public class EchoNetworkHelper : NetworkBehaviour
     /// <summary>
     /// Request to spawn an echo. Will be synchronized to all clients.
     /// </summary>
-    public void RequestSpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType = EchoType.Default)
+    public void RequestSpawnEcho(Vector3 position, float speed, float maxRadius, float peakIntensity, Color color, float lifetime, EchoType echoType = EchoType.Default)
     {
         if (isServer)
         {
             // Server directly broadcasts to all clients
-            RpcSpawnEcho(position, speed, maxRadius, intensity, color, lifetime, echoType);
+            RpcSpawnEcho(position, speed, maxRadius, peakIntensity, color, lifetime, echoType);
         }
         else
         {
             // Client sends command to server
-            CmdSpawnEcho(position, speed, maxRadius, intensity, color, lifetime, echoType);
+            CmdSpawnEcho(position, speed, maxRadius, peakIntensity, color, lifetime, echoType);
         }
     }
 
     [Command(requiresAuthority = false)]
-    private void CmdSpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType)
+    private void CmdSpawnEcho(Vector3 position, float speed, float maxRadius, float peakIntensity, Color color, float lifetime, EchoType echoType)
     {
         // Server received command, broadcast to all clients
-        RpcSpawnEcho(position, speed, maxRadius, intensity, color, lifetime, echoType);
+        RpcSpawnEcho(position, speed, maxRadius, peakIntensity, color, lifetime, echoType);
     }
 
     [ClientRpc]
-    private void RpcSpawnEcho(Vector3 position, float speed, float maxRadius, float intensity, Color color, float lifetime, EchoType echoType)
+    private void RpcSpawnEcho(Vector3 position, float speed, float maxRadius, float peakIntensity, Color color, float lifetime, EchoType echoType)
     {
         // Fire event for local spawn
-        OnNetworkEchoSpawn?.Invoke(position, speed, maxRadius, intensity, color, lifetime, echoType);
+        OnNetworkEchoSpawn?.Invoke(position, speed, maxRadius, peakIntensity, color, lifetime, echoType);
     }
 }
