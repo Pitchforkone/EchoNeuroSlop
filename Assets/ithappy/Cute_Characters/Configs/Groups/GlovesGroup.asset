@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7781dc1b11e340469965c5026ab4f9e8, type: 3}
+  m_Name: GlovesGroup
+  m_EditorClassIdentifier: 
+  Type: 15
+  Variants:
+  - {fileID: 919132149155446097, guid: c6a71b75d0914a94898d1184102209c0, type: 3}
+  - {fileID: 919132149155446097, guid: 64db18f50ff58d549a52cdffbf6ad979, type: 3}
+  - {fileID: 919132149155446097, guid: 88296d17f3bd50044bffad3ae0626fb6, type: 3}
+  - {fileID: 919132149155446097, guid: 1dfd4807980d37f43a992b336f004bb1, type: 3}
+  - {fileID: 919132149155446097, guid: c04571ff3b66f3f43b72e866d62655ad, type: 3}
+  - {fileID: 919132149155446097, guid: 51c0dd9b530c1214a9cfcf32c7d07aca, type: 3}
+  - {fileID: 919132149155446097, guid: 5189a249d7cf4ba43aa836c9d5106ea1, type: 3}
+  - {fileID: 919132149155446097, guid: d45422381af6ac0409f8a5565d608723, type: 3}
+  - {fileID: 919132149155446097, guid: 0a905a14919ead248882ec6ebdaeb5c8, type: 3}
+  - {fileID: 919132149155446097, guid: ff1e66228720a4e4ba7c2c7857fb490b, type: 3}
+  - {fileID: 919132149155446097, guid: dbebc0956c5baa142af02dd4bb0cecd4, type: 3}
+  - {fileID: 919132149155446097, guid: 8df62d31f4a71a94380827b887fa8563, type: 3}

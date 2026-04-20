@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fc15df5d8b46039be4363ebc826db6, type: 3}
+  m_Name: HairstyleSlot
+  m_EditorClassIdentifier: 
+  Type: 7
+  Groups:
+  - {fileID: 11400000, guid: f791f49d79f3883409d743982ed13999, type: 2}
+  - {fileID: 11400000, guid: 056b4d9e0dbbaf04c9d79c2bb0169739, type: 2}

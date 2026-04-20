@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: a9f1c016b047465b971475eddd6d9e6f
+timeCreated: 1736677982
+AssetOrigin:
+  serializedVersion: 1
+  productId: 218181
+  packageName: "Cute Characters \u2013 Modular Animated Pack"
+  packageVersion: 2.6
+  assetPath: Assets/ithappy/Cute_Characters/Scripts/Editor/Randomizer/Steps/Impl/OutfitStep.cs
+  uploadId: 825470
