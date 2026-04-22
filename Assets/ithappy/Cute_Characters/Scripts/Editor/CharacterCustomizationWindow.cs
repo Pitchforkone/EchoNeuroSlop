@@ -131,8 +131,6 @@ namespace CharacterCustomizationTool.Editor
         private static void AddMovementComponents(GameObject character)
         {
             AddCharacterController(character);
-            character.AddComponent<CharacterMover>();
-            character.AddComponent<MovePlayerInput>();
         }
 
         private static void AddCharacterController(GameObject character)

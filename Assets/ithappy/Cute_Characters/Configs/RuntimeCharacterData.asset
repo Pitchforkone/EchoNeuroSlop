@@ -1,0 +1,1343 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcb94740772ba0e409b11bd0bde68bf4, type: 3}
+  m_Name: RuntimeCharacterData
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterCustomizationTool.Runtime.RuntimeCharacterData
+  FullBodyCostumes:
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: 5513711719247434344, guid: 19fba672e70c89745ab3f84de28b3cf8, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: -4118238841274484969, guid: cf3fd49aff220144788896b83554c5ba, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Shoes
+      Mesh: {fileID: -5742595468672045121, guid: e38b85881771ce348abdb63ec596f50e, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: 3427657572465563711, guid: 01390face2622834f971fe1929f5a598, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: -9122310226984481805, guid: 1e4d74bb2e9f34e4284c615ce26244bd, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Pants
+      Mesh: {fileID: -7069448583698164432, guid: 9e59735121e792243b767a17a50fe694, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Outfit
+      Mesh: {fileID: -5968684406382832433, guid: 1a42e127ce6a64540846240ea5e38817, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: -4356709890906851777, guid: 46801688157fc304db763ed3c83e42c9, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: -2329158206599658026, guid: b4f5f8bc970019e4aa825899b0db65eb, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+    - SlotType: Gloves
+      Mesh: {fileID: 8391908075795485744, guid: 7b84fb904833e184d8ab562138b39c83, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Pants
+      Mesh: {fileID: 8935855844142068540, guid: f4610c3f0fec1fd44aaf887af50d20d5, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+    - SlotType: Shoes
+      Mesh: {fileID: 6087106472397839947, guid: 3c77bd542d4fea44fa06fefc85d0185c, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: 2699824021188838351, guid: 47bc6776b9d1ce646936f915dad0498c, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: -8779163164122440033, guid: 1c070409ab50fd3418cd89bf04d28d4d, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Gloves
+      Mesh: {fileID: -1908180674396117370, guid: 711517065f77a3049950e63a9a609d4f, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Shoes
+      Mesh: {fileID: -5975570355367212440, guid: 8d6d7cfe527713e4fbc2e58656bd1b50, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: 1664590485169584762, guid: f57f63dadb45ab34cb366de32cd4306d, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: 3973260507736145330, guid: 4c7f845153e2ec2449ea5da372a02fd6, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+    - SlotType: Gloves
+      Mesh: {fileID: 4670249721359948743, guid: ae632f3d057725643b28690e3c0e3060, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Shoes
+      Mesh: {fileID: -6060963928627688710, guid: 95a2daac5b93bfd43b7162e35a5cacde, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: -2765936270418153539, guid: ff9b015d04eb16b4eb701c440df9557e, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: 450329317118863479, guid: 3f67088c92d6d024492856e7ffecc514, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: 1594144536405897978, guid: 193e703eaa9424949987f37106d46380, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: 5175830751603945291, guid: cfad9ca400cc06d4593a14acb4b34ece, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+    - SlotType: Gloves
+      Mesh: {fileID: 3846407061426685037, guid: 83efcfef5f6efa9478fcd3552f2a19fd, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: -5487227106594090636, guid: 725c7f98e7f283146bd4f0c9abe429f7, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: -5239768251146766458, guid: 971d0e42eaec5454eb24276462e23de2, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: -980985961961228655, guid: 5c624dc0b409a164a889701f29f1870f, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: 1580556198971335223, guid: c4bec0de7d6088447948487fc11fd663, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Outwear
+      Mesh: {fileID: -1206257018002595322, guid: 7e86c61afb51cdd47ae77e3587e3959c, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Gloves
+      Mesh: {fileID: -4379532424563627363, guid: e9d07fc1f0d2bc04b82d783e6422db78, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Shoes
+      Mesh: {fileID: -7768426929608709282, guid: afd05645a9a715341af069c5c9b6d2e2, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: -4704551645360793841, guid: e1c49351813fc254e98095f2e2a88fce, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: 7958094321124538293, guid: db9a1afe6525c5a49b10caf088d307ec, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Gloves
+      Mesh: {fileID: -6139598590723038577, guid: 56bd1e080c37035488e470257096fd1f, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Pants
+      Mesh: {fileID: 3966913317219113808, guid: 5e2e3224d0c8de04598cfce896e1dc0c, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Shoes
+      Mesh: {fileID: 4774310942839951165, guid: 6a9cd519886b11f4d8afefcffbab7abe, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: -7865469382878630009, guid: a451e808be7a1894f9b3d672e6fa1c32, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: 2655699466205066014, guid: d70be2536bc58f544bc14af19c4331c9, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Outwear
+      Mesh: {fileID: 489335555135716713, guid: b0662c33b550f1347aafff421ef6863c, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Gloves
+      Mesh: {fileID: 1676964171136696499, guid: f09b41e5b070db14f92dca67b81f789c, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Pants
+      Mesh: {fileID: 8028166897179117043, guid: 42a04cb24217dfa4d8e50f9e3eee53c1, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Shoes
+      Mesh: {fileID: 1013689244671307201, guid: 6af55b5ad9a325e4f8bb57afc4e32ec0, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: -117303278895043745, guid: 24ebca60f9749bc4abcd1a1801ee96ac, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: 6672857697371443912, guid: de3f5ebb5bb870f49a0e7f44d2c5eca4, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Outwear
+      Mesh: {fileID: 175221865928570598, guid: 34c5f77e9621b24429d52210965bad6a, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: 1237831304137509425, guid: 65772402805d79f47ac6d0d4b55a87ad, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: -8967604826207539155, guid: 598da06ef2051cc4fba44439c34ebbbd, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - Slots:
+    - SlotType: Costumes
+      Mesh: {fileID: -1100729046003164089, guid: 0b0efabc20d1df149bce87537af61a51, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Hat
+      Mesh: {fileID: -8957664122935787748, guid: 2a7b09e7f704d92499ee4ba8d8376f19, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - SlotType: Pants
+      Mesh: {fileID: -905240503787259194, guid: 5fe0e5ea30fe5e54e94374e3b63a702a, type: 3}
+      Materials:
+      - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  Slots:
+  - SlotType: Body
+    Groups:
+    - GroupType: Body
+      Variants:
+      - Mesh: {fileID: 4547268506808534155, guid: 252fee3caef761342bec2fef2f5b9583, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4893472716301505488, guid: c14ea684b1ed7f6418fb5f011be723ea, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3941906569799096821, guid: 8d7d00a3bfb29d04d8f70eac4918acaf, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8388000445221942392, guid: 35e9f1d20b6f73e4792b3a74759bd57f, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2008065780467351342, guid: 634eb5869178a6343b2dd8e7a51e7ea8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5743854858385588186, guid: 4217e414b3d126643a0621968ec7e88a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 280115149947420147, guid: 46736d68fc704ba4b8a135a3488f2ecb, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2015436376384702016, guid: 891b424b6e9e1444784676d747ae2d49, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 9048077219780403455, guid: 07dffefce17051748a5f6718ee779322, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2176721902359944379, guid: 972c0f73fa4ea444fbfdc5d381b69252, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7945091823169681325, guid: 7769b1d9f5ec5e04293e135413cf8468, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1830870998183431705, guid: ca30654814376424c9053fdcf6883619, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8401635843416016539, guid: 9d305c2f63d87274d97a4d4209abcdbf, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8345810069391051103, guid: bcbb48943b60cbf4a8c0b0d871b2f0fd, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1389479154790947474, guid: 6fb0e78c281cf4c49b31381d52161dfc, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5778889572084675727, guid: 1ac0999b5a907e94ea4d793b8cc8ed73, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Ears
+    Groups:
+    - GroupType: Ears
+      Variants:
+      - Mesh: {fileID: 2007958340126635565, guid: 51f7169bbed14a040914bcb70932215c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2607531051764063519, guid: 0ce9731cc80348f4580131bfbb20e974, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -174897052864434441, guid: 0640bfb99dff7764fbe8c370d45fc3c4, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6697075313345773477, guid: 44c86650ee04a344480f23357eda3b3b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2348777807094694665, guid: 5605ae76c27228c4187b01b5dcc50b26, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -7075839446127407199, guid: ecd03d6772e53e64293e60e4b479ffaa, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -9136503082031907183, guid: eadea0859a112d54ca07c4d0ffde4aa0, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5538567213379833597, guid: 27ce72f37502da047a2769bf070f1326, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7672276639765617633, guid: ff51df54345f50840812dc56496197a2, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7560090271766871904, guid: 1a40d2be6ef399940a6145b979b4d23b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4736664366806554559, guid: d58f3f98ac161cb4da9a2fe5443a4125, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1500957159420071131, guid: 639b7f51613072d4ba081104c6a8c6b8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6778177244910311627, guid: 5dbbe05e6fcfec44c8f397ae4ef2ad8a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5966224881927414014, guid: 610aee722b308164593fabc35957ba7e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -7783809449597842427, guid: 2d662ddc7abd70c47b05ed026e4db848, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4330544551546436275, guid: 97a52b3b023754c45a5301c472a12766, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: FaceAccessories
+    Groups:
+    - GroupType: FaceAccessories
+      Variants:
+      - Mesh: {fileID: 2690904636209818544, guid: 5ca57497e6beb01459426ce0ced77443, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 922465483669496695, guid: 0cb22b6099048f44083c46c091c9dd6c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5467526475432957500, guid: 2531e99badbce814e898cce8540aef7a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5020135125209749104, guid: 123d1b5d4fdfda5409c991cf0cd662b6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5251871448524690028, guid: 85f8a9571fc46344292f934a033e54b3, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1208107950721927292, guid: df5556ccb30ca64468a8ba22f1f00329, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -7048557244817341974, guid: 8536809a2a1879543a112cd438d5a59d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2012351748801333022, guid: ee76fcdf3fd4cfe448764c3cd4bbf6a7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4816715140062288996, guid: cc72e97b112207d48adf00181aa83f68, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5320270920472852407, guid: 54c0c2c3d72c6004e8f4cad69493e4bd, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5043498141621449621, guid: 3cdde3b3f9d9ade4f9be1ab33f17d4eb, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1102653518638439823, guid: 573b76596b7d7b341a36ef509bb55302, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6080153035096876434, guid: 475f5ce9033e57c41bece283bff08b79, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4229360929217993988, guid: dcba18d0e53fc834c9c46d21c4a526f1, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 932137687117037156, guid: d7ef56a33c1c76b419b7c776a19f9b30, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2445837914857691004, guid: 561aec7c5faa42b41b65ffc219910df7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5519764058420821164, guid: 56d53d1e07d7207468924b39f3edf46c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7016731244102417404, guid: 75976508c9d511243855d14a60fed9f0, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7008612071592249925, guid: ef2c1802d413d5941b7505815c00d837, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5065822172151319858, guid: 7d447221ae3b225458a1dd706091f617, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8815313747440939067, guid: bb6b473f17b6b0e42869255c168bd97b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6703384877360831650, guid: c4da83cb36fcc204182d93d5938240b3, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 446491160540972132, guid: e17a1f4ba47f84d428519da6dafe3f23, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -7842831479439361333, guid: af45f68c6c802d742ab4af613138bcf1, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Faces
+    Groups:
+    - GroupType: Faces
+      Variants:
+      - Mesh: {fileID: 6640912730325609018, guid: 3f3bca7d46b82c44ba675b97c46bfc87, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8368939201001581290, guid: f908549e05ae84846ad6eba06247801e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5141641696883965027, guid: a6615f770919d1841868ecf11e369311, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -495019052737741562, guid: 1a4323d4f1e17434ba5719307eba5076, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7379554815695809831, guid: 24f20fa52ee5af947b8abd2267fa35f1, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1625064202414945240, guid: 056e8c856594482429334c929ad3e087, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7975453246016493325, guid: b3312ca68baed7d48babf4279bc65d54, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7789941019589327193, guid: e771d76e9a127574488e157061f57c1c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2447494612718224515, guid: cf9e4d3c1b3c7344897f9d37030bbc8f, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 937192305888615646, guid: d69d4f99442b4de448927a51c1a4bd70, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6602882174121877429, guid: f0ef277a558001e40a7a75875200c8c6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4830836463773487509, guid: 9f1a7387ad059ae4b940a956eb8950b6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8061453615009182071, guid: 7e2578c2ac7aa7142950fa575cb682c6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1611860017695686296, guid: e005ad39c8d2c484895e696f2e71362b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4020786635123323514, guid: 0c01f9f0087b43c49936830c8388241a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7575000228736350723, guid: ba01f3c0c2328ed489a98759a23d57dc, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1269870293874467541, guid: 57444a98f436b234ab7b97cf106ebbda, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -232985902019336209, guid: a3c15259ec228714da41e8e4ed5e4a85, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8606694061391205810, guid: d4dd0574d961e8b4a8ced0df685dd010, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -756438820484449877, guid: c20f882c0cba12c4bae6bc5bda4bb9b7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8698229289294279558, guid: 41baedf7a2b4cb745bb1bc044c92bfa1, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2725216400432301782, guid: 99b491a1674965748bf59a5cfe718e57, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -3936833000329690229, guid: 82abccb4213b7b24ba0f46af99e8a711, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6286029156284052730, guid: 9d3b1dc51752d8e42bacbe05fa770c10, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8647532066802546931, guid: 6f50fef9180a8b34c92d925ede0bb32d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -7345737174876868659, guid: 2cb990de2ad7fc64ca2dacffaa6fdf25, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -893937584756115209, guid: 0ad8f0b4aa5bdd34dbdc83efac6a3ac2, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7554961855229222057, guid: 1d9b1cbfd12a034489e09898984a2996, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5434416156686821163, guid: 4cd2633a3e8156842b91f637888c2ba4, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6825457632066959147, guid: 5e0de4be5b80fd4459b309330e7256b5, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7837523244641986479, guid: 33856de007a58234b9fb9246b0214bca, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5393233554657853885, guid: 2e5f504b4843af34989c8d3cf0dc680a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -7341536163166735834, guid: e05c28c20196ccb4cb175271badcfc86, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5953942299692911655, guid: 37899196a00e0f04d86e3cde95dfc3c2, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -3010723037219268504, guid: cf69a35eaedea404aabcfff21cf54d29, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6361447725254905924, guid: 7afdf6403d6efee44843db109fff29ff, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1469468218441492029, guid: 8614f21181978974cafa283f3e0ed604, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3552040318386271021, guid: 43e13719ba02e8e449e3dfe8a9f3ee29, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7862317144360618988, guid: e95c5162425171e4a8baec09e2313b71, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7521253093577084009, guid: 20cbd3e8cd26b7745ad1a46abd2cdf42, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Glasses
+    Groups:
+    - GroupType: Glasses
+      Variants:
+      - Mesh: {fileID: -6671733185959201944, guid: 67a137b5e59393c4e83a33b46a893cbc, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6798483999639894891, guid: 88f94c4393cd1a24aa1e3a27618aa78f, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6515110658399377313, guid: 1761e444a753ab4479e4fbbe38bc9fc1, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: 1790028703794667852, guid: 2224e73960ec76948aa534b2c53a07bb, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -9172450345181602521, guid: f88b99d7dd54499438ea1378cc1eb2b7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -775482647884655988, guid: 388002008c1886c45950073d846b5939, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: -159286390556128128, guid: 1f1329db04c2898428241e3ce835764b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5624960721693611791, guid: c01bfab053353fa42af8decb86031f15, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: 1712572404774839199, guid: 55bdeb0fef2187144b7b7e91c8ff4d6a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -9029249157746540803, guid: 8a778b55fa653e148a8503d6580560ff, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+      - Mesh: {fileID: 6852173730980118814, guid: 6a124715e7d5d1b4ba2fb49ba8de05b5, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+      - Mesh: {fileID: -226546173619633230, guid: 8a5fdc4e010d80747acfe730e00591b6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -332557806375124977, guid: 4891bed264056b84b8e69c7af75b359d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: -4092947303771764159, guid: 7e399292ab45ff54894deb7427bc0296, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: 6982626748009360245, guid: 5c7c358ba83c2ce47a1503294d889bca, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: -5574458450116066273, guid: 288f79ef759f653448156460f45a177f, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: 3602815358950184671, guid: 0998be6d103b89d4a9c97ea29bb101c3, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: 8474558328833878112, guid: 0258dc4af38aea94d867b7ce51497568, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: 749311080628650126, guid: a8f5ff521de5db949a4976d5473ebd5c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5273564898059390180, guid: 0c2fad325d88a4b4799240c5eef9dff6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5492294684221893851, guid: 7d29739bdf8db89469448c68d0543c85, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2410551005973888252, guid: 41eeb71a350bfa64582451a0ace4a384, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Gloves
+    Groups:
+    - GroupType: Gloves
+      Variants:
+      - Mesh: {fileID: -4162374172680952391, guid: c6a71b75d0914a94898d1184102209c0, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3107316501390020968, guid: 64db18f50ff58d549a52cdffbf6ad979, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2561388121985504039, guid: 88296d17f3bd50044bffad3ae0626fb6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5818625397338339585, guid: 1dfd4807980d37f43a992b336f004bb1, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1689294013771715128, guid: c04571ff3b66f3f43b72e866d62655ad, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -9222017322873844345, guid: 51c0dd9b530c1214a9cfcf32c7d07aca, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -9141953723142778236, guid: 5189a249d7cf4ba43aa836c9d5106ea1, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 263952539374509022, guid: d45422381af6ac0409f8a5565d608723, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1944194995282394827, guid: 0a905a14919ead248882ec6ebdaeb5c8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8172913183357672665, guid: ff1e66228720a4e4ba7c2c7857fb490b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6841251067624967781, guid: dbebc0956c5baa142af02dd4bb0cecd4, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4475671670049435229, guid: 8df62d31f4a71a94380827b887fa8563, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Hairstyle
+    Groups:
+    - GroupType: Hairstyle
+      Variants:
+      - Mesh: {fileID: -9099924787982362520, guid: f65cc4559620ed841a68822402ce76f9, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8613167906018862591, guid: e714e483772d5744e92ea4b8187ed17a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6830312907567710579, guid: ead6ef7abe2513a45be2886e050b400c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8668323454128984872, guid: ee94c98e63b3c1245be54e95085056fa, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6043340416718389272, guid: ffd5fe3840cd41a46836655b59e6e512, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4751783066792492378, guid: 4b4f2bda53407be46bc5eeecdf91b604, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1068320908263121244, guid: 375114c58863b4547819e92c92f18969, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6103011825080252158, guid: 838c6dea793534b43838f2fd747ed069, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2942217772744370684, guid: 6ba329c452ded3047a8d7fa48054c091, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8367926965414877750, guid: edc8e872ec2421a4a8362578ba539ce9, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3536548406379320622, guid: c23b984ee7150764fa3f8ad0b2c2a078, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5246353563433528227, guid: 90b1a3120cf5e7b42942527b9d85d433, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6294066499648681602, guid: 99d360e31427a0a408c86fd0bcbfbf8e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3018962007163039132, guid: d0f8f5a33b4df154cac3e93d4a880cba, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7002060529440858676, guid: b00165cb78efec74991a9fb051df4988, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4252396502019239421, guid: ea4f96cc41116264b83612bcfe6c1eef, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 9061160270243903156, guid: de1145904f857b7448eb208405cc40f9, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8345425590570195464, guid: 6a82a515dd749474087e52950cc47850, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1195338155682352043, guid: aee0a14ea8caefb4399bcea0324a1634, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4275249122862143168, guid: 1fd16a6737aad124bbee9de79ba5850d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -3841399714197424122, guid: e7f1131381be3344b9935575572727ce, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1059401669833748019, guid: 8c79b34af1a5fa04fbb164833c562218, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4057379013395947338, guid: c2666f7e7847b9443834e266dc1a90d7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6161661438862893277, guid: 1ab63831c3c044a4da2a46a9edaecb3b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - GroupType: HairWithHats
+      Variants:
+      - Mesh: {fileID: -7840697787668821939, guid: e577ea4cead5e8347a24cbb9de4a81dd, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6973367804094267596, guid: 33fe5761654c9a14ebb69835c76462b7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8714351932910002507, guid: b258a0e3941a8db4fb5b33a03746f27a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2160950620445992622, guid: c95b9ff27bdb60d4c84980378ae28f40, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1477927270879988596, guid: 4e1dca7de28869548b4149c26bd59554, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5492490688447476749, guid: 5aabd20be7ee7f6449abe22306e6d0c5, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Hat
+    Groups:
+    - GroupType: Hat
+      Variants:
+      - Mesh: {fileID: 214622672758511181, guid: 4fcb68fc71838ad4caaf07e9eb732958, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5501265926661890790, guid: a64a6441fa269b348abd6582549b39c6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5515578995233832970, guid: d8c56f0e4c47f934381fa7acda9291dc, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7968860779803917414, guid: 6d348e895b735574fb7c8d0274dd05fb, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1547650462011832544, guid: 9cdcc8685fbfee84ca31e7e2be9a5d03, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5674248301500801536, guid: 8e0b9b1a087fe2a49afd265f71478b7c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4470173197721515907, guid: 119d34c779c9c0e498bb70e636b75346, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -882614835948362321, guid: 336f046190dd67b4286c7155391f04b5, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -7690195894340951604, guid: 9c07cde3bb4f0394fa6604b9543d44d6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1210907049786396696, guid: c3192d7ad083ecf4688284c9af88e773, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2098320913111731761, guid: b4f8777a8d5a89942831b0feb7f0232a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8905634579895914701, guid: a0073e0602904ba4b80e069057ee5428, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -668942240984229393, guid: eef81339e40700b42b9339093b562149, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6771367002260374918, guid: 53b19cbbda6036749bd50c73a0952b3f, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2344795699758608244, guid: 202e9c88ff1a6d84390f42f3fcaaff4e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4861141166607117748, guid: b572ccc708f9ee940ab471569de6c349, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1297108719770905208, guid: 448aa14055c12a5469dc9eb7aef48a24, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6123457707218253605, guid: 7a64ebff13d5bf54e8ef669690b183b7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3224723347871804339, guid: 165ff8449c2e7ff4c9aa902f22007198, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6846487467213790373, guid: 89c5dac34628814439be15984d12b848, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      - Mesh: {fileID: 6123469767089558357, guid: 7233d334e8462614780cf2ddd32072ae, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2473588929971102301, guid: c8787d480484f3f4ead04f49a62e7540, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8978472777163451318, guid: be9d17d1cf3a7d44f98b87a21ce00076, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3371760329551227306, guid: 4cbdc84dc06b6fa4fbbf0317c374b4e0, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6113232875877755683, guid: 98ec9021ae4f96d4b9892a255ab52ad8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -403007501721934695, guid: dbf135868a89109499a088b436f5761e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1222083850321373901, guid: 2bc3944babac0294ab7fb02d1a1e0e1a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8915656358313499504, guid: 537b803a11a07934e9aa30e1c12b3071, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6625262509472948886, guid: 7e8409c775f6f29409347bb2b4ca8198, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1192719401098325252, guid: 8a254b12b2dfefc45b7797f57918f835, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2582630324360606144, guid: 39c6b51857793ef46969851fcedd7ea3, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4324725956384583524, guid: b14513f5686af424e92393a447c2ce10, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4033012779308271636, guid: 3ebb7d467d8bfc54e87717cff9abbc17, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2426509594422923264, guid: ee4a68ad5bad5c94d970c5fad660279b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -3327899083095926973, guid: ac8d9c3b0e0de9e4db924d079f8fb7dd, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1045212532749174248, guid: 36c07dc7430f77145bd4ddd715947b3e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 32fbf3258d698d54ba6f8eee9cd3195f, type: 2}
+      - Mesh: {fileID: 4553023241709818365, guid: 00c1e96be043b064ca54224ea14497e4, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8915044864590846183, guid: b78d09071e6d87a4d9e8210548e6da36, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8492580113678647092, guid: 89610baceeddc374eb5842fa9ca3c989, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: 8841493994563855036, guid: e59f24c468350a3499db9fb86d76100d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+    - GroupType: HatSingle
+      Variants:
+      - Mesh: {fileID: 409978106964746145, guid: 1dcb53a03c8756041a42532deec17c07, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5749287922953492849, guid: 06e906c0355899647a09dd3e06e41e75, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5144411363278504780, guid: a0d9c12f927577d43922f79c1b09d5aa, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8185920452926097499, guid: 51f537a1d93fdff4e99f2a27c2b3767a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1328395123859608389, guid: 07a5ed034305fa64080f588cbb91aa87, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2226596818615867525, guid: fb7e1d9d143cd0243a373e9c0f430b14, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6181581489180930052, guid: c46b4f3caade0664f9170e22e8d29d28, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: 3112575729605435074, guid: 46546e7b18229ed47bfaca74f872e409, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: -5725684117282437636, guid: 5f40a988412d87147b2235c4d0941433, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+    - GroupType: HatsWithHair
+      Variants:
+      - Mesh: {fileID: 4894720594066381654, guid: 8873e5af559fcde428db1439808b98aa, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -272094037939394198, guid: aa31f4c7d8c96024691c6e42735a543b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5872759942117342413, guid: 6427597c2564048489750a9096574812, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2805002311184330566, guid: e22d4dfd31d04df43b00ae56d4407f63, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -3433745960509641807, guid: eceb29c3a18b1d84594a6b629e30a16e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: -944873670881212206, guid: 3445cff27c295774f830a6a79d811194, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4336878629570323307, guid: b8c5851732c7b1e41b0927095181158b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+        - {fileID: 2100000, guid: 086d3e4fefc029442989fd37e2c655fa, type: 2}
+      - Mesh: {fileID: -9050998528355194317, guid: f4dff9f8511cc0e43ba839c1427e7ca2, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2733324671677400683, guid: f5ea2e438d88e1f4c8657e89c844086e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2288507286907467232, guid: 870d3e2bffa9a174d8fd36da1639cd15, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Outfit
+    Groups:
+    - GroupType: Outfit
+      Variants:
+      - Mesh: {fileID: -4730732179805464352, guid: 9a9a5904ba339624cb612dc299c1cd18, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2762393130953239952, guid: fd6894ad3b46ff54dab96d57b71e8467, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5869045368524034692, guid: 9b1a2b25e0e96c548887c87bc9c3ff17, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -3835784894608035622, guid: e93f6d70efb9fb44ca3d7d3b4fcaab40, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8978027692764228879, guid: e37c81d0cbaa0c7488539e36cb984596, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1895019277581709426, guid: 64abeeae9a4ac3a4ebe33f385d167892, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8671319135257936452, guid: 5b8906a476faa31419e97636c27a32c0, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5817701751892692553, guid: 1a6e895888bbd8e4aac8d14663e43d35, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7019997056694631122, guid: 0a56454b7d1953a4cb7b15287d1e05a5, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Outwear
+    Groups:
+    - GroupType: Outwear
+      Variants:
+      - Mesh: {fileID: -1532456528610276152, guid: eeb4b33ad2faf484eb7328f933a010dc, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2123510237897404618, guid: db8e9750f1d02d04d8a5898804d37981, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1618030428257034439, guid: dc58754fce2b2084183cc84a04ed52a0, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4883349500120772387, guid: 6475fd9d88c37cf4e8e72bcafac781b7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2922999397053272479, guid: 7078cb4a0d1c08c43a1401931dd71b1d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2632610103933194241, guid: 9e23a9a04e151e445939528521093f7c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3893397441327756377, guid: e3bada481639f4a45837bab8a35d373d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2476937670767102378, guid: de7c9400d18ceb54aafc63bc2ec76da2, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -24406301662055664, guid: 3f1cd9db05d309a41b1ee62467c77b5e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1568496718666516134, guid: f837eede54a9a47489cc106603a7c6e9, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5334965028238235352, guid: b42a4b15b034e294bb13b4f252da0d2b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1941315755242127908, guid: 5662e94fbb112a7429c35d9cd5bdb925, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5583457141203502510, guid: 4684b57bd54630c4e9dc98ca8d26e54d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 173360045229902157, guid: bec17b5ef9b936949bb52c616e26ae51, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4252726573205677373, guid: 9e27538854201544badc6e74b570a029, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5475035345663667210, guid: 5f4c7299934fe60458373f35a9157437, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1675498736461941903, guid: 242fc8cd967ebc348a59c9cdedf4d2ad, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4868618595432159515, guid: d4cf15f251821b345a5b51fc978aebf5, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8623171834144889132, guid: be540bd9863fcb84991e4d9f9aa6f845, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1940884522441778114, guid: a64ba0b2feacc804dbc284e426427df8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4716117921923428242, guid: f598bd49c69dea44888c28ed29b7c3d8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2132572421233806358, guid: 444acebfd58a705499ba55636795686c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -659517482259900400, guid: b5aa2f6d97114f048b513495fb8a268d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1968760371064887498, guid: 18d31e0710d51384e8df64d0c0384879, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4510294680014572337, guid: 2915071ff204fcc4caebe22d67436813, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1855345057895913278, guid: d7d41c661fd6dd3419cdc83dadcbdd08, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4017468072073212798, guid: 8b4460354060a29479667341c3937148, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6605694911051472808, guid: 2f95f3903c35d6743bcebc55b83e2b72, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2904517523187841740, guid: 80528a84ff8e896478d30ffb3c835688, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6505132413982343180, guid: b3304ef9128bae147b5bb265acff361b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5499812695946702862, guid: 8a6a84fa589d4fb43828656da84fd958, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5301924463788362199, guid: e95cdd702b8660347b489449e65ebeec, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8658550727359755755, guid: 059700dcca13be14b8d3113d2759d89d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8979221520803057980, guid: 026e7ccbd5a760a46a9eccc954dc3fc6, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3768238556758918053, guid: 5d22975b77c3aad4ca527f7b634e6b8e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2085069527224731559, guid: 8e1b7db4ef246b34290ac1ea869dd1c7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -892372752429840191, guid: 4f19af7afa32e744a954eef3aec03d91, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4041450190801534078, guid: 7d19e406b4fb25342aedf0bdc4198348, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1701524089462867894, guid: f2e54c4db9e9ab64b9358b128855cd52, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7661718776277763237, guid: 3e659f61235fa374b8919f3c78981c1f, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -539793163709256351, guid: 2a21b56c1dac6c44fa7f0f4fb27dbcd4, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5361407183164805259, guid: 60ee5b5c87000ca419b9afd2cee7b362, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5135299982800335756, guid: 8fd9fcf3825d80d48bb1bdec1dc5c984, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -3398781015691208601, guid: 2012a3d0560215d438e97de5dffd96b7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1492774269873788628, guid: 30dfc80921984504789de52f492121ce, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 7638629086974144586, guid: 48b9816e1dc7e1848947b98ab05f78e9, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8364156856940018890, guid: 63b8d63a4aa00a244b7031bb8e86224a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8403378129264588602, guid: 4fdaebe027e8ada42a83cd8d6cb9a17a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8284568862604944830, guid: e6f4dbcc30f5cf94eaa823bdfcf002dc, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3767840592038602502, guid: d9696b9788fdd564fadd1be8783a7461, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5793696267515502957, guid: be30794173c5aa842954b5f1fc5bcdfc, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5119188356753827462, guid: 4d55d724c76756149be9062b5b0977cf, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4281991470629395468, guid: ce4133edf46964847be386db7ba9ddbd, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3448805834766719360, guid: f19b41f842ed85044a59f4cb6eabe9c1, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6126890402490453081, guid: affc1d0c3c473c742929dfef27cfcc46, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5601534883299807719, guid: 65b5172626392e44b8ec3b503deb4b18, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Pants
+    Groups:
+    - GroupType: Pants
+      Variants:
+      - Mesh: {fileID: 1543909213277224155, guid: e5d23c301ec09e84f8b0c404ea2165e3, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4976506252765098015, guid: f0aef370f7c5f9f49b45f73e5180a1c8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5026729302019614723, guid: cd0da96615d456145bd717f0d68e6580, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -2406216502670586917, guid: 24f9d4ace2450db43830584083062ee8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 6956645931020787088, guid: 030969d43959fbb48acc3e72ca167b47, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1289615888922266597, guid: 6956b049ab6c6e349a4d8a4184cdbf86, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4548281612387348609, guid: b73931c69c627284192ced68df1fe955, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8960429996560823094, guid: d1442de9de263724c9e649f69bd311ae, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8129361379744962023, guid: 56c3e25669f347c43890140e8d4b6e58, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8634359377457026240, guid: 5c4904c03b1af4940bbd21c47949bfd4, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6833425477436108569, guid: ccff85ac2068e63449f4d2d5766d905c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1602216458834000358, guid: 9048f3b40f1b5464ab7568db2cfc1595, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -7174682663038085362, guid: 1d09f678457bbbc45860b14cc5724e08, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8365846181006807011, guid: 643afe092e34a114b895fddbea309f2b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4122927898749119769, guid: 99242355d8dcfc3439ab242600a52d3e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Shoes
+    Groups:
+    - GroupType: Shoes
+      Variants:
+      - Mesh: {fileID: 4560160008616458455, guid: 2d8dc961db7406c47b3cf4d67fb5420e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 696040094093694994, guid: 34de98f4fb0c2e641a64d21167cba44b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 2622311745758301297, guid: 2725408a37e99ed49be01f14fa761bdd, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4513934521764671426, guid: 993d07a936e9fc648b130bab07b8c539, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -8507966474864796032, guid: e2c41503609b73d468cd9d6cfdd6a32e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5900903955829827036, guid: 91e0ebfaf55add94a86da598e14c749c, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3899179701337655370, guid: 5b758d3c566ae894f99d879612928844, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5040264409126451942, guid: 0674d088e4e2e1a45b2353f78376754d, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3596370362380868383, guid: 398d9a70ac566d8438e23f40741c9ffa, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -4013734355594090245, guid: b58e765be270cbe40aabd66d605be1ae, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 4846916642008965142, guid: a1b94ee73a1fd3340a608bd6cef0da24, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -585987090817485312, guid: 7f037d0bcdf38ec40b6ad2366b4dfee0, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1242411980669244152, guid: ed4ed24c4f476824f8e041191ff386bb, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 8822414061312891240, guid: 3db6c6754f537c04a88e07a0725ddcd7, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -5178100211778524695, guid: 106a5df3a0a68454ab431239f07f1e27, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3293909790813873304, guid: 08ebad7a0b98b2d41972534debcea578, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -6260860148111143606, guid: a92a123a927279f4d86bd3b07e477108, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 3887993829501521360, guid: a146f58fa79227a4a8770382edba720e, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5124325090560270018, guid: a3c7095908a0f8d4ea54935c40e70778, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 282264812460033723, guid: ac4c8e3d38653ab4daa88140357a5610, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1093122283024923084, guid: ca2f516ae6c0fa44aaffebf2c086d95b, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1989087924565745759, guid: a7f3564897bbf4947857e0ca4e13fa58, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Shorts
+    Groups:
+    - GroupType: Shorts
+      Variants:
+      - Mesh: {fileID: -4413590476698634004, guid: 5ac53d66eeedc1a43b6066367b1406b8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 1102237145150501971, guid: a4175ba9264160f4c8b650c825baba1a, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: -1716648293456793974, guid: bdb6d585c7dcf9d48a6e557b4904d4d8, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  - SlotType: Socks
+    Groups:
+    - GroupType: Socks
+      Variants:
+      - Mesh: {fileID: -316787438360196166, guid: 69abf80c59b9da44fb09c7209deccfeb, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 444536841649352858, guid: 8e717b6f95462fa4b8e764577766609f, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+      - Mesh: {fileID: 5143207351824992811, guid: b0ec896cd4f62c34cabf6848a5845c11, type: 3}
+        Materials:
+        - {fileID: 2100000, guid: 6a4c0a5109ac9314e97b0138b1203c35, type: 2}
+  FaceMeshes:
+  - {fileID: 6640912730325609018, guid: 3f3bca7d46b82c44ba675b97c46bfc87, type: 3}
+  - {fileID: -8368939201001581290, guid: f908549e05ae84846ad6eba06247801e, type: 3}
+  - {fileID: 5141641696883965027, guid: a6615f770919d1841868ecf11e369311, type: 3}
+  - {fileID: -495019052737741562, guid: 1a4323d4f1e17434ba5719307eba5076, type: 3}
+  - {fileID: 7379554815695809831, guid: 24f20fa52ee5af947b8abd2267fa35f1, type: 3}
+  - {fileID: 1625064202414945240, guid: 056e8c856594482429334c929ad3e087, type: 3}
+  - {fileID: 7975453246016493325, guid: b3312ca68baed7d48babf4279bc65d54, type: 3}
+  - {fileID: 7789941019589327193, guid: e771d76e9a127574488e157061f57c1c, type: 3}
+  - {fileID: -2447494612718224515, guid: cf9e4d3c1b3c7344897f9d37030bbc8f, type: 3}
+  - {fileID: 937192305888615646, guid: d69d4f99442b4de448927a51c1a4bd70, type: 3}
+  - {fileID: 6602882174121877429, guid: f0ef277a558001e40a7a75875200c8c6, type: 3}
+  - {fileID: -4830836463773487509, guid: 9f1a7387ad059ae4b940a956eb8950b6, type: 3}
+  - {fileID: 8061453615009182071, guid: 7e2578c2ac7aa7142950fa575cb682c6, type: 3}
+  - {fileID: -1611860017695686296, guid: e005ad39c8d2c484895e696f2e71362b, type: 3}
+  - {fileID: 4020786635123323514, guid: 0c01f9f0087b43c49936830c8388241a, type: 3}
+  - {fileID: 7575000228736350723, guid: ba01f3c0c2328ed489a98759a23d57dc, type: 3}
+  - {fileID: 1269870293874467541, guid: 57444a98f436b234ab7b97cf106ebbda, type: 3}
+  - {fileID: -232985902019336209, guid: a3c15259ec228714da41e8e4ed5e4a85, type: 3}
+  - {fileID: -8606694061391205810, guid: d4dd0574d961e8b4a8ced0df685dd010, type: 3}
+  - {fileID: -756438820484449877, guid: c20f882c0cba12c4bae6bc5bda4bb9b7, type: 3}
+  - {fileID: -8698229289294279558, guid: 41baedf7a2b4cb745bb1bc044c92bfa1, type: 3}
+  - {fileID: -2725216400432301782, guid: 99b491a1674965748bf59a5cfe718e57, type: 3}
+  - {fileID: -3936833000329690229, guid: 82abccb4213b7b24ba0f46af99e8a711, type: 3}
+  - {fileID: 6286029156284052730, guid: 9d3b1dc51752d8e42bacbe05fa770c10, type: 3}
+  - {fileID: 8647532066802546931, guid: 6f50fef9180a8b34c92d925ede0bb32d, type: 3}
+  - {fileID: -7345737174876868659, guid: 2cb990de2ad7fc64ca2dacffaa6fdf25, type: 3}
+  - {fileID: -893937584756115209, guid: 0ad8f0b4aa5bdd34dbdc83efac6a3ac2, type: 3}
+  - {fileID: 7554961855229222057, guid: 1d9b1cbfd12a034489e09898984a2996, type: 3}
+  - {fileID: -5434416156686821163, guid: 4cd2633a3e8156842b91f637888c2ba4, type: 3}
+  - {fileID: 6825457632066959147, guid: 5e0de4be5b80fd4459b309330e7256b5, type: 3}
+  - {fileID: 7837523244641986479, guid: 33856de007a58234b9fb9246b0214bca, type: 3}
+  - {fileID: 5393233554657853885, guid: 2e5f504b4843af34989c8d3cf0dc680a, type: 3}
+  - {fileID: -7341536163166735834, guid: e05c28c20196ccb4cb175271badcfc86, type: 3}
+  - {fileID: 5953942299692911655, guid: 37899196a00e0f04d86e3cde95dfc3c2, type: 3}
+  - {fileID: -3010723037219268504, guid: cf69a35eaedea404aabcfff21cf54d29, type: 3}
+  - {fileID: -6361447725254905924, guid: 7afdf6403d6efee44843db109fff29ff, type: 3}
+  - {fileID: 1469468218441492029, guid: 8614f21181978974cafa283f3e0ed604, type: 3}
+  - {fileID: 3552040318386271021, guid: 43e13719ba02e8e449e3dfe8a9f3ee29, type: 3}
+  - {fileID: 7862317144360618988, guid: e95c5162425171e4a8baec09e2313b71, type: 3}
+  - {fileID: 7521253093577084009, guid: 20cbd3e8cd26b7745ad1a46abd2cdf42, type: 3}

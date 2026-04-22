@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 129434763}
   - component: {fileID: 129434762}
   - component: {fileID: 129434766}
+  - component: {fileID: 129434767}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -212,10 +213,17 @@ MonoBehaviour:
   playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 393246898847985716, guid: 327be37af9bc9da48802f3af18289c74, type: 3}
-  - {fileID: 1480877992616214926, guid: 957eaf3155e56eb43a1c7345a4c46f4e, type: 3}
+  - {fileID: 5422896795140715671, guid: e60492729b52177458f72e01499073ae, type: 3}
+  - {fileID: 1328023254706044480, guid: 257c304c754d3b247a51ef5bea7a90d0, type: 3}
   - {fileID: 3651185240441501403, guid: 359a6f118fa87b442934d82093acf567, type: 3}
   - {fileID: 3651185240441501403, guid: ff66ae116f9e1d64a8ce38a1becb9a26, type: 3}
+  - {fileID: 3651185240441501403, guid: 4b1e1a9555e0c904486fdeaa3a73320a, type: 3}
+  - {fileID: 5352958571798197664, guid: c564c8c0d0cdc45429417f315e9f3e41, type: 3}
+  - {fileID: 3651185240441501403, guid: b658c24ef242fa24db94c96e5a10c815, type: 3}
+  - {fileID: 7930594129381537087, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
   - {fileID: 4009316800116953103, guid: cc09f6a21dacd7e48af07435184a1ac9, type: 3}
+  - {fileID: 7137325032416612678, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
+  - {fileID: 3651185240441501403, guid: 788595683dee4de459031264b67bb61d, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -231,11 +239,73 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
+  clientLoadedScene: 0
+  <mode>k__BackingField: 0
+  finishStartHostPending: 0
+  clientSceneOperation: 0
   characterPrefabs:
   - {fileID: 1328023254706044480, guid: 257c304c754d3b247a51ef5bea7a90d0, type: 3}
   - {fileID: 5352958571798197664, guid: c564c8c0d0cdc45429417f315e9f3e41, type: 3}
   spawnPosition: {x: 0, y: 1, z: 0}
   spawnRadius: 3
+  nextCharacterIndex: 0
+--- !u!114 &129434767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129434761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkManager
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  headlessStartMode: 0
+  editorAutoStart: 0
+  sendRate: 60
+  offlineScene: 
+  onlineScene: 
+  offlineSceneLoadDelay: 0
+  transport: {fileID: 0}
+  networkAddress: localhost
+  maxConnections: 100
+  disconnectInactiveConnections: 0
+  disconnectInactiveTimeout: 60
+  authenticator: {fileID: 0}
+  playerPrefab: {fileID: 1328023254706044480, guid: 257c304c754d3b247a51ef5bea7a90d0, type: 3}
+  autoCreatePlayer: 1
+  playerSpawnMethod: 1
+  spawnPrefabs:
+  - {fileID: 393246898847985716, guid: 327be37af9bc9da48802f3af18289c74, type: 3}
+  - {fileID: 5422896795140715671, guid: e60492729b52177458f72e01499073ae, type: 3}
+  - {fileID: 3651185240441501403, guid: 359a6f118fa87b442934d82093acf567, type: 3}
+  - {fileID: 3651185240441501403, guid: ff66ae116f9e1d64a8ce38a1becb9a26, type: 3}
+  - {fileID: 3651185240441501403, guid: 4b1e1a9555e0c904486fdeaa3a73320a, type: 3}
+  - {fileID: 768691847901248487, guid: fcb0f7396b3228643847e380baf6e063, type: 3}
+  - {fileID: 5352958571798197664, guid: c564c8c0d0cdc45429417f315e9f3e41, type: 3}
+  - {fileID: 3651185240441501403, guid: b658c24ef242fa24db94c96e5a10c815, type: 3}
+  - {fileID: 7930594129381537087, guid: 9734251cd37ee444ba417c5a1bc44f0d, type: 3}
+  - {fileID: 4009316800116953103, guid: cc09f6a21dacd7e48af07435184a1ac9, type: 3}
+  - {fileID: 7137325032416612678, guid: e7e2f58d331eafa4fa467a2b07a32c30, type: 3}
+  - {fileID: 3651185240441501403, guid: 788595683dee4de459031264b67bb61d, type: 3}
+  exceptionsDisconnect: 1
+  snapshotSettings:
+    bufferTimeMultiplier: 2
+    bufferLimit: 32
+    catchupNegativeThreshold: -1
+    catchupPositiveThreshold: 1
+    catchupSpeed: 0.019999999552965164
+    slowdownSpeed: 0.03999999910593033
+    driftEmaDuration: 1
+    dynamicAdjustment: 1
+    dynamicAdjustmentTolerance: 1
+    deliveryTimeEmaDuration: 2
+  evaluationMethod: 0
+  evaluationInterval: 3
+  timeInterpolationGui: 0
 --- !u!1 &145780586
 GameObject:
   m_ObjectHideFlags: 0
