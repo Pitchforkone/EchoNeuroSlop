@@ -36,6 +36,8 @@ public class PlayerController : NetworkBehaviour
 
     public Action<WalkType> OnWalkTypeChanged;
 
+    public bool IsSprinting => _isSprinting;
+
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
