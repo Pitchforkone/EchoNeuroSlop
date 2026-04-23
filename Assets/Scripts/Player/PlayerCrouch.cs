@@ -1,12 +1,6 @@
 using UnityEngine;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Component responsible for crouch input handling.
-/// Sets animator "IsSit" parameter and adjusts CharacterController based on Left Ctrl key state.
-/// Prevents standing up when standing on Tunnel layer.
-/// </summary>
 [RequireComponent(typeof(CharacterController))]
 public class PlayerCrouch : MonoBehaviour
 {
@@ -36,13 +30,20 @@ public class PlayerCrouch : MonoBehaviour
     private Vector3 _standCameraLocalPosition;
     private bool _isCrouching;
     private bool _wantsToCrouch;
+    private bool _isRunning;
 
     private readonly int _isSitHash = Animator.StringToHash("IsSit");
+    private readonly int _isRunHash = Animator.StringToHash("IsRun");
 
     /// <summary>
     /// Returns true if the player is currently crouching.
     /// </summary>
     public bool IsCrouching => _isCrouching;
+
+    /// <summary>
+    /// Returns true if the player is currently running (holding Shift).
+    /// </summary>
+    public bool IsRunning => _isRunning;
 
     private void Awake()
     {
@@ -84,6 +85,17 @@ public class PlayerCrouch : MonoBehaviour
 
         _wantsToCrouch = Keyboard.current != null && Keyboard.current.leftCtrlKey.isPressed;
 
+        // Проверяем нажатие Shift для бега
+        bool isShiftPressed = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
+
+        // Обновляем состояние бега в аниматоре
+        if (isShiftPressed != _isRunning)
+        {
+            _isRunning = isShiftPressed;
+            if (_animator != null)
+                _animator.SetBool(_isRunHash, _isRunning);
+        }
+
         // Determine actual crouch state
         bool shouldCrouch;
 
@@ -110,10 +122,6 @@ public class PlayerCrouch : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Checks if player can stand up.
-    /// Returns false if standing on Tunnel layer.
-    /// </summary>
     private bool CanStandUp()
     {
         if (_controller == null) return true;

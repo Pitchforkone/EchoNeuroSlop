@@ -20,7 +20,6 @@ public class PlayerWalkEcho : MonoBehaviour
 
     private AudioSource _audioSource;
     private static EchoLocatorConfig _config;
-    private FPSController _fpsController;
     private PlayerController _playerController;
     private PlayerCrouch _playerCrouch;
 
@@ -48,7 +47,6 @@ public class PlayerWalkEcho : MonoBehaviour
         if (_config == null)
             _config = Resources.Load<EchoLocatorConfig>("EchoLocatorConfig");
 
-        _fpsController = GetComponent<FPSController>();
         _playerController = GetComponent<PlayerController>();
         _playerCrouch = GetComponent<PlayerCrouch>();
     }
@@ -68,10 +66,6 @@ public class PlayerWalkEcho : MonoBehaviour
     /// </summary>
     private bool IsSprinting()
     {
-        if (_fpsController != null)
-        {
-            return _fpsController.IsSprinting;
-        }
 
         if (_playerController != null)
         {
