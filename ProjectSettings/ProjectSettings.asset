@@ -929,10 +929,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: e88d84ec-2967-4c92-8e5f-86ca2807a668
+  cloudProjectId: 3535049f-f3e3-4a79-80c9-cfe48a2b2dd5
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: CoopTest
+  projectName: EbakaSlope
   organizationId: coklex
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
