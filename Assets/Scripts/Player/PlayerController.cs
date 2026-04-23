@@ -56,8 +56,8 @@ public class PlayerController : NetworkBehaviour
         
         if (!isLocalPlayer)
         {
-            if (_controller != null)
-                _controller.enabled = false;
+            //if (_controller != null)
+                //_controller.enabled = false;
         }
     }
 
