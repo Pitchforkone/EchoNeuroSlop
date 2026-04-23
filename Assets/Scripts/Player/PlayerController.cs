@@ -138,7 +138,7 @@ public class PlayerController : NetworkBehaviour
         }
         if(bufwalkType != walkType)
         {
-            OnWalkTypeChanged.Invoke(walkType);
+            OnWalkTypeChanged?.Invoke(walkType);
         }
     }
     private void UpdateLook()
