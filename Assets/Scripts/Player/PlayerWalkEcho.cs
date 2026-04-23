@@ -67,10 +67,10 @@ public class PlayerWalkEcho : MonoBehaviour
     private bool IsSprinting()
     {
 
-        if (_playerController != null)
+/*        if (_playerController != null)
         {
             return _playerController.IsSprinting;
-        }
+        }*/
 
         return false;
     }

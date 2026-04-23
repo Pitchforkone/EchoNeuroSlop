@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Mirror;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerCrouch : MonoBehaviour
 {
     private Animator _animator;
+    private PlayerController _playerController;
 
     [Header("Crouch Settings")]
     [SerializeField] private float _crouchHeight = 1.2f;
@@ -40,7 +42,18 @@ public class PlayerCrouch : MonoBehaviour
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
-
+        _playerController = GetComponent<PlayerController>();
+/*        _playerController.OnWalkTypeChanged+= (walkType) =>
+        {
+            if (walkType == WalkType.Crouch)
+            {
+                _wantsToCrouch = true;
+            }
+            else
+            {
+                _wantsToCrouch = false;
+            }
+        };*/
         if (_animator == null)
             _animator = GetComponent<Animator>();
 
@@ -74,6 +87,10 @@ public class PlayerCrouch : MonoBehaviour
     private void Update()
     {
         if (_controller == null) return;
+
+        // Только локальный игрок должен обрабатывать ввод
+        if (_playerController != null && !_playerController.isLocalPlayer)
+            return;
 
         _wantsToCrouch = Keyboard.current != null && Keyboard.current.leftCtrlKey.isPressed;
 

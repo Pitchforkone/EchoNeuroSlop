@@ -35,8 +35,7 @@ public class PlayerController : NetworkBehaviour
     private Vector2 _lookVector;
 
     public Action<WalkType> OnWalkTypeChanged;
-
-    public bool IsSprinting => _isSprinting;
+    public WalkType walkType = WalkType.Walk;
 
     private void Awake()
     {
@@ -119,8 +118,29 @@ public class PlayerController : NetworkBehaviour
 
         UpdateLook();
         UpdateMovement();
+        UpdateWalkState();
     }
-
+    private void UpdateWalkState()
+    {
+        if (!_isSetup) return;
+        var bufwalkType = walkType;
+        if(_isCrouching)
+        {
+            walkType = WalkType.Crouch;
+        }
+        if(_isSprinting)
+        {
+            walkType = WalkType.Sprint;
+        }
+        if(!_isCrouching && !_isSprinting)
+        {
+            walkType = WalkType.Walk;
+        }
+        if(bufwalkType != walkType)
+        {
+            OnWalkTypeChanged.Invoke(walkType);
+        }
+    }
     private void UpdateLook()
     { 
         float yaw = _lookVector.x * _lookSensitivity;
