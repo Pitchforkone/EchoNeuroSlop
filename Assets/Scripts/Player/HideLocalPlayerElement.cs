@@ -5,7 +5,7 @@ using Mirror;
 /// Place this script on the head object.
 /// Disables the head GameObject for the local player.
 /// </summary>
-public class HideLocalPlayerHead : MonoBehaviour
+public class HideLocalPlayerElement : MonoBehaviour
 {
     private void Start()
     {

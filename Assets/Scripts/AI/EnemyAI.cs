@@ -4,12 +4,6 @@ using System.Collections.Generic;
 using Mirror;
 using System.Linq;
 
-/// <summary>
-/// ������� �� ������ � �������������� �� ����.
-/// ���� ����� � ��������� ����� (����� ����������), ���������������, ����� ����������.
-/// ������������ ������������� �����, ������������ �����������.
-/// ������ AI ����������� ������ �� �������, ������� ���������������� ����� NetworkTransform.
-/// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(NetworkIdentity))]
 public class EnemyAI : NetworkBehaviour
@@ -23,30 +17,22 @@ public class EnemyAI : NetworkBehaviour
     }
 
     [Header("Patrol Settings")]
-    [Tooltip("������ ����� ��������������")]
     [SerializeField] private List<PatrolPoint> _patrolPoints = new List<PatrolPoint>();
 
-    [Tooltip("����� �������� �� ���������, ���� � ����� �� �������")]
     [SerializeField] private float _defaultWaitTime = 2f;
 
-    [Tooltip("�������� ������������ ��� ��������������")]
     [SerializeField] private float _patrolSpeed = 3.5f;
 
     [Header("Chase Settings")]
-    [Tooltip("�������� ������������ ��� �������������")]
     [SerializeField] private float _chaseSpeed = 5f;
 
-    [Tooltip("���������, �� ������� ���� �������, ��� ������ ���� �������������")]
     [SerializeField] private float _chaseReachDistance = 1.5f;
 
-    [Tooltip("�������� ���������� ���� � ���������� ����")]
     [SerializeField] private float _pathUpdateInterval = 0.2f;
 
     [Header("Audio")]
-    [Tooltip("Звук при начале преследования игрока")]
     [SerializeField] private AudioClip _chaseStartClip;
 
-    [Tooltip("Громкость звука преследования")]
     [SerializeField] [Range(0f, 1f)] private float _chaseStartVolume = 1f;
     private Animator _animator;
 
@@ -54,7 +40,6 @@ public class EnemyAI : NetworkBehaviour
     [SerializeField] private bool _showDebugInfo = true;
 
     [Header("Kill Settings")]
-    [Tooltip("Тег игрока для обнаружения коллизии")]
     [SerializeField] private string _playerTag = "Player";
 
     private NavMeshAgent _agent;
@@ -67,7 +52,6 @@ public class EnemyAI : NetworkBehaviour
     private PatrolPoint _previousTarget;
     private float _waitTimer;
 
-    // �������������
     private Vector3 _chaseTargetPosition;
     private Transform _chaseTargetTransform;
     private float _chaseDuration;
@@ -75,35 +59,22 @@ public class EnemyAI : NetworkBehaviour
     private int _currentChasePriority;
     private float _pathUpdateTimer;
 
-    // �������������� ������ ������� ���� ��� �������� (�����������, ��� �������)
     [SyncVar]
     private int _currentTargetIndex = -1;
 
-    /// <summary>
-    /// ������� �������� ����� (��� �������� �������).
-    /// </summary>
     public float CurrentSpeed => _agent != null ? _agent.speed : 0f;
 
-    /// <summary>
-    /// ���� ������ ���������� ����.
-    /// </summary>
     public bool IsChasing => _currentState == EnemyState.Chasing;
 
     // Хэши параметров аниматора для оптимизации
     private static readonly int IdleHash = Animator.StringToHash("Idle");
     private static readonly int WalkHash = Animator.StringToHash("Walk");
 
-    /// <summary>
-    /// Hook вызывается при изменении состояния на всех клиентах.
-    /// </summary>
     private void OnStateChanged(EnemyState oldState, EnemyState newState)
     {
         UpdateAnimationState(newState);
     }
 
-    /// <summary>
-    /// Обновляет анимацию в зависимости от текущего состояния.
-    /// </summary>
     private void UpdateAnimationState(EnemyState state)
     {
         if (_animator == null) return;

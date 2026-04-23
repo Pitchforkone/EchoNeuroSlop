@@ -274,6 +274,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3062917526697231312}
   - component: {fileID: 2487707345386415080}
+  - component: {fileID: 3270179043614410275}
   m_Layer: 0
   m_Name: Ears
   m_TagString: Untagged
@@ -400,6 +401,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.8079462, z: -0.017666139}
     m_Extent: {x: 0.32767925, y: 0.0647476, z: 0.037994076}
   m_DirtyAABB: 0
+--- !u!114 &3270179043614410275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514208330169028112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &608820047056829381
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,6 +454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5526582850882173496}
   - component: {fileID: 3463295519060345755}
+  - component: {fileID: 4382478485561442595}
   m_Layer: 0
   m_Name: Glasses
   m_TagString: Untagged
@@ -567,6 +581,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.029466204, y: 0.84142953, z: 0.017342493}
     m_Extent: {x: 0.24360621, y: 0.2003352, z: 0.2568167}
   m_DirtyAABB: 0
+--- !u!114 &4382478485561442595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 696719223382772622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &885753604673265051
 GameObject:
   m_ObjectHideFlags: 0
@@ -1030,6 +1056,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8015386087667129306}
   - component: {fileID: 3352229005104664880}
+  - component: {fileID: 1875705125168992550}
   m_Layer: 0
   m_Name: Outfit
   m_TagString: Untagged
@@ -1156,6 +1183,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.00007688999, y: 0.39006674, z: -0.019278288}
     m_Extent: {x: 0.34315658, y: 0.23304357, z: 0.15001856}
   m_DirtyAABB: 0
+--- !u!114 &1875705125168992550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2349871291435123808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &2691662842556531357
 GameObject:
   m_ObjectHideFlags: 0
@@ -2464,6 +2503,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6465731553407786867}
   - component: {fileID: 9157261576820102717}
+  - component: {fileID: 4899411067566744510}
   m_Layer: 0
   m_Name: Costumes
   m_TagString: Untagged
@@ -2590,6 +2630,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000001937151, y: 0.3543496, z: 0.002996251}
     m_Extent: {x: 0.42845607, y: 0.27042365, z: 0.13618572}
   m_DirtyAABB: 0
+--- !u!114 &4899411067566744510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4607366122278701268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &4610971633301671508
 GameObject:
   m_ObjectHideFlags: 0
@@ -3090,6 +3142,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4261999531158032593}
   - component: {fileID: 2328825244176393315}
+  - component: {fileID: 5257804762898556940}
   m_Layer: 0
   m_Name: Pants
   m_TagString: Untagged
@@ -3216,6 +3269,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.000000055879354, y: 0.23716964, z: 0.0023395978}
     m_Extent: {x: 0.124094754, y: 0.17594428, z: 0.111720204}
   m_DirtyAABB: 0
+--- !u!114 &5257804762898556940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5948336483317807137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &5992132216808460844
 GameObject:
   m_ObjectHideFlags: 0
@@ -3258,6 +3323,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8293796683857409728}
   - component: {fileID: 1493181019345267556}
+  - component: {fileID: 3949309655158814684}
   m_Layer: 0
   m_Name: Hairstyle
   m_TagString: Untagged
@@ -3384,6 +3450,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.010028183, y: 0.89317083, z: -0.025491327}
     m_Extent: {x: 0.36259064, y: 0.30930388, z: 0.2994773}
   m_DirtyAABB: 0
+--- !u!114 &3949309655158814684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6012142458107899946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &6169726173895170532
 GameObject:
   m_ObjectHideFlags: 0
@@ -3394,6 +3472,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3315443036868397995}
   - component: {fileID: 7642488964788755236}
+  - component: {fileID: 8330373577722645414}
   m_Layer: 0
   m_Name: Face_Accessories
   m_TagString: Untagged
@@ -3520,6 +3599,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.00000067055225, y: 0.72561395, z: 0.24216685}
     m_Extent: {x: 0.16432168, y: 0.07543987, z: 0.021881737}
   m_DirtyAABB: 0
+--- !u!114 &8330373577722645414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6169726173895170532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &6289078472584622220
 GameObject:
   m_ObjectHideFlags: 0
@@ -3690,6 +3781,7 @@ GameObject:
   m_Component:
   - component: {fileID: 279580906311846855}
   - component: {fileID: 5268321188778535218}
+  - component: {fileID: 4343133687690393979}
   m_Layer: 0
   m_Name: Outwear
   m_TagString: Untagged
@@ -3816,6 +3908,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.43990403, z: -0.019764964}
     m_Extent: {x: 0.30571496, y: 0.17403024, z: 0.12720509}
   m_DirtyAABB: 0
+--- !u!114 &4343133687690393979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7119837835744671298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &7141386542778608865
 GameObject:
   m_ObjectHideFlags: 0
@@ -3826,6 +3930,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1859534091222578822}
   - component: {fileID: 7117669122635433734}
+  - component: {fileID: 6158179400373513677}
   m_Layer: 0
   m_Name: Shorts
   m_TagString: Untagged
@@ -3952,6 +4057,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00000040978193, y: 0.28120476, z: 0.004740864}
     m_Extent: {x: 0.12427241, y: 0.13214548, z: 0.10360869}
   m_DirtyAABB: 0
+--- !u!114 &6158179400373513677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7141386542778608865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &7389669367312399721
 GameObject:
   m_ObjectHideFlags: 0
@@ -4057,6 +4174,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1458281214127106017}
   - component: {fileID: 2968410194965042870}
+  - component: {fileID: 3063900771614381233}
   m_Layer: 0
   m_Name: Hat
   m_TagString: Untagged
@@ -4183,6 +4301,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00004839897, y: 0.9940492, z: -0.0113505125}
     m_Extent: {x: 0.46666995, y: 0.21935394, z: 0.4213418}
   m_DirtyAABB: 0
+--- !u!114 &3063900771614381233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7759303523901614834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &7817244924199975579
 GameObject:
   m_ObjectHideFlags: 0
@@ -4257,6 +4387,7 @@ GameObject:
   m_Component:
   - component: {fileID: 793158415351131551}
   - component: {fileID: 1805261880273672260}
+  - component: {fileID: 7111321601112231571}
   m_Layer: 0
   m_Name: Faces
   m_TagString: Untagged
@@ -4383,6 +4514,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.78619945, z: 0.20414911}
     m_Extent: {x: 0.11443149, y: 0.107880205, z: 0.04052894}
   m_DirtyAABB: 0
+--- !u!114 &7111321601112231571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8261535032196275131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &8271797412330758024
 GameObject:
   m_ObjectHideFlags: 0
@@ -4488,6 +4631,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6284489459449873621}
   - component: {fileID: 455546757968326962}
+  - component: {fileID: 3604217083114091504}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -4614,6 +4758,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.000000014901161, y: 0.57978225, z: -0.0048289225}
     m_Extent: {x: 0.4140162, y: 0.5762141, z: 0.24827111}
   m_DirtyAABB: 0
+--- !u!114 &3604217083114091504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8778600469640255467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &8845398074125965778
 GameObject:
   m_ObjectHideFlags: 0
@@ -4751,6 +4907,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3289149409766650159}
   - component: {fileID: 8067667600878846579}
+  - component: {fileID: 252501606625327192}
   m_Layer: 0
   m_Name: Socks
   m_TagString: Untagged
@@ -4877,3 +5034,15 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000008791685, y: 0.13573748, z: -0.008572947}
     m_Extent: {x: 0.11632654, y: 0.0686239, z: 0.06689493}
   m_DirtyAABB: 0
+--- !u!114 &252501606625327192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9207263438761617716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
