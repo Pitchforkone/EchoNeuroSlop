@@ -16,8 +16,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float _lookSensitivity = 0.15f;
     [SerializeField] private float _verticalLookLimit = 85f;
 
-    [Header("Input")]
-    [SerializeField] private InputActionAsset _inputActions;
+    private InputSystem_Actions _inputSystemActions;
 
     [Header("Animation")]
     [SerializeField] private Animator _animator;
@@ -32,10 +31,9 @@ public class PlayerController : NetworkBehaviour
     private bool _isSetup;
     private Vector2 _smoothAnimInput;
 
-    private InputAction _moveAction;
-    private InputAction _lookAction;
-    private InputAction _sprintAction;
-    private InputAction _crouchAction;
+    private Vector2 _moveVector;
+    private Vector2 _lookVector;
+
 
     public bool IsSprinting => _isSprinting;
     public bool IsCrouching => _isCrouching;
@@ -44,6 +42,7 @@ public class PlayerController : NetworkBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
+        _inputSystemActions = new InputSystem_Actions();
     }
 
     public override void OnStartLocalPlayer()
@@ -80,35 +79,27 @@ public class PlayerController : NetworkBehaviour
         if (_isSetup) return;
         _isSetup = true;
 
-        if (_inputActions != null)
-        {
-            var map = _inputActions.FindActionMap("Player");
-            _moveAction = map?.FindAction("Move");
-            _lookAction = map?.FindAction("Look");
-            _sprintAction = map?.FindAction("Sprint");
-            _crouchAction = map?.FindAction("Crouch");
-        }
+        _inputSystemActions.Enable();
+        _inputSystemActions.Player.Crouch.started += ctx => _isCrouching = true;
+        _inputSystemActions.Player.Crouch.canceled += ctx => _isCrouching = false;
+        _inputSystemActions.Player.Sprint.started += ctx => _isSprinting = true;
+        _inputSystemActions.Player.Sprint.canceled += ctx => _isSprinting = false;
+        _inputSystemActions.Player.Move.performed += ctx => _moveVector = ctx.ReadValue<Vector2>();
+        _inputSystemActions.Player.Move.canceled += ctx => _moveVector = Vector2.zero;
+        _inputSystemActions.Player.Look.performed += ctx => _lookVector = ctx.ReadValue<Vector2>();
+        _inputSystemActions.Player.Look.canceled += ctx => _lookVector = Vector2.zero;
 
-        _moveAction?.Enable();
-        _lookAction?.Enable();
-        _sprintAction?.Enable();
-        _crouchAction?.Enable();
-
-        // Lock cursor for gameplay
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Enable camera
         _camera = _cameraTransform != null ? _cameraTransform.GetComponent<Camera>() : null;
         if (_camera != null)
             _camera.enabled = true;
 
-        // Enable AudioListener
         _audioListener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
         if (_audioListener != null)
             _audioListener.enabled = true;
     }
-
     private void DisableRemotePlayerComponents()
     {
         // Для удалённых игроков отключаем камеру и аудио
@@ -121,20 +112,6 @@ public class PlayerController : NetworkBehaviour
             _audioListener.enabled = false;
     }
 
-    private void OnDestroy()
-    {
-        _moveAction?.Disable();
-        _lookAction?.Disable();
-        _sprintAction?.Disable();
-        _crouchAction?.Disable();
-
-        if (_isSetup)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-    }
-
     private void Update()
     {
         if (!_isSetup) return;
@@ -145,11 +122,9 @@ public class PlayerController : NetworkBehaviour
     }
 
     private void UpdateLook()
-    {
-        Vector2 lookInput = _lookAction != null ? _lookAction.ReadValue<Vector2>() : default;
-
-        float yaw = lookInput.x * _lookSensitivity;
-        float pitch = lookInput.y * _lookSensitivity;
+    { 
+        float yaw = _lookVector.x * _lookSensitivity;
+        float pitch = _lookVector.y * _lookSensitivity;
 
         _cameraPitch -= pitch;
         _cameraPitch = Mathf.Clamp(_cameraPitch, -_verticalLookLimit, _verticalLookLimit);
@@ -162,16 +137,12 @@ public class PlayerController : NetworkBehaviour
 
     private void UpdateMovement()
     {
-        Vector2 moveInput = _moveAction != null ? _moveAction.ReadValue<Vector2>() : default;
-        float sprintValue = _sprintAction != null ? _sprintAction.ReadValue<float>() : 0f;
-        _isSprinting = sprintValue > 0.5f && !_isCrouching;
-
         float speed = _isCrouching ? _crouchSpeed : (_isSprinting ? _sprintSpeed : _walkSpeed);
 
-        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
+        Vector3 move = transform.right * _moveVector.x + transform.forward * _moveVector.y;
         _controller.Move(move * (speed * Time.deltaTime));
 
-        UpdateAnimator(moveInput);
+        UpdateAnimator(_moveVector);
     }
 
     private void UpdateAnimator(Vector2 moveInput)

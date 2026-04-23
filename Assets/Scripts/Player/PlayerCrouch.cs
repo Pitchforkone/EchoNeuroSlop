@@ -34,15 +34,7 @@ public class PlayerCrouch : MonoBehaviour
 
     private readonly int _isSitHash = Animator.StringToHash("IsSit");
     private readonly int _isRunHash = Animator.StringToHash("IsRun");
-
-    /// <summary>
-    /// Returns true if the player is currently crouching.
-    /// </summary>
     public bool IsCrouching => _isCrouching;
-
-    /// <summary>
-    /// Returns true if the player is currently running (holding Shift).
-    /// </summary>
     public bool IsRunning => _isRunning;
 
     private void Awake()
