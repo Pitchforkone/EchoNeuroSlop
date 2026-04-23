@@ -20,7 +20,7 @@ public class PlayerController : NetworkBehaviour
     private InputSystem_Actions _inputSystemActions;
 
     [Header("Animation")]
-    [SerializeField] private Animator _animator;
+    private Animator _animator;
     [SerializeField] private float _animSmoothTime = 0.1f;
 
     private CharacterController _controller;
@@ -34,7 +34,7 @@ public class PlayerController : NetworkBehaviour
     private Vector2 _moveVector;
     private Vector2 _lookVector;
 
-    public Action<WalkType> OnWalkTypeChanged;
+    public Action<WalkType, WalkType> OnWalkTypeChanged;
     public WalkType walkType = WalkType.Walk;
 
     private void Awake()
@@ -48,17 +48,6 @@ public class PlayerController : NetworkBehaviour
     {
         base.OnStartLocalPlayer();
         SetupLocalPlayer();
-    }
-
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-        
-        if (!isLocalPlayer)
-        {
-            //if (_controller != null)
-                //_controller.enabled = false;
-        }
     }
 
     private void Start()
@@ -138,7 +127,7 @@ public class PlayerController : NetworkBehaviour
         }
         if(bufwalkType != walkType)
         {
-            OnWalkTypeChanged?.Invoke(walkType);
+            OnWalkTypeChanged?.Invoke(bufwalkType, walkType);
         }
     }
     private void UpdateLook()

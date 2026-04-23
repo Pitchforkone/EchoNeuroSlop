@@ -21,7 +21,7 @@ public class PlayerWalkEcho : MonoBehaviour
     private AudioSource _audioSource;
     private static EchoLocatorConfig _config;
     private PlayerController _playerController;
-    private PlayerCrouch _playerCrouch;
+    private PlayerAnimatorController _playerCrouch;
 
     private List<TypeOfStep> _stepTypes = new() { TypeOfStep.Default };
     private TypeOfStep _currentTypeOfStep = TypeOfStep.Default;
@@ -48,7 +48,7 @@ public class PlayerWalkEcho : MonoBehaviour
             _config = Resources.Load<EchoLocatorConfig>("EchoLocatorConfig");
 
         _playerController = GetComponent<PlayerController>();
-        _playerCrouch = GetComponent<PlayerCrouch>();
+        _playerCrouch = GetComponent<PlayerAnimatorController>();
     }
 
     /// <summary>
@@ -67,10 +67,10 @@ public class PlayerWalkEcho : MonoBehaviour
     private bool IsSprinting()
     {
 
-/*        if (_playerController != null)
+        if (_playerController != null)
         {
-            return _playerController.IsSprinting;
-        }*/
+            return _playerController.walkType == WalkType.Sprint;
+        }
 
         return false;
     }
