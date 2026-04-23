@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2789267167145672183}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandIndex1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1495196547641528270}
   - component: {fileID: 6835897574746036391}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Gloves
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2731152751079992506}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftToeBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9127342485405988933}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftForeArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,7 +241,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8704312790856075149}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Neck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -274,8 +274,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3062917526697231312}
   - component: {fileID: 2487707345386415080}
-  - component: {fileID: 3270179043614410275}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ears
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -401,18 +400,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.8079462, z: -0.017666139}
     m_Extent: {x: 0.32767925, y: 0.0647476, z: 0.037994076}
   m_DirtyAABB: 0
---- !u!114 &3270179043614410275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 514208330169028112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &608820047056829381
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,7 +409,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7669427095774767842}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandRing2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -454,8 +441,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5526582850882173496}
   - component: {fileID: 3463295519060345755}
-  - component: {fileID: 4382478485561442595}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Glasses
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -581,18 +567,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.029466204, y: 0.84142953, z: 0.017342493}
     m_Extent: {x: 0.24360621, y: 0.2003352, z: 0.2568167}
   m_DirtyAABB: 0
---- !u!114 &4382478485561442595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696719223382772622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &885753604673265051
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,7 +576,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4001360262346176761}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandThumb2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -633,7 +607,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2969531563923211862}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandRing2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -665,7 +639,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8846932086851923421}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandRing2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -696,7 +670,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8515726899662002540}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandIndex2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -728,7 +702,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4622234530068228671}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Head_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -747,7 +721,8 @@ Transform:
   m_LocalPosition: {x: -0, y: 0.05806621, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1547767772596144751}
   m_Father: {fileID: 3687274922210417926}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1619956797654241977
@@ -759,7 +734,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3525227451491569455}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandProp_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -791,7 +766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5855907522350006570}
   - component: {fileID: 2800458132705921369}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Shoes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -926,7 +901,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8392249599274578506}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandProp_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -957,7 +932,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5728098667483408711}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandIndex1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -989,7 +964,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7852810694898038870}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Spine1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1023,7 +998,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7006257168637976466}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandMiddle2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1056,8 +1031,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8015386087667129306}
   - component: {fileID: 3352229005104664880}
-  - component: {fileID: 1875705125168992550}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Outfit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1183,18 +1157,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.00007688999, y: 0.39006674, z: -0.019278288}
     m_Extent: {x: 0.34315658, y: 0.23304357, z: 0.15001856}
   m_DirtyAABB: 0
---- !u!114 &1875705125168992550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2349871291435123808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &2691662842556531357
 GameObject:
   m_ObjectHideFlags: 0
@@ -1204,7 +1166,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1963279281486919843}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftShoulder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1236,7 +1198,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 55776973563040668}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandThumb1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1268,7 +1230,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 303682398122305069}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandIndex2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1299,7 +1261,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2953208720595777078}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandMiddle2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1333,7 +1295,7 @@ GameObject:
   - component: {fileID: 8823973273889257389}
   - component: {fileID: 7413367733892526251}
   - component: {fileID: 8268937496664335357}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -1467,7 +1429,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1033571745068012109}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandMiddle1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1499,7 +1461,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7739313840801558185}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandProp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1531,7 +1493,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8855261857857735515}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandPinky1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1563,7 +1525,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3687274922210417926}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1595,7 +1557,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8664049818160884797}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandMiddle2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1626,7 +1588,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7476406098743028970}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightFoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1658,7 +1620,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6956039385895490631}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandPinky2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1689,7 +1651,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 657684803770903779}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandThumb2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1721,7 +1683,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7104935291362002314}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandThumb1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1753,7 +1715,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6946005646185954202}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1785,7 +1747,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4462468526989006986}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandProp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1817,7 +1779,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4928734509563436277}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandIndex2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1848,7 +1810,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4045944866054694650}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandPinky2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1900,7 +1862,7 @@ GameObject:
   - component: {fileID: 7456969563842819569}
   - component: {fileID: 1760583446221646207}
   - component: {fileID: 7555268852783584838}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: MainCharacter
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -2503,8 +2465,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6465731553407786867}
   - component: {fileID: 9157261576820102717}
-  - component: {fileID: 4899411067566744510}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Costumes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2630,18 +2591,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000001937151, y: 0.3543496, z: 0.002996251}
     m_Extent: {x: 0.42845607, y: 0.27042365, z: 0.13618572}
   m_DirtyAABB: 0
---- !u!114 &4899411067566744510
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4607366122278701268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &4610971633301671508
 GameObject:
   m_ObjectHideFlags: 0
@@ -2651,7 +2600,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5212679237596775209}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightUpLeg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2683,7 +2632,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4183402169716157250}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandRing1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2715,7 +2664,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3860396167749064269}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandMiddle1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2747,7 +2696,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5876689067626979588}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hips
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2781,7 +2730,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 22973645647864944}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2818,7 +2767,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1319014603308767092}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CameraPositionCrouch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2849,7 +2798,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6178464996630472340}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightForeArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2881,7 +2830,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4284206305391476628}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2918,7 +2867,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3440481879844451660}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Skeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2950,7 +2899,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3912644450984142787}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandThumb2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2984,7 +2933,7 @@ GameObject:
   - component: {fileID: 3349568977995173083}
   - component: {fileID: 5341749492961335387}
   - component: {fileID: 7052266910224089943}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3109,7 +3058,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2394020504519017381}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3142,8 +3091,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4261999531158032593}
   - component: {fileID: 2328825244176393315}
-  - component: {fileID: 5257804762898556940}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Pants
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3269,18 +3217,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.000000055879354, y: 0.23716964, z: 0.0023395978}
     m_Extent: {x: 0.124094754, y: 0.17594428, z: 0.111720204}
   m_DirtyAABB: 0
---- !u!114 &5257804762898556940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5948336483317807137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &5992132216808460844
 GameObject:
   m_ObjectHideFlags: 0
@@ -3290,7 +3226,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6272587563280252721}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandMiddle2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3323,8 +3259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8293796683857409728}
   - component: {fileID: 1493181019345267556}
-  - component: {fileID: 3949309655158814684}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hairstyle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3450,18 +3385,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.010028183, y: 0.89317083, z: -0.025491327}
     m_Extent: {x: 0.36259064, y: 0.30930388, z: 0.2994773}
   m_DirtyAABB: 0
---- !u!114 &3949309655158814684
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6012142458107899946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &6169726173895170532
 GameObject:
   m_ObjectHideFlags: 0
@@ -3472,8 +3395,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3315443036868397995}
   - component: {fileID: 7642488964788755236}
-  - component: {fileID: 8330373577722645414}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Face_Accessories
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3599,18 +3521,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.00000067055225, y: 0.72561395, z: 0.24216685}
     m_Extent: {x: 0.16432168, y: 0.07543987, z: 0.021881737}
   m_DirtyAABB: 0
---- !u!114 &8330373577722645414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6169726173895170532}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &6289078472584622220
 GameObject:
   m_ObjectHideFlags: 0
@@ -3620,7 +3530,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 811105878990637038}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandRing2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3652,7 +3562,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6676420990629947360}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandPinky1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3684,7 +3594,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2512807668064554491}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightLeg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3707,6 +3617,53 @@ Transform:
   - {fileID: 7476406098743028970}
   m_Father: {fileID: 5212679237596775209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6457186208464985431
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1547767772596144751}
+  - component: {fileID: 510379849102004651}
+  m_Layer: 10
+  m_Name: CameraCullingZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1547767772596144751
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6457186208464985431}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4622234530068228671}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &510379849102004651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6457186208464985431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5e92b28937ed4c42bab41549a2c056a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NearClipBodyVisibility
+  mainCamera: {fileID: 8823973273889257389}
+  nearClipDistance: 2
+  defaultNearClip: 0.5
 --- !u!1 &6475312043508120790
 GameObject:
   m_ObjectHideFlags: 0
@@ -3716,7 +3673,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7384413302512518415}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftFoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3748,7 +3705,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1929459402553433815}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3781,8 +3738,7 @@ GameObject:
   m_Component:
   - component: {fileID: 279580906311846855}
   - component: {fileID: 5268321188778535218}
-  - component: {fileID: 4343133687690393979}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Outwear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3908,18 +3864,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.43990403, z: -0.019764964}
     m_Extent: {x: 0.30571496, y: 0.17403024, z: 0.12720509}
   m_DirtyAABB: 0
---- !u!114 &4343133687690393979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7119837835744671298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &7141386542778608865
 GameObject:
   m_ObjectHideFlags: 0
@@ -3930,8 +3874,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1859534091222578822}
   - component: {fileID: 7117669122635433734}
-  - component: {fileID: 6158179400373513677}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Shorts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4057,18 +4000,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00000040978193, y: 0.28120476, z: 0.004740864}
     m_Extent: {x: 0.12427241, y: 0.13214548, z: 0.10360869}
   m_DirtyAABB: 0
---- !u!114 &6158179400373513677
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7141386542778608865}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &7389669367312399721
 GameObject:
   m_ObjectHideFlags: 0
@@ -4078,7 +4009,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2564322964867593795}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandThumb2_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4109,7 +4040,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8510294725526268952}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightShoulder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4141,7 +4072,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2806683677094631924}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftUpLeg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4174,8 +4105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1458281214127106017}
   - component: {fileID: 2968410194965042870}
-  - component: {fileID: 3063900771614381233}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4301,18 +4231,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00004839897, y: 0.9940492, z: -0.0113505125}
     m_Extent: {x: 0.46666995, y: 0.21935394, z: 0.4213418}
   m_DirtyAABB: 0
---- !u!114 &3063900771614381233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7759303523901614834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &7817244924199975579
 GameObject:
   m_ObjectHideFlags: 0
@@ -4322,7 +4240,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 218225224632063527}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandRing1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4354,7 +4272,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 972263400403744564}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandIndex2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4387,8 +4305,7 @@ GameObject:
   m_Component:
   - component: {fileID: 793158415351131551}
   - component: {fileID: 1805261880273672260}
-  - component: {fileID: 7111321601112231571}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Faces
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4514,18 +4431,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.78619945, z: 0.20414911}
     m_Extent: {x: 0.11443149, y: 0.107880205, z: 0.04052894}
   m_DirtyAABB: 0
---- !u!114 &7111321601112231571
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8261535032196275131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &8271797412330758024
 GameObject:
   m_ObjectHideFlags: 0
@@ -4535,7 +4440,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4931390657269839607}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightToeBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4567,7 +4472,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4541563639702031031}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftToeBase_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4598,7 +4503,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6405177017033932106}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4631,8 +4536,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6284489459449873621}
   - component: {fileID: 455546757968326962}
-  - component: {fileID: 3604217083114091504}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4758,18 +4662,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.000000014901161, y: 0.57978225, z: -0.0048289225}
     m_Extent: {x: 0.4140162, y: 0.5762141, z: 0.24827111}
   m_DirtyAABB: 0
---- !u!114 &3604217083114091504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8778600469640255467}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
 --- !u!1 &8845398074125965778
 GameObject:
   m_ObjectHideFlags: 0
@@ -4779,7 +4671,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2495357648126896723}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightHandPinky2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4811,7 +4703,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5430168069403866864}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftLeg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4843,7 +4735,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 189991997795733924}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftHandPinky2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4875,7 +4767,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2950621742601610544}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightToeBase_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4907,8 +4799,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3289149409766650159}
   - component: {fileID: 8067667600878846579}
-  - component: {fileID: 252501606625327192}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Socks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5034,15 +4925,3 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000008791685, y: 0.13573748, z: -0.008572947}
     m_Extent: {x: 0.11632654, y: 0.0686239, z: 0.06689493}
   m_DirtyAABB: 0
---- !u!114 &252501606625327192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9207263438761617716}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8cb6cd5c28331942b1bf7de623f2ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideLocalPlayerElement
