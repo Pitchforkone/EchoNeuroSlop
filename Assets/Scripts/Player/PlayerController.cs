@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Mirror;
+using System;
 
 
 [RequireComponent(typeof(CharacterController))]
@@ -29,14 +30,11 @@ public class PlayerController : NetworkBehaviour
     private Camera _camera;
     private AudioListener _audioListener;
     private bool _isSetup;
-    private Vector2 _smoothAnimInput;
 
     private Vector2 _moveVector;
     private Vector2 _lookVector;
 
-
-    public bool IsSprinting => _isSprinting;
-    public bool IsCrouching => _isCrouching;
+    public Action<WalkType> OnWalkTypeChanged;
 
     private void Awake()
     {
@@ -148,11 +146,13 @@ public class PlayerController : NetworkBehaviour
     private void UpdateAnimator(Vector2 moveInput)
     {
         if (_animator == null) return;
-
-        _smoothAnimInput = Vector2.MoveTowards(_smoothAnimInput, moveInput, Time.deltaTime / _animSmoothTime);
-        
-        // Устанавливаем параметры напрямую - NetworkAnimator синхронизирует их
-        _animator.SetFloat("X", _smoothAnimInput.x);
-        _animator.SetFloat("Y", _smoothAnimInput.y);
+        _animator.SetFloat("X", moveInput.x);
+        _animator.SetFloat("Y", moveInput.y);
     }
+}
+public enum  WalkType
+{
+    Walk,
+    Sprint,
+    Crouch
 }
