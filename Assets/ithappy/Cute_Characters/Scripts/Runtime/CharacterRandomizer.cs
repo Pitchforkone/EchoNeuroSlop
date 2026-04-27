@@ -2,15 +2,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CharacterCustomizationTool.FaceManagement;
+using Mirror;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-    public class CharacterRandomizer : MonoBehaviour
+    public class CharacterRandomizer : NetworkBehaviour
     {
         [SerializeField] private RuntimeCharacterData _data;
 
-        private void Awake()
+        [SyncVar(hook = nameof(OnSeedChanged))]
+        private int _randomSeed;
+
+        public override void OnStartServer()
         {
+            base.OnStartServer();
+            _randomSeed = Random.Range(int.MinValue, int.MaxValue);
+            ApplyRandomization();
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            // isServer already applied it; non-host clients receive seed via SyncVar hook
+            if (!isServer)
+                ApplyRandomization();
+        }
+
+        private void OnSeedChanged(int oldSeed, int newSeed)
+        {
+            ApplyRandomization();
+        }
+
+        private void ApplyRandomization()
+        {
+            Random.InitState(_randomSeed);
             Randomize();
         }
 
