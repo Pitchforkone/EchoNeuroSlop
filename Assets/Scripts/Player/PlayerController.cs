@@ -67,6 +67,13 @@ public class PlayerController : NetworkBehaviour
         if (_isSetup) return;
         _isSetup = true;
 
+        // Отключаем все камеры в сцене, кроме камеры самого игрока
+        foreach (Camera cam in FindObjectsByType<Camera>(FindObjectsSortMode.None))
+        {
+            if (_cameraTransform == null || cam.gameObject != _cameraTransform.gameObject)
+                cam.gameObject.SetActive(false);
+        }
+
         _inputSystemActions.Enable();
         _inputSystemActions.Player.Crouch.started += ctx => _isCrouching = true;
         _inputSystemActions.Player.Crouch.canceled += ctx => _isCrouching = false;
@@ -74,8 +81,6 @@ public class PlayerController : NetworkBehaviour
         _inputSystemActions.Player.Sprint.canceled += ctx => _isSprinting = false;
         _inputSystemActions.Player.Move.performed += ctx => _moveVector = ctx.ReadValue<Vector2>();
         _inputSystemActions.Player.Move.canceled += ctx => _moveVector = Vector2.zero;
-        _inputSystemActions.Player.Look.performed += ctx => _lookVector = ctx.ReadValue<Vector2>();
-        _inputSystemActions.Player.Look.canceled += ctx => _lookVector = Vector2.zero;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -98,6 +103,15 @@ public class PlayerController : NetworkBehaviour
         _audioListener = _cameraTransform != null ? _cameraTransform.GetComponent<AudioListener>() : null;
         if (_audioListener != null)
             _audioListener.enabled = false;
+    }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus && _isSetup)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     private void Update()
@@ -131,7 +145,8 @@ public class PlayerController : NetworkBehaviour
         }
     }
     private void UpdateLook()
-    { 
+    {
+        _lookVector = _inputSystemActions.Player.Look.ReadValue<Vector2>();
         float yaw = _lookVector.x * _lookSensitivity;
         float pitch = _lookVector.y * _lookSensitivity;
 
