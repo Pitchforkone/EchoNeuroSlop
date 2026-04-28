@@ -68,7 +68,6 @@ public class NightVisionController : NetworkBehaviour
         NightVisionItem.OnNightVisionUsed += OnNightVisionUsedFromInventory;
         
         _isInitialized = true;
-        Debug.Log("[NightVisionController] Initialized and listening for night vision use");
     }
     
     /// <summary>

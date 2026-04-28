@@ -83,7 +83,6 @@ public class SharedMicrophone : NetworkBehaviour
         DeviceName = Microphone.devices[0];
         Clip = Microphone.Start(DeviceName, true, _bufferLengthSec, _sampleRate);
         IsRecording = true;
-        Debug.Log($"[SharedMicrophone] Запись начата: {DeviceName}, {_sampleRate} Hz");
     }
 
     public void StopRecording()
@@ -95,7 +94,6 @@ public class SharedMicrophone : NetworkBehaviour
 
         Clip = null;
         IsRecording = false;
-        Debug.Log("[SharedMicrophone] Запись остановлена");
     }
 
     /// <summary>

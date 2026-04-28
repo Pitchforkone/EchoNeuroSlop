@@ -115,7 +115,7 @@ public class VoiceChat : NetworkBehaviour
                 }
             }
             _servicesInitialized = true;
-            Debug.Log("[VoiceChat] Unity Services initialized");
+ 
         }
 
         // 2. Аутентификация через Unity Authentication (требуется для Vivox)
@@ -133,7 +133,6 @@ public class VoiceChat : NetworkBehaviour
                 }
             }
             _authenticated = true;
-            Debug.Log($"[VoiceChat] Authenticated. Player ID: {AuthenticationService.Instance.PlayerId}");
         }
 
         // 3. Инициализация Vivox (один раз)
@@ -149,7 +148,6 @@ public class VoiceChat : NetworkBehaviour
             }
 
             _vivoxInitialized = true;
-            Debug.Log("[VoiceChat] Vivox initialized");
         }
 
         // 4. Login
@@ -197,7 +195,6 @@ public class VoiceChat : NetworkBehaviour
         }
 
         _isLoggedIn = true;
-        Debug.Log($"[VoiceChat] Vivox logged in as {playerId}");
     }
 
     private IEnumerator JoinChannel()
@@ -237,7 +234,6 @@ public class VoiceChat : NetworkBehaviour
         }
 
         _isInChannel = true;
-        Debug.Log($"[VoiceChat] Joined Vivox channel: {_channelName}");
 
         // Подписываемся на события участников для отслеживания говорящих
         VivoxService.Instance.ParticipantAddedToChannel += OnParticipantAdded;

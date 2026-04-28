@@ -318,7 +318,5 @@ public class PlayerInventory : NetworkBehaviour
         {
             LocalInstance = null;
         }
-        
-        Debug.Log("[PlayerInventory] Cleaned up");
     }
 }

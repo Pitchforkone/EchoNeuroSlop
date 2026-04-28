@@ -149,7 +149,6 @@ public class SteamLobby : MonoBehaviour
         {
             SteamMatchmaking.LeaveLobby(CurrentLobbyID);
             CurrentLobbyID = CSteamID.Nil;
-            Debug.Log("[SteamLobby] Left lobby");
         }
 
         if (NetworkServer.active && NetworkClient.isConnected)

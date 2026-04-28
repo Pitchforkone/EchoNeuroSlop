@@ -1,5 +1,4 @@
 using Mirror;
-using Mirror;
 using UnityEngine;
 
 /// <summary>

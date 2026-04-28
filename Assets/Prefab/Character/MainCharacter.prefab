@@ -1862,6 +1862,7 @@ GameObject:
   - component: {fileID: 7456969563842819569}
   - component: {fileID: 1760583446221646207}
   - component: {fileID: 7555268852783584838}
+  - component: {fileID: -4580813147527848511}
   m_Layer: 10
   m_Name: MainCharacter
   m_TagString: Player
@@ -2418,6 +2419,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd05d09d31133ed4c84c10bffdabb2e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterRandomizer
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _data: {fileID: 11400000, guid: a1d3f30fe13d1dc469e264158a0baebe, type: 2}
 --- !u!54 &7555268852783584838
 Rigidbody:
@@ -2446,6 +2450,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-4580813147527848511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4466953682978589147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1466480e89e8447428d6c9b22ac0ef08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterLipSync
+  _facePicker: {fileID: 0}
+  _baseEmotion: 8
+  _talkingFace: 14
+  _shoutFace: 15
+  _speakThreshold: 0.005
+  _shoutThreshold: 0.05
+  _mouthFlipRate: 8
+  _smoothSpeed: 10
 --- !u!1 &4607366122278701268
 GameObject:
   m_ObjectHideFlags: 0
@@ -4370,7 +4394,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 8647532066802546931, guid: 6f50fef9180a8b34c92d925ede0bb32d, type: 3}
+  m_Mesh: {fileID: -3010723037219268504, guid: cf69a35eaedea404aabcfff21cf54d29, type: 3}
   m_Bones:
   - {fileID: 6405177017033932106}
   - {fileID: 5876689067626979588}

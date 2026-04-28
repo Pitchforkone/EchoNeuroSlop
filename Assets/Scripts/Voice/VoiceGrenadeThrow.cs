@@ -76,7 +76,6 @@ public class VoiceGrenadeThrow : NetworkBehaviour
         }
         
         _isInitialized = true;
-        Debug.Log("[VoiceGrenadeThrow] Initialized and listening for grenade use");
     }
 
     /// <summary>
