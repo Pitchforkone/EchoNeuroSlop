@@ -24,6 +24,8 @@ public class PlayerEchoLocator : NetworkBehaviour
     [Header("Active Echo Cooldown")]
     [SerializeField] private float _activeEchoCooldown = 0.5f;
 
+    [SerializeField] private Transform _echoSpawnOffset ;
+
     private InputAction _echoAction;
     private SharedMicrophone _microphone;
 
@@ -164,7 +166,7 @@ public class PlayerEchoLocator : NetworkBehaviour
         if (NetworkClient.active && !isLocalPlayer) return;
         if (_config == null || _config._activePingPreset == null || EchoManager.Instance == null) return;
 
-        EchoManager.Instance.SpawnEcho(transform.position, _config._activePingPreset);
+        EchoManager.Instance.SpawnEcho(_echoSpawnOffset.position, _config._activePingPreset);
     }
 
     private void TriggerActiveEchoFromMicrophone()
@@ -174,6 +176,6 @@ public class PlayerEchoLocator : NetworkBehaviour
 
         if (_config == null || _config._activePingPreset == null || EchoManager.Instance == null) return;
 
-        EchoManager.Instance.SpawnEcho(transform.position, _config._activePingPreset);
+        EchoManager.Instance.SpawnEcho(_echoSpawnOffset.position, _config._activePingPreset);
     }
 }

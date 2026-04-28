@@ -33,6 +33,8 @@ public class PlayerController : NetworkBehaviour
 
     private Vector2 _moveVector;
     private Vector2 _lookVector;
+    private float _verticalVelocity;
+    private const float Gravity = -9.81f;
 
     public Action<WalkType, WalkType> OnWalkTypeChanged;
     public WalkType walkType = WalkType.Walk;
@@ -163,8 +165,18 @@ public class PlayerController : NetworkBehaviour
     {
         float speed = _isCrouching ? _crouchSpeed : (_isSprinting ? _sprintSpeed : _walkSpeed);
 
-        Vector3 move = transform.right * _moveVector.x + transform.forward * _moveVector.y;
-        _controller.Move(move * (speed * Time.deltaTime));
+        if (_controller.isGrounded)
+        {
+            _verticalVelocity = -2f;
+        }
+        else
+        {
+            _verticalVelocity += Gravity * Time.deltaTime;
+        }
+
+        Vector3 horizontalMove = transform.right * _moveVector.x + transform.forward * _moveVector.y;
+        Vector3 finalMove = horizontalMove * speed + Vector3.up * _verticalVelocity;
+        _controller.Move(finalMove * Time.deltaTime);
 
         UpdateAnimator(_moveVector);
     }
